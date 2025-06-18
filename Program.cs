@@ -32,6 +32,12 @@ public class Program
             await context.Response.SendFileAsync("wwwroot/index.html");
         });
 
+        app.MapGet("/welkom", async context =>
+        {
+            context.Response.ContentType = "text/html";
+            await context.Response.SendFileAsync("wwwroot/welkom.html");
+        });
+
         app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
         app.UseStaticFiles(); 
         app.UseHttpsRedirection();
