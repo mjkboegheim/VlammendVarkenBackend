@@ -1,7 +1,5 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using VlammendVarkenBackend.Data;
-
 
 namespace VlammendVarkenBackend;
 
@@ -11,10 +9,12 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddControllers();
+        // ✅ Razor Views + API Controllers
+        builder.Services.AddControllersWithViews();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
+        // ✅ Databaseconfiguratie
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseSqlite("Data Source=Data/VlammendVarken.db"));
 
@@ -26,22 +26,19 @@ public class Program
             app.UseSwaggerUI();
         }
 
-        app.MapGet("/test", async context =>
-        {
-            context.Response.ContentType = "text/html";
-            await context.Response.SendFileAsync("wwwroot/index.html");
-        });
-
-        app.MapGet("/welkom", async context =>
-        {
-            context.Response.ContentType = "text/html";
-            await context.Response.SendFileAsync("wwwroot/welkom.html");
-        });
-
-        app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+        // ✅ Middleware
         app.UseStaticFiles(); 
         app.UseHttpsRedirection();
+        app.UseRouting();
         app.UseAuthorization();
+        app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+        // ✅ Razor route (bijv. HomeController → Index.cshtml)
+        app.MapControllerRoute(
+            name: "default",
+            pattern: "{controller=Home}/{action=Index}/{id?}");
+
+        // ✅ API Controllers blijven gewoon werken
         app.MapControllers();
 
         app.Run();
