@@ -13,7 +13,7 @@ namespace VlammendVarkenBackend.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
-            return View();
+            return View("~/Views/Allergie/Index.cshtml"); 
         }
     }
 }

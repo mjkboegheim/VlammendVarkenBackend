@@ -11,9 +11,24 @@ namespace VlammendVarkenBackend.Controllers
     public class BestellingController : Controller
     {
         // GET: /<controller>/
-        public IActionResult Index()
+        public IActionResult Overzicht_Gast_Index()
         {
-            return View();
+            return View("~/Views/Bestelling/Overzicht/Gast/Index.cshtml"); 
+        }
+        
+        public IActionResult Overzicht_Chefkok_Index()
+        {
+            return View("~/Views/Bestelling/Overzicht/Chefkok/Index.cshtml"); 
+        }
+        
+        public IActionResult Details_Index()
+        {
+            return View("~/Views/Bestelling/Overzicht/Chefkok/Details/Index.cshtml"); 
+        }
+        
+        public IActionResult Tafels_Index()
+        {
+            return View("~/Views/Bestelling/Tafels/Index.cshtml"); 
         }
     }
 }
