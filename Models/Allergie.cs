@@ -1,9 +1,15 @@
-﻿namespace VlammendVarkenBackend.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace VlammendVarkenBackend.Models
 {
     public class Allergie
     {
+        [Column("allergie_id")]
         public int AllergieId { get; set; }
+
+        [Column("naam")]
         public string Naam { get; set; } = string.Empty;
-        public ICollection<BestellingAllergie>? BestellingAllergieën { get; set; }
+
+        public ICollection<BestellingAllergie>? Bestellingen { get; set; }
     }
 }
