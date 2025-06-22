@@ -91,6 +91,7 @@ CREATE TABLE Producten (
   product_id INTEGER PRIMARY KEY,
   productcategorie_id INTEGER NOT NULL,
   naam VARCHAR(100) NOT NULL CHECK (TRIM(naam) <> ''),
+  prijs DECIMAL(5,2) NOT NULL DEFAULT 0 CHECK (prijs >= 0),
   FOREIGN KEY (productcategorie_id) REFERENCES ProductCategorieen(productcategorie_id)
 );
 
@@ -147,10 +148,21 @@ INSERT INTO ProductCategorieen VALUES
 (1, 'Vlees'), (2, 'Vis'), (3, 'Groenten'), (4, 'Zuivel'), (5, 'Overige'), (6, 'Sauzen');
 
 INSERT INTO Producten VALUES
-(1, 1, 'Ribeye'), (2, 1, 'Kipfilet'), (3, 1, 'Varkenshaas'), (4, 1, 'BBQ-Worst'),
-(5, 2, 'Garnalen'), (6, 3, 'Paprika'), (7, 3, 'Maïs'), (8, 3, 'Sla'),
-(9, 4, 'Feta'), (10, 4, 'Vanille-ijs'), (11, 5, 'Brownie'), (12, 5, 'Burgerbroodje'), (13, 6, 'BBQ-Saus'),
-(14, 2, 'Zalmfilet'); -- ✅ nieuwe vis toegevoegd
+(1, 1, 'Ribeye', 12.50),
+(2, 1, 'Kipfilet', 8.75),
+(3, 1, 'Varkenshaas', 10.50),
+(4, 1, 'BBQ-Worst', 7.25),
+(5, 2, 'Garnalen', 9.50),
+(6, 3, 'Paprika', 0.75),
+(7, 3, 'Maïs', 0.60),
+(8, 3, 'Sla', 0.50),
+(9, 4, 'Feta', 1.00),
+(10, 4, 'Vanille-ijs', 0.90),
+(11, 5, 'Brownie', 1.20),
+(12, 5, 'Burgerbroodje', 0.80),
+(13, 6, 'BBQ-Saus', 0.00),
+(14, 2, 'Zalmfilet', 11.25);
+
 
 INSERT INTO Gerechten VALUES
 (1, 1, 'Gegrilde Paprika met Feta', 'Geroosterde paprika met romige feta', 12, 7.50, NULL, NULL, NULL),

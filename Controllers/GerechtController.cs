@@ -66,6 +66,28 @@ namespace VlammendVarkenBackend.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> Hoofdgerecht_Edit(int id)
+        {
+            var gerecht = await _context.Gerechten
+                .Include(g => g.GerechtCategorie)
+                .Include(g => g.Bijgerecht)
+                .Include(g => g.Groente)
+                .Include(g => g.Saus)
+                .Include(g => g.GerechtAllergieen)
+                    .ThenInclude(ga => ga.Allergie)
+                .FirstOrDefaultAsync(g => (g.GerechtId == id) && (g.GerechtCategorieId == 2));
+
+            if (gerecht == null)
+            {
+                return NotFound(new { message = "Gerecht niet gevonden." });
+            }
+
+            var viewModel = MapGerechtToViewModel(gerecht);
+            
+            return View("~/Views/Gerechten/Hoofdgerechten/Edit.cshtml", viewModel);
+        }
+        
+        [HttpGet]
         public IActionResult Hoofdgerecht_Soorten_Index()
         {
             return View("~/Views/Gerechten/Hoofdgerechten/Soorten/Index.cshtml");

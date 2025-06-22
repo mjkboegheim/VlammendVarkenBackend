@@ -17,7 +17,10 @@ namespace VlammendVarkenBackend.Models
 
         [ForeignKey("ProductCategorieId")]
         public ProductCategorie ProductCategorie { get; set; } = null!;
-
+        
+        [Column("prijs", TypeName = "decimal(5, 2)")]
+        public decimal Prijs { get; set; }
+        
         [Required]
         [Column("naam")]
         public string Naam { get; set; } = string.Empty;

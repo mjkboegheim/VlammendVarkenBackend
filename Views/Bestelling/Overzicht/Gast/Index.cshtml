@@ -1,77 +1,104 @@
+@{
+    ViewData["Title"] = "Besteloverzicht";
+}
+
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Besteloverzicht</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <meta charset="utf-8" />
+    <title>Besteloverzicht</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 </head>
-<body class="bg-gray-50 flex items-center justify-center min-h-screen p-4 font-sans">
-  <div class="w-full max-w-6xl bg-white rounded-xl shadow-lg p-6 md:p-8 space-y-8">
-    
-    <header>
-      <h1 class="text-3xl font-bold text-gray-900 text-center">Besteloverzicht</h1>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-6 font-sans">
+
+<div class="w-full max-w-5xl bg-white p-8 rounded-xl shadow-lg space-y-8">
+
+    <header class="text-center">
+        <h1 class="text-3xl font-bold text-gray-900">Besteloverzicht</h1>
+        <p class="text-gray-500">Controleer hier je bestelling voordat je deze bevestigt.</p>
     </header>
 
-    <main>
-      <section>
+    <section>
         <div class="overflow-x-auto">
-          <table class="min-w-full table-auto border border-gray-200 rounded-lg overflow-hidden">
-            <thead class="bg-gray-100 text-sm text-gray-600 uppercase text-left">
-              <tr>
-                <th class="px-4 py-3">Naam</th>
-                <th class="px-4 py-3">Bijgerecht</th>
-                <th class="px-4 py-3">Groente</th>
-                <th class="px-4 py-3">Saus</th>
-                <th class="px-4 py-3 text-right">Actie</th>
-                <th class="px-4 py-3 text-right">Prijs</th>
-              </tr>
-            </thead>
-            <tbody class="text-sm text-gray-700 divide-y divide-gray-200">
-              <tr>
-                <td class="px-4 py-3 font-semibold">-</td>
-                <td class="px-4 py-3">-</td>
-                <td class="px-4 py-3">-</td>
-                <td class="px-4 py-3">-</td>
-                <td class="px-4 py-3 text-right">
-                  <button class="text-red-500 hover:text-red-700" aria-label="Verwijderen">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22" />
-                    </svg>
-                  </button>
-                </td>
-                <td class="px-4 py-3 text-right font-semibold">€-</td>
-              </tr>
-            </tbody>
-            <tfoot class="bg-gray-50 font-bold">
-              <tr class="border-t-2 border-gray-200">
-                <td colspan="4" class="px-4 py-4 text-left">Totaal</td>
-                <td></td>
-                <td class="px-4 py-4 text-right">€-</td>
-              </tr>
-            </tfoot>
-          </table>
+            <table class="min-w-full table-auto border border-gray-200 rounded-lg overflow-hidden">
+                <thead class="bg-gray-100 text-sm text-gray-600 uppercase text-left">
+                    <tr>
+                        <th class="px-4 py-3">Naam</th>
+                        <th class="px-4 py-3">Categorie</th>
+                        <th class="px-4 py-3">Bijgerecht</th>
+                        <th class="px-4 py-3">Groente</th>
+                        <th class="px-4 py-3">Saus</th>
+                        <th class="px-4 py-3">Allergieën</th>
+                        <th class="px-4 py-3 text-right">Prijs</th>
+                    </tr>
+                </thead>
+                <tbody id="bestellingTabel" class="text-sm text-gray-800 divide-y divide-gray-200">
+                    <!-- Wordt via JavaScript gevuld -->
+                </tbody>
+                <tfoot class="bg-gray-50 text-lg font-bold">
+                    <tr>
+                        <td colspan="6" class="px-4 py-4 text-left">Totaal</td>
+                        <td id="totaalPrijs" class="px-4 py-4 text-right">€0.00</td>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
-      </section>
-    </main>
+    </section>
 
-    <footer class="flex flex-col md:flex-row gap-4 pt-4 border-t border-gray-200">
-      <button class="w-full flex items-center justify-center font-bold py-3 px-4 rounded-lg transition duration-300 bg-gray-200 hover:bg-gray-300 text-gray-800">
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-        </svg>
-        Terug naar vorige stap
-      </button>
-      <button class="w-full flex items-center justify-center font-bold py-3 px-4 rounded-lg transition duration-300 bg-gray-800 hover:bg-gray-900 text-white">
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-        </svg>
-        Kies tafelnummers
-      </button>
-    </footer>
+    <section class="text-center">
+        <button onclick="bevestigBestelling()" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200">
+            Bestelling bevestigen
+        </button>
+    </section>
 
-  </div>
+    <section class="text-center text-sm text-gray-500">
+        <a href="javascript:history.back()" class="text-blue-600 hover:underline">← Terug naar menu</a>
+    </section>
+
+</div>
+
+<script>
+    function tekenBestelOverzicht() {
+        const tbody = document.getElementById("bestellingTabel");
+        const totaalElement = document.getElementById("totaalPrijs");
+        tbody.innerHTML = "";
+        let totaal = 0;
+
+        const winkelmandje = localStorage.getItem("winkelmandje");
+        if (!winkelmandje) return;
+
+        const gerechten = JSON.parse(winkelmandje);
+
+        gerechten.forEach(gerecht => {
+            const prijs = parseFloat(gerecht.prijs);
+            totaal += prijs;
+
+            const rij = `
+                <tr>
+                    <td class="px-4 py-3 font-medium">${gerecht.naam}</td>
+                    <td class="px-4 py-3">${gerecht.categorie || "-"}</td>
+                    <td class="px-4 py-3">${gerecht.bijgerecht || "-"}</td>
+                    <td class="px-4 py-3">${gerecht.groente || "-"}</td>
+                    <td class="px-4 py-3">${gerecht.saus || "-"}</td>
+                    <td class="px-4 py-3">${(gerecht.allergieen || []).join(" ") || "-"}</td>
+                    <td class="px-4 py-3 text-right">€${prijs.toFixed(2)}</td>
+                </tr>`;
+            tbody.innerHTML += rij;
+        });
+
+        totaalElement.textContent = `€${totaal.toFixed(2)}`;
+    }
+
+    function bevestigBestelling() {
+        alert("Je bestelling is bevestigd. Dank je wel!");
+        localStorage.removeItem("winkelmandje");
+        window.location.href = "/"; // Of een bedankpagina
+    }
+
+    document.addEventListener("DOMContentLoaded", tekenBestelOverzicht);
+</script>
+
 </body>
 </html>
