@@ -1,15 +1,19 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VlammendVarkenBackend.Models
 {
+    [Table("ProductCategorieen")]
     public class ProductCategorie
     {
+        [Key]
         [Column("productcategorie_id")]
         public int ProductCategorieId { get; set; }
 
         [Column("naam")]
         public string Naam { get; set; } = string.Empty;
 
-        public ICollection<Product>? Producten { get; set; }
+        // Navigation property to related products
+        public ICollection<Product> Producten { get; set; } = new List<Product>();
     }
 }

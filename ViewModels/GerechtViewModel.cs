@@ -2,18 +2,14 @@ namespace VlammendVarkenBackend.ViewModels
 {
     public class GerechtViewModel
     {
-        public int GerechtId { get; set; }
+        public int Id { get; set; }
         public string Naam { get; set; } = string.Empty;
-        public string? Beschrijving { get; set; }
+        public string Beschrijving { get; set; } = string.Empty;
         public string Categorie { get; set; } = string.Empty;
+        public string? Bijgerecht { get; set; }
+        public string? Groente { get; set; }
+        public string? Saus { get; set; }
         public decimal Prijs { get; set; }
-        public int Bereidingstijd { get; set; }
-
-        public string? BijgerechtNaam { get; set; }
-        public string? GroenteNaam { get; set; }
-        public string? SausNaam { get; set; }
-
         public List<string> Allergieen { get; set; } = new();
-        public List<IngredientViewModel> Ingredienten { get; set; } = new();
     }
 }
