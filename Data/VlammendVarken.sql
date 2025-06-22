@@ -93,6 +93,7 @@ CREATE TABLE Producten (
   naam VARCHAR(100) NOT NULL CHECK (TRIM(naam) <> ''),
   FOREIGN KEY (productcategorie_id) REFERENCES ProductCategorieen(productcategorie_id)
 );
+
 CREATE TABLE Gerechten (
   gerecht_id INTEGER PRIMARY KEY,
   gerechtcategorie_id INTEGER NOT NULL,
@@ -148,7 +149,8 @@ INSERT INTO ProductCategorieen VALUES
 INSERT INTO Producten VALUES
 (1, 1, 'Ribeye'), (2, 1, 'Kipfilet'), (3, 1, 'Varkenshaas'), (4, 1, 'BBQ-Worst'),
 (5, 2, 'Garnalen'), (6, 3, 'Paprika'), (7, 3, 'Maïs'), (8, 3, 'Sla'),
-(9, 4, 'Feta'), (10, 4, 'Vanille-ijs'), (11, 5, 'Brownie'), (12, 5, 'Burgerbroodje'), (13, 6, 'BBQ-Saus');
+(9, 4, 'Feta'), (10, 4, 'Vanille-ijs'), (11, 5, 'Brownie'), (12, 5, 'Burgerbroodje'), (13, 6, 'BBQ-Saus'),
+(14, 2, 'Zalmfilet'); -- ✅ nieuwe vis toegevoegd
 
 INSERT INTO Gerechten VALUES
 (1, 1, 'Gegrilde Paprika met Feta', 'Geroosterde paprika met romige feta', 12, 7.50, NULL, NULL, NULL),
@@ -157,11 +159,20 @@ INSERT INTO Gerechten VALUES
 (4, 2, 'Mixed Grill (Kip, Varkenshaas, Worst)', 'Combinatie van gegrild vlees', 30, 24.50, NULL, NULL, NULL),
 (5, 3, 'Gegrilde Maïskolf', 'Maïskolf met rokerige grillsmaak', 10, 4.50, NULL, NULL, NULL),
 (6, 4, 'Brownie met Vanille-ijs', 'Warme brownie met romig ijs', 10, 6.50, NULL, NULL, NULL),
-(7, 5, 'Dagmenu: BBQ Burger & Cheesecake', 'Ons zorgvuldig samengesteld dagmenu.', 35, 19.50, 5, 8, 13);
+(7, 5, 'Dagmenu: BBQ Burger & Cheesecake', 'Ons zorgvuldig samengesteld dagmenu.', 35, 19.50, 5, 8, 13),
+(9, 2, 'Gegrilde Paprika met Feta (hoofdgerecht)', 'Paprika met feta, als hoofdgerecht', 15, 12.50, NULL, 6, NULL),
+(10, 2, 'Zalmfilet met Groenten', 'Zacht gegaarde zalmfilet met seizoensgroenten', 20, 18.00, NULL, 7, NULL);
 
 INSERT INTO Ingredienten VALUES
-(1, 6, 0.50), (1, 9, 0.30), (2, 5, 0.70), (3, 1, 1.00), (4, 2, 0.50), (4, 3, 0.40), (4, 4, 0.40),
-(5, 7, 1.00), (6, 11, 1.00), (6, 10, 0.50), (7, 12, 1.00), (7, 2, 0.40), (7, 11, 0.50);
+(1, 6, 0.50), (1, 9, 0.30),
+(2, 5, 0.70),
+(3, 1, 1.00),
+(4, 2, 0.50), (4, 3, 0.40), (4, 4, 0.40),
+(5, 7, 1.00),
+(6, 11, 1.00), (6, 10, 0.50),
+(7, 12, 1.00), (7, 2, 0.40), (7, 11, 0.50),
+(9, 6, 0.50), (9, 9, 0.30), -- Paprika + feta
+(10, 14, 1.00), (10, 7, 0.50); -- Zalmfilet + Maïs
 
 INSERT INTO Tafels VALUES (1), (2), (3);
 
@@ -187,5 +198,3 @@ INSERT INTO GerechtAllergieen VALUES
 
 INSERT INTO BestellingGerechten VALUES
 (1, 1, 5, NULL), (2, 1, 3, 15), (3, 2, 4, NULL), (4, 2, 6, 20);
-
-

@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VlammendVarkenBackend.Data;
 using VlammendVarkenBackend.ViewModels;
@@ -74,7 +73,7 @@ namespace VlammendVarkenBackend.Controllers
 
         public async Task<IActionResult> Vleesgerecht_Index()
         {
-            var alleHoofdgerechten = await _context.Gerechten
+            var alleVleesgerechten = await _context.Gerechten
                 .Include(g => g.GerechtCategorie)
                 .Include(g => g.Bijgerecht)
                 .Include(g => g.Groente)
@@ -87,7 +86,7 @@ namespace VlammendVarkenBackend.Controllers
                 .Where(g => g.GerechtCategorie != null && g.GerechtCategorie.Naam == "Hoofdgerechten")
                 .ToListAsync();
 
-            var vleesgerechten = alleHoofdgerechten
+            var vleesgerechten = alleVleesgerechten
                 .Where(g => g.Ingredienten.Any(ing =>
                     ing.Product?.ProductCategorie?.Naam != null &&
                     string.Equals(ing.Product.ProductCategorie.Naam, "Vlees", StringComparison.OrdinalIgnoreCase)))
@@ -95,49 +94,63 @@ namespace VlammendVarkenBackend.Controllers
 
             var viewModels = vleesgerechten.Select(MapGerechtToViewModel).ToList();
 
-            Console.WriteLine($"Aantal hoofdgerechten: {alleHoofdgerechten.Count}");
+            Console.WriteLine($"Aantal hoofdgerechten: {alleVleesgerechten.Count}");
             Console.WriteLine($"Aantal vleesgerechten: {vleesgerechten.Count}");
 
             return View("~/Views/Gerechten/Hoofdgerechten/Vlees/Index.cshtml", viewModels);
         }
-
+        
         public async Task<IActionResult> Visgerecht_Index()
         {
-            var visgerechten = await _context.Gerechten
+            var alleHoofdgerechten = await _context.Gerechten
                 .Include(g => g.GerechtCategorie)
-                .Include(g => g.Ingredienten)
-                    .ThenInclude(i => i.Product)
-                        .ThenInclude(p => p.ProductCategorie)
+                .Include(g => g.Bijgerecht)
+                .Include(g => g.Groente)
+                .Include(g => g.Saus)
+                .Include(g => g.GerechtAllergieen).ThenInclude(ga => ga.Allergie)
+                .Include(g => g.Ingredienten).ThenInclude(ing => ing.Product).ThenInclude(p => p.ProductCategorie)
                 .Where(g => g.GerechtCategorie != null && g.GerechtCategorie.Naam == "Hoofdgerechten")
                 .ToListAsync();
 
-            var selectie = visgerechten
-                .Where(g => g.Ingredienten.Any(i =>
-                    i.Product?.ProductCategorie?.Naam == "Vis"))
-                .Select(MapGerechtToViewModel)
+            var visgerechten = alleHoofdgerechten
+                .Where(g => g.Ingredienten.Any(ing =>
+                    string.Equals(ing.Product?.ProductCategorie?.Naam, "Vis", StringComparison.OrdinalIgnoreCase)))
                 .ToList();
 
-            return View("~/Views/Gerechten/Hoofdgerechten/Vis/Index.cshtml", selectie);
+            var viewModels = visgerechten.Select(MapGerechtToViewModel).ToList();
+
+            Console.WriteLine($"Aantal hoofdgerechten: {alleHoofdgerechten.Count}");
+            Console.WriteLine($"Aantal visgerechten: {visgerechten.Count}");
+
+            return View("~/Views/Gerechten/Hoofdgerechten/Vis/Index.cshtml", viewModels);
         }
 
         public async Task<IActionResult> Vegetarisch_Index()
         {
-            var gerechten = await _context.Gerechten
+            var alleHoofdgerechten = await _context.Gerechten
                 .Include(g => g.GerechtCategorie)
-                .Include(g => g.Ingredienten)
-                    .ThenInclude(i => i.Product)
-                        .ThenInclude(p => p.ProductCategorie)
+                .Include(g => g.Bijgerecht)
+                .Include(g => g.Groente)
+                .Include(g => g.Saus)
+                .Include(g => g.GerechtAllergieen).ThenInclude(ga => ga.Allergie)
+                .Include(g => g.Ingredienten).ThenInclude(ing => ing.Product).ThenInclude(p => p.ProductCategorie)
                 .Where(g => g.GerechtCategorie != null && g.GerechtCategorie.Naam == "Hoofdgerechten")
                 .ToListAsync();
 
-            var selectie = gerechten
-                .Where(g => g.Ingredienten.All(i =>
-                    i.Product?.ProductCategorie?.Naam != "Vlees" &&
-                    i.Product?.ProductCategorie?.Naam != "Vis"))
-                .Select(MapGerechtToViewModel)
+            var vegetarischeGerechten = alleHoofdgerechten
+                .Where(g =>
+                    g.Ingredienten.All(ing =>
+                        ing.Product?.ProductCategorie?.Naam != null &&
+                        !string.Equals(ing.Product.ProductCategorie.Naam, "Vlees", StringComparison.OrdinalIgnoreCase) &&
+                        !string.Equals(ing.Product.ProductCategorie.Naam, "Vis", StringComparison.OrdinalIgnoreCase)))
                 .ToList();
 
-            return View("~/Views/Gerechten/Hoofdgerechten/Vegetarisch/Index.cshtml", selectie);
+            var viewModels = vegetarischeGerechten.Select(MapGerechtToViewModel).ToList();
+
+            Console.WriteLine($"Aantal hoofdgerechten: {alleHoofdgerechten.Count}");
+            Console.WriteLine($"Aantal vegetarische hoofdgerechten: {vegetarischeGerechten.Count}");
+
+            return View("~/Views/Gerechten/Hoofdgerechten/Vegetarisch/Index.cshtml", viewModels);
         }
 
         // === Helpers ===
