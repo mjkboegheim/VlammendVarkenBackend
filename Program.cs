@@ -41,6 +41,11 @@ public class Program
             name: "hoofdgerechten.index",
             pattern: "gerechten/hoofdgerechten",
             defaults: new { controller = "Gerecht", action = "Hoofdgerecht_Index" });
+        
+        app.MapControllerRoute(
+            name: "hoofdgerechten.soorten.index",
+            pattern: "gerechten/hoofdgerechten/soorten",
+            defaults: new { controller = "Gerecht", action = "Hoofdgerecht_Soorten_Index" });
 
         app.MapControllerRoute(
             name: "hoofdgerechten.vlees.index",

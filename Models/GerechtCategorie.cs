@@ -10,10 +10,11 @@ namespace VlammendVarkenBackend.Models
         [Column("gerechtcategorie_id")]
         public int GerechtCategorieId { get; set; }
 
+        [Required]
         [Column("naam")]
         public string Naam { get; set; } = string.Empty;
 
-        // Navigation property to related dishes
+        // Navigation property to related dishes (never null)
         public ICollection<Gerecht> Gerechten { get; set; } = new List<Gerecht>();
     }
 }

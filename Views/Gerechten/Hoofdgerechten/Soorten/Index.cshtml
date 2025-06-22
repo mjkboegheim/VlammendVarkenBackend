@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Hoofdgerechten</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+</head>
+<body class="bg-gray-50 flex items-center justify-center min-h-screen p-4 font-sans">
+
+<div class="w-full max-w-6xl bg-white rounded-xl shadow-lg p-6 md:p-8 space-y-8">
+
+    <header>
+        <h1 class="text-3xl font-bold text-gray-900 text-center">Hoofdgerechten</h1>
+    </header>
+
+    <div>
+        <div class="max-w-md mx-auto border border-gray-200 rounded-lg p-4">
+            <div class="space-y-2">
+                <a href="/gerechten/hoofdgerechten/vlees"
+                   class="block w-full text-left p-3 rounded-lg cursor-pointer transition-colors duration-200 bg-white hover:bg-gray-50 border border-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500">
+                    Vleesgerechten
+                </a>
+                <a href="/gerechten/hoofdgerechten/vis"
+                   class="block w-full text-left p-3 rounded-lg cursor-pointer transition-colors duration-200 bg-white hover:bg-gray-50 border border-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500">
+                    Visgerechten
+                </a>
+                <a href="/gerechten/hoofdgerechten/vegetarisch"
+                   class="block w-full text-left p-3 rounded-lg cursor-pointer transition-colors duration-200 bg-white hover:bg-gray-50 border border-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500">
+                    Vegetarische gerechten
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Besteloverzicht tabel -->
+    <section id="besteloverzicht">
+        <div class="overflow-x-auto">
+            <table class="min-w-full table-auto border border-gray-200 rounded-lg overflow-hidden">
+                <thead class="bg-gray-100 text-sm text-gray-600 uppercase text-left">
+                    <tr>
+                        <th class="px-4 py-3">Naam</th>
+                        <th class="px-4 py-3">Categorie</th>
+                        <th class="px-4 py-3">Bijgerecht</th>
+                        <th class="px-4 py-3">Groente</th>
+                        <th class="px-4 py-3">Saus</th>
+                        <th class="px-4 py-3">Allergieën</th>
+                        <th class="px-4 py-3 text-right">Actie</th>
+                        <th class="px-4 py-3 text-right">Prijs</th>
+                    </tr>
+                </thead>
+                <tbody id="bestellingTabel" class="text-sm text-gray-700 divide-y divide-gray-200">
+                </tbody>
+                <tfoot class="bg-gray-50 font-bold">
+                    <tr class="border-t-2 border-gray-200">
+                        <td colspan="7" class="px-4 py-4 text-left">Totaal</td>
+                        <td id="totaalPrijs" class="px-4 py-4 text-right">€0.00</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="flex flex-col md:flex-row gap-4 pt-4 border-t border-gray-200">
+        <button onclick="history.back()" class="w-full flex items-center justify-center font-bold py-3 px-4 rounded-lg transition duration-300 bg-gray-200 hover:bg-gray-300 text-gray-800">
+            <span class="material-icons mr-2">arrow_back</span>
+            Terug naar vorige stap
+        </button>
+        <a href="/" class="w-full flex items-center justify-center font-bold py-3 px-4 rounded-lg transition duration-300 bg-gray-800 hover:bg-gray-900 text-white">
+            <span class="material-icons mr-2">home</span>
+            Terug naar hoofdmenu
+        </a>
+    </footer>
+</div>
+
+<!-- Scripts -->
+<script>
+    let bestelLijst = [];
+
+    function tekenBestelTabel() {
+        const tbody = document.getElementById("bestellingTabel");
+        tbody.innerHTML = "";
+        let totaal = 0;
+
+        bestelLijst.forEach((gerecht, index) => {
+            totaal += parseFloat(gerecht.prijs || 0);
+
+            const rij = `
+                <tr>
+                    <td class="px-4 py-3 font-semibold">${gerecht.naam}</td>
+                    <td class="px-4 py-3">${gerecht.categorie || '-'}</td>
+                    <td class="px-4 py-3">${gerecht.bijgerecht || '-'}</td>
+                    <td class="px-4 py-3">${gerecht.groente || '-'}</td>
+                    <td class="px-4 py-3">${gerecht.saus || '-'}</td>
+                    <td class="px-4 py-3">${(gerecht.allergieen || []).join(" ") || '-'}</td>
+                    <td class="px-4 py-3 text-right">
+                        <button onclick="verwijderGerecht(${index})" class="text-red-500 hover:text-red-700" aria-label="Verwijderen">
+                            <span class="material-icons text-base">delete</span>
+                        </button>
+                    </td>
+                    <td class="px-4 py-3 text-right font-semibold">€${parseFloat(gerecht.prijs).toFixed(2)}</td>
+                </tr>
+            `;
+            tbody.innerHTML += rij;
+        });
+
+        document.getElementById("totaalPrijs").textContent = `€${totaal.toFixed(2)}`;
+    }
+
+    function verwijderGerecht(index) {
+        bestelLijst.splice(index, 1);
+        localStorage.setItem("winkelmandje", JSON.stringify(bestelLijst));
+        tekenBestelTabel();
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const opgeslagen = localStorage.getItem("winkelmandje");
+        if (opgeslagen) {
+            try {
+                bestelLijst = JSON.parse(opgeslagen) || [];
+            } catch (e) {
+                console.error("Kan winkelmandje niet parsen:", e);
+            }
+        }
+        tekenBestelTabel();
+    });
+</script>
+
+</body>
+</html>

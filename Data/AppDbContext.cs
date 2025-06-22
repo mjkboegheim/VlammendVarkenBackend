@@ -1,16 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using VlammendVarkenBackend.Models;
 
-// Een gangbare namespace voor de DbContext
 namespace VlammendVarkenBackend.Data
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-        {
-        }
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        // Definieer een DbSet voor elke entiteit/tabel
+        // Tabellen
         public DbSet<Allergie> Allergieen { get; set; }
         public DbSet<Bestelling> Bestellingen { get; set; }
         public DbSet<Gerecht> Gerechten { get; set; }
@@ -22,49 +19,45 @@ namespace VlammendVarkenBackend.Data
         public DbSet<TafelGroep> TafelGroepen { get; set; }
 
         // Koppeltabellen
-        public DbSet<BestellingAllergie> BestellingAllergieen { get; set; }
-        public DbSet<BestellingGerecht> BestellingGerechten { get; set; }
         public DbSet<GerechtAllergie> GerechtAllergieen { get; set; }
         public DbSet<Ingredient> Ingredienten { get; set; }
         public DbSet<TafelGroepTafel> TafelGroepTafels { get; set; }
-
+        public DbSet<BestellingAllergie> BestellingAllergieen { get; set; }
+        public DbSet<BestellingGerecht> BestellingGerechten { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // --- Configuratie van samengestelde primaire sleutels (Composite Keys) ---
+            // === Primary Keys voor koppeltabellen ===
+            modelBuilder.Entity<GerechtAllergie>().HasKey(ga => new { ga.GerechtId, ga.AllergieId });
+            modelBuilder.Entity<Ingredient>().HasKey(i => new { i.GerechtId, i.ProductId });
+            modelBuilder.Entity<TafelGroepTafel>().HasKey(tgt => new { tgt.TafelGroepId, tgt.TafelId });
+            modelBuilder.Entity<BestellingAllergie>().HasKey(ba => new { ba.BestellingId, ba.AllergieId });
+            modelBuilder.Entity<BestellingGerecht>().HasKey(bg => new { bg.BestellingId, bg.GerechtId });
 
-            // Koppeltabel voor TafelGroepen en Tafels
-            modelBuilder.Entity<TafelGroepTafel>()
-                .HasKey(tgt => new { tgt.TafelGroepId, tgt.TafelId });
-
-            // Koppeltabel voor Bestellingen en Allergenen
-            modelBuilder.Entity<BestellingAllergie>()
-                .HasKey(ba => new { ba.BestellingId, ba.AllergieId });
-
-            // Koppeltabel voor Gerechten en Allergenen
-            modelBuilder.Entity<GerechtAllergie>()
-                .HasKey(ga => new { ga.GerechtId, ga.AllergieId });
-
-            // Koppeltabel voor Gerechten en Producten (Ingredienten)
-            modelBuilder.Entity<Ingredient>()
-                .HasKey(i => new { i.GerechtId, i.ProductId });
-
-
-            // --- Configuratie van relaties ---
-
-            // Zelf-refererende relatie voor Gerecht (bijgerecht)
-            // Voorkomt 'cascade delete' problemen door Restrict te gebruiken.
+            // === Relatie: Gerecht ↔ Bijgerecht (self reference) ===
             modelBuilder.Entity<Gerecht>()
                 .HasOne(g => g.Bijgerecht)
                 .WithMany()
                 .HasForeignKey(g => g.BijgerechtId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-                
-            // --- Data Seeding (vullen van de database met startgegevens) ---
+            // === Relatie: Ingredient → Product (FK verplicht) ===
+            modelBuilder.Entity<Ingredient>()
+                .HasOne(i => i.Product)
+                .WithMany(p => p.Ingredienten)
+                .HasForeignKey(i => i.ProductId)
+                .IsRequired();
 
+            // === Relatie: Product → ProductCategorie (FK verplicht) ===
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.ProductCategorie)
+                .WithMany(pc => pc.Producten)
+                .HasForeignKey(p => p.ProductCategorieId)
+                .IsRequired();
+
+            // === Seeding: Categorieën ===
             modelBuilder.Entity<GerechtCategorie>().HasData(
                 new GerechtCategorie { GerechtCategorieId = 1, Naam = "Voorgerechten" },
                 new GerechtCategorie { GerechtCategorieId = 2, Naam = "Hoofdgerechten" },
@@ -82,6 +75,7 @@ namespace VlammendVarkenBackend.Data
                 new ProductCategorie { ProductCategorieId = 6, Naam = "Sauzen" }
             );
 
+            // === Seeding: Producten ===
             modelBuilder.Entity<Product>().HasData(
                 new Product { ProductId = 1, ProductCategorieId = 1, Naam = "Ribeye" },
                 new Product { ProductId = 2, ProductCategorieId = 1, Naam = "Kipfilet" },
@@ -98,6 +92,7 @@ namespace VlammendVarkenBackend.Data
                 new Product { ProductId = 13, ProductCategorieId = 6, Naam = "BBQ-Saus" }
             );
 
+            // === Seeding: Gerechten ===
             modelBuilder.Entity<Gerecht>().HasData(
                 new Gerecht { GerechtId = 1, GerechtCategorieId = 1, Naam = "Gegrilde Paprika met Feta", Beschrijving = "Geroosterde paprika met romige feta", Bereidingstijd = 12, Prijs = 7.50m },
                 new Gerecht { GerechtId = 2, GerechtCategorieId = 1, Naam = "Spies van Garnalen", Beschrijving = "Gegrilde spies met gemarineerde garnalen", Bereidingstijd = 15, Prijs = 9.00m },
@@ -108,6 +103,7 @@ namespace VlammendVarkenBackend.Data
                 new Gerecht { GerechtId = 7, GerechtCategorieId = 5, Naam = "Dagmenu: BBQ Burger & Cheesecake", Beschrijving = "Ons zorgvuldig samengesteld dagmenu.", Bereidingstijd = 35, Prijs = 19.50m, BijgerechtId = 5, GroenteId = 8, SausId = 13 }
             );
 
+            // === Seeding: Ingrediënten ===
             modelBuilder.Entity<Ingredient>().HasData(
                 new Ingredient { GerechtId = 1, ProductId = 6, Hoeveelheid = 0.50m },
                 new Ingredient { GerechtId = 1, ProductId = 9, Hoeveelheid = 0.30m },
@@ -124,6 +120,7 @@ namespace VlammendVarkenBackend.Data
                 new Ingredient { GerechtId = 7, ProductId = 11, Hoeveelheid = 0.50m }
             );
 
+            // === Seeding: Tafels en Groepen ===
             modelBuilder.Entity<Tafel>().HasData(
                 new Tafel { TafelId = 1 },
                 new Tafel { TafelId = 2 },
@@ -140,7 +137,8 @@ namespace VlammendVarkenBackend.Data
                 new TafelGroepTafel { TafelGroepId = 2, TafelId = 2 },
                 new TafelGroepTafel { TafelGroepId = 2, TafelId = 3 }
             );
-            
+
+            // === Seeding: Allergieën ===
             modelBuilder.Entity<Allergie>().HasData(
                 new Allergie { AllergieId = 1, Naam = "Gluten" },
                 new Allergie { AllergieId = 2, Naam = "Lactose" },
@@ -152,10 +150,6 @@ namespace VlammendVarkenBackend.Data
                 new GerechtAllergie { GerechtId = 6, AllergieId = 2 },
                 new GerechtAllergie { GerechtId = 7, AllergieId = 1 }
             );
-            
-            // De overige data (Reserveringen, Bestellingen, etc.) is transactiedata.
-            // Het is ongebruikelijk om dit te seeden, omdat dit tijdens het gebruik van de applicatie wordt aangemaakt.
-            // Daarom laat ik de inserts voor die tabellen hier weg.
         }
     }
 }

@@ -11,20 +11,22 @@ namespace VlammendVarkenBackend.Models
         public int ReserveringId { get; set; }
 
         [Column("tafel_id")]
-        public int? TafelId { get; set; } // Nullable because a reservation can be for a group
+        public int? TafelId { get; set; } // Optioneel
         public Tafel? Tafel { get; set; }
 
         [Column("tafelgroep_id")]
-        public int? TafelGroepId { get; set; } // Nullable because a reservation can be for a single table
+        public int? TafelGroepId { get; set; } // Optioneel
         public TafelGroep? TafelGroep { get; set; }
 
+        [Required]
         [Column("tijd")]
         public DateTime Tijd { get; set; }
 
+        [Required]
         [Column("status")]
         public string Status { get; set; } = string.Empty;
-        
-        // Navigation property to related orders
+
+        // Navigation property naar bestellingen
         public ICollection<Bestelling> Bestellingen { get; set; } = new List<Bestelling>();
     }
 }

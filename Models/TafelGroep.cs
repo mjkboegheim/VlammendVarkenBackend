@@ -15,8 +15,11 @@ namespace VlammendVarkenBackend.Models
 
         [Column("aantal_personen")]
         public int AantalPersonen { get; set; }
-        
-        // Navigation property for the many-to-many relationship
+
+        // Navigatie naar koppeltabel met tafels (many-to-many)
         public ICollection<TafelGroepTafel> TafelGroepTafels { get; set; } = new List<TafelGroepTafel>();
+
+        // Optioneel: navigatie naar reserveringen (één-op-veel)
+        public ICollection<Reservering> Reserveringen { get; set; } = new List<Reservering>();
     }
 }

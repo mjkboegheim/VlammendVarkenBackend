@@ -3,21 +3,21 @@
 -- ===========================
 
 CREATE TABLE Tafels (
-  tafel_id INT PRIMARY KEY
+  tafel_id INTEGER PRIMARY KEY
 );
 
 CREATE TABLE TafelGroepen (
-  tafelgroep_id INT PRIMARY KEY,
+  tafelgroep_id INTEGER PRIMARY KEY,
   code VARCHAR(10) NOT NULL CHECK (TRIM(code) <> ''),
-  aantal_personen INT NOT NULL CHECK (aantal_personen > 0)
+  aantal_personen INTEGER NOT NULL CHECK (aantal_personen > 0)
 );
 
 CREATE TABLE TafelGroepTafels (
-  tafelgroep_id INT,
-  tafel_id INT,
+  tafelgroep_id INTEGER NOT NULL,
+  tafel_id INTEGER NOT NULL,
   PRIMARY KEY (tafelgroep_id, tafel_id),
-  FOREIGN KEY (tafelgroep_id) REFERENCES TafelGroepen(tafelgroep_id),
-  FOREIGN KEY (tafel_id) REFERENCES Tafels(tafel_id)
+  FOREIGN KEY (tafelgroep_id) REFERENCES TafelGroepen(tafelgroep_id) ON DELETE CASCADE,
+  FOREIGN KEY (tafel_id) REFERENCES Tafels(tafel_id) ON DELETE CASCADE
 );
 
 -- ===============
@@ -25,9 +25,9 @@ CREATE TABLE TafelGroepTafels (
 -- ===============
 
 CREATE TABLE Reserveringen (
-  reservering_id INT PRIMARY KEY,
-  tafel_id INT,
-  tafelgroep_id INT,
+  reservering_id INTEGER PRIMARY KEY,
+  tafel_id INTEGER,
+  tafelgroep_id INTEGER,
   tijd DATETIME NOT NULL,
   status VARCHAR(50) NOT NULL CHECK (TRIM(status) <> ''),
   FOREIGN KEY (tafel_id) REFERENCES Tafels(tafel_id),
@@ -39,12 +39,12 @@ CREATE TABLE Reserveringen (
 -- ============
 
 CREATE TABLE Bestellingen (
-  bestelling_id INT PRIMARY KEY,
-  reservering_id INT NOT NULL,
-  besteld_voorgerecht BOOLEAN CHECK (besteld_voorgerecht IN (0, 1)),
-  besteld_hoofdgerecht BOOLEAN CHECK (besteld_hoofdgerecht IN (0, 1)),
-  besteld_nagerecht BOOLEAN CHECK (besteld_nagerecht IN (0, 1)),
-  is_volwassen BOOLEAN CHECK (is_volwassen IN (0, 1)),
+  bestelling_id INTEGER PRIMARY KEY,
+  reservering_id INTEGER NOT NULL,
+  besteld_voorgerecht BOOLEAN NOT NULL DEFAULT 0 CHECK (besteld_voorgerecht IN (0, 1)),
+  besteld_hoofdgerecht BOOLEAN NOT NULL DEFAULT 0 CHECK (besteld_hoofdgerecht IN (0, 1)),
+  besteld_nagerecht BOOLEAN NOT NULL DEFAULT 0 CHECK (besteld_nagerecht IN (0, 1)),
+  is_volwassen BOOLEAN NOT NULL DEFAULT 1 CHECK (is_volwassen IN (0, 1)),
   FOREIGN KEY (reservering_id) REFERENCES Reserveringen(reservering_id)
 );
 
@@ -53,21 +53,21 @@ CREATE TABLE Bestellingen (
 -- ===============
 
 CREATE TABLE Allergieen (
-  allergie_id INT PRIMARY KEY,
+  allergie_id INTEGER PRIMARY KEY,
   naam VARCHAR(100) NOT NULL CHECK (TRIM(naam) <> '')
 );
 
 CREATE TABLE BestellingAllergieen (
-  bestelling_id INT,
-  allergie_id INT,
+  bestelling_id INTEGER NOT NULL,
+  allergie_id INTEGER NOT NULL,
   PRIMARY KEY (bestelling_id, allergie_id),
   FOREIGN KEY (bestelling_id) REFERENCES Bestellingen(bestelling_id),
   FOREIGN KEY (allergie_id) REFERENCES Allergieen(allergie_id)
 );
 
 CREATE TABLE GerechtAllergieen (
-  gerecht_id INT,
-  allergie_id INT,
+  gerecht_id INTEGER NOT NULL,
+  allergie_id INTEGER NOT NULL,
   PRIMARY KEY (gerecht_id, allergie_id),
   FOREIGN KEY (gerecht_id) REFERENCES Gerechten(gerecht_id),
   FOREIGN KEY (allergie_id) REFERENCES Allergieen(allergie_id)
@@ -78,32 +78,31 @@ CREATE TABLE GerechtAllergieen (
 -- ==================
 
 CREATE TABLE GerechtCategorieen (
-  gerechtcategorie_id INT PRIMARY KEY,
+  gerechtcategorie_id INTEGER PRIMARY KEY,
   naam VARCHAR(100) NOT NULL CHECK (TRIM(naam) <> '')
 );
 
 CREATE TABLE ProductCategorieen (
-  productcategorie_id INT PRIMARY KEY,
+  productcategorie_id INTEGER PRIMARY KEY,
   naam VARCHAR(100) NOT NULL CHECK (TRIM(naam) <> '')
 );
 
 CREATE TABLE Producten (
-  product_id INT PRIMARY KEY,
-  productcategorie_id INT NOT NULL,
+  product_id INTEGER PRIMARY KEY,
+  productcategorie_id INTEGER NOT NULL,
   naam VARCHAR(100) NOT NULL CHECK (TRIM(naam) <> ''),
   FOREIGN KEY (productcategorie_id) REFERENCES ProductCategorieen(productcategorie_id)
 );
-
 CREATE TABLE Gerechten (
-  gerecht_id INT PRIMARY KEY,
-  gerechtcategorie_id INT NOT NULL,
+  gerecht_id INTEGER PRIMARY KEY,
+  gerechtcategorie_id INTEGER NOT NULL,
   naam VARCHAR(100) NOT NULL CHECK (TRIM(naam) <> ''),
-  beschrijving TEXT, -- ✅ Nieuw veld toegevoegd
-  bereidingstijd INT NOT NULL CHECK (bereidingstijd > 0),
+  beschrijving TEXT,
+  bereidingstijd INTEGER NOT NULL CHECK (bereidingstijd > 0),
   prijs DECIMAL(5,2) NOT NULL CHECK (prijs >= 0),
-  bijgerecht_id INT,
-  groente_id INT,
-  saus_id INT,
+  bijgerecht_id INTEGER,
+  groente_id INTEGER,
+  saus_id INTEGER,
   FOREIGN KEY (gerechtcategorie_id) REFERENCES GerechtCategorieen(gerechtcategorie_id),
   FOREIGN KEY (bijgerecht_id) REFERENCES Gerechten(gerecht_id),
   FOREIGN KEY (groente_id) REFERENCES Producten(product_id),
@@ -111,10 +110,10 @@ CREATE TABLE Gerechten (
 );
 
 CREATE TABLE BestellingGerechten (
-  bestellinggerecht_id INT PRIMARY KEY,
-  bestelling_id INT NOT NULL,
-  gerecht_id INT NOT NULL,
-  serveren_na INT,
+  bestellinggerecht_id INTEGER PRIMARY KEY,
+  bestelling_id INTEGER NOT NULL,
+  gerecht_id INTEGER NOT NULL,
+  serveren_na INTEGER,
   FOREIGN KEY (bestelling_id) REFERENCES Bestellingen(bestelling_id),
   FOREIGN KEY (gerecht_id) REFERENCES Gerechten(gerecht_id)
 );
@@ -124,8 +123,8 @@ CREATE TABLE BestellingGerechten (
 -- ===================
 
 CREATE TABLE Ingredienten (
-  gerecht_id INT,
-  product_id INT,
+  gerecht_id INTEGER NOT NULL,
+  product_id INTEGER NOT NULL,
   hoeveelheid DECIMAL(10,2) NOT NULL CHECK (hoeveelheid > 0),
   PRIMARY KEY (gerecht_id, product_id),
   FOREIGN KEY (gerecht_id) REFERENCES Gerechten(gerecht_id),
@@ -174,8 +173,8 @@ INSERT INTO Reserveringen VALUES
 (2, NULL, 2, '2025-06-21 19:30:00', 'Bevestigd');
 
 INSERT INTO Bestellingen VALUES
-(1, 1, 1, 3, 0, 1),
-(2, 2, 2, 4, 6, 1);
+(1, 1, 1, 1, 0, 1),
+(2, 2, 1, 1, 1, 1);
 
 INSERT INTO Allergieen VALUES
 (1, 'Gluten'), (2, 'Lactose'), (3, 'Schaaldieren');
@@ -188,3 +187,5 @@ INSERT INTO GerechtAllergieen VALUES
 
 INSERT INTO BestellingGerechten VALUES
 (1, 1, 5, NULL), (2, 1, 3, 15), (3, 2, 4, NULL), (4, 2, 6, 20);
+
+

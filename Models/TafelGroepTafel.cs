@@ -7,10 +7,14 @@ namespace VlammendVarkenBackend.Models
     {
         [Column("tafelgroep_id")]
         public int TafelGroepId { get; set; }
-        public TafelGroep? TafelGroep { get; set; }
+
+        [ForeignKey(nameof(TafelGroepId))]
+        public TafelGroep TafelGroep { get; set; } = null!;
 
         [Column("tafel_id")]
         public int TafelId { get; set; }
-        public Tafel? Tafel { get; set; }
+
+        [ForeignKey(nameof(TafelId))]
+        public Tafel Tafel { get; set; } = null!;
     }
 }

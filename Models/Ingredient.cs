@@ -7,13 +7,15 @@ namespace VlammendVarkenBackend.Models
     {
         [Column("gerecht_id")]
         public int GerechtId { get; set; }
-        public Gerecht? Gerecht { get; set; }
 
         [Column("product_id")]
         public int ProductId { get; set; }
-        public Product? Product { get; set; }
 
-        [Column("hoeveelheid", TypeName = "decimal(10, 2)")]
+        [Column("hoeveelheid", TypeName = "decimal(10,2)")]
         public decimal Hoeveelheid { get; set; }
+
+        // Navigatie-eigenschappen
+        public Gerecht Gerecht { get; set; } = null!; // verplicht in DB
+        public Product Product { get; set; } = null!; // verplicht in DB
     }
 }

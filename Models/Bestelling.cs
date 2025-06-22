@@ -25,9 +25,9 @@ namespace VlammendVarkenBackend.Models
 
         [Column("is_volwassen")]
         public bool IsVolwassen { get; set; }
-        
-        // Navigation properties for many-to-many relationships
+
         public ICollection<BestellingGerecht> BestellingGerechten { get; set; } = new List<BestellingGerecht>();
         public ICollection<BestellingAllergie> BestellingAllergieen { get; set; } = new List<BestellingAllergie>();
     }
+
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,10 +11,11 @@ namespace VlammendVarkenBackend.Models
         [Column("productcategorie_id")]
         public int ProductCategorieId { get; set; }
 
+        [Required]
         [Column("naam")]
         public string Naam { get; set; } = string.Empty;
 
-        // Navigation property to related products
+        // Navigatie-eigenschap
         public ICollection<Product> Producten { get; set; } = new List<Product>();
     }
 }

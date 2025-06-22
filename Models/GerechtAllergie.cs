@@ -7,10 +7,14 @@ namespace VlammendVarkenBackend.Models
     {
         [Column("gerecht_id")]
         public int GerechtId { get; set; }
-        public Gerecht? Gerecht { get; set; }
+
+        [ForeignKey("GerechtId")]
+        public Gerecht Gerecht { get; set; } = null!;
 
         [Column("allergie_id")]
         public int AllergieId { get; set; }
-        public Allergie? Allergie { get; set; }
+
+        [ForeignKey("AllergieId")]
+        public Allergie Allergie { get; set; } = null!;
     }
 }

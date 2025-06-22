@@ -12,11 +12,15 @@ namespace VlammendVarkenBackend.Models
 
         [Column("bestelling_id")]
         public int BestellingId { get; set; }
-        public Bestelling? Bestelling { get; set; }
+
+        [ForeignKey("BestellingId")]
+        public Bestelling Bestelling { get; set; } = null!;
 
         [Column("gerecht_id")]
         public int GerechtId { get; set; }
-        public Gerecht? Gerecht { get; set; }
+
+        [ForeignKey("GerechtId")]
+        public Gerecht Gerecht { get; set; } = null!;
 
         [Column("serveren_na")]
         public int? ServerenNa { get; set; }
