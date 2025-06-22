@@ -141,7 +141,7 @@ INSERT INTO GerechtCategorieen VALUES
 (2, 'Hoofdgerechten'),
 (3, 'Bijgerechten'),
 (4, 'Nagerechten'),
-(5, 'Dagemenu');
+(5, 'Dagmenu');
 
 INSERT INTO ProductCategorieen VALUES
 (1, 'Vlees'), (2, 'Vis'), (3, 'Groenten'), (4, 'Zuivel'), (5, 'Overige'), (6, 'Sauzen');
@@ -158,7 +158,7 @@ INSERT INTO Gerechten VALUES
 (4, 2, 'Mixed Grill (Kip, Varkenshaas, Worst)', 'Combinatie van gegrild vlees', 30, 24.50, NULL, NULL, NULL),
 (5, 3, 'Gegrilde Maïskolf', 'Maïskolf met rokerige grillsmaak', 10, 4.50, NULL, NULL, NULL),
 (6, 4, 'Brownie met Vanille-ijs', 'Warme brownie met romig ijs', 10, 6.50, NULL, NULL, NULL),
-(7, 5, 'Dagemenu: BBQ Burger & Cheesecake', 'Ons zorgvuldig samengesteld dagmenu.', 35, 19.50, 5, 8, 13);
+(7, 5, 'Dagmenu: BBQ Burger & Cheesecake', 'Ons zorgvuldig samengesteld dagmenu.', 35, 19.50, 5, 8, 13);
 
 INSERT INTO Ingredienten VALUES
 (1, 6, 0.50), (1, 9, 0.30), (2, 5, 0.70), (3, 1, 1.00), (4, 2, 0.50), (4, 3, 0.40), (4, 4, 0.40),

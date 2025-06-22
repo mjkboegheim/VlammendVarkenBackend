@@ -70,7 +70,7 @@ namespace VlammendVarkenBackend.Data
                 new GerechtCategorie { GerechtCategorieId = 2, Naam = "Hoofdgerechten" },
                 new GerechtCategorie { GerechtCategorieId = 3, Naam = "Bijgerechten" },
                 new GerechtCategorie { GerechtCategorieId = 4, Naam = "Nagerechten" },
-                new GerechtCategorie { GerechtCategorieId = 5, Naam = "Dagemenu" }
+                new GerechtCategorie { GerechtCategorieId = 5, Naam = "Dagmenu" }
             );
 
             modelBuilder.Entity<ProductCategorie>().HasData(
@@ -105,7 +105,7 @@ namespace VlammendVarkenBackend.Data
                 new Gerecht { GerechtId = 4, GerechtCategorieId = 2, Naam = "Mixed Grill (Kip, Varkenshaas, Worst)", Beschrijving = "Combinatie van gegrild vlees", Bereidingstijd = 30, Prijs = 24.50m },
                 new Gerecht { GerechtId = 5, GerechtCategorieId = 3, Naam = "Gegrilde Maïskolf", Beschrijving = "Maïskolf met rokerige grillsmaak", Bereidingstijd = 10, Prijs = 4.50m },
                 new Gerecht { GerechtId = 6, GerechtCategorieId = 4, Naam = "Brownie met Vanille-ijs", Beschrijving = "Warme brownie met romig ijs", Bereidingstijd = 10, Prijs = 6.50m },
-                new Gerecht { GerechtId = 7, GerechtCategorieId = 5, Naam = "Dagemenu: BBQ Burger & Cheesecake", Beschrijving = "Ons zorgvuldig samengesteld dagmenu.", Bereidingstijd = 35, Prijs = 19.50m, BijgerechtId = 5, GroenteId = 8, SausId = 13 }
+                new Gerecht { GerechtId = 7, GerechtCategorieId = 5, Naam = "Dagmenu: BBQ Burger & Cheesecake", Beschrijving = "Ons zorgvuldig samengesteld dagmenu.", Bereidingstijd = 35, Prijs = 19.50m, BijgerechtId = 5, GroenteId = 8, SausId = 13 }
             );
 
             modelBuilder.Entity<Ingredient>().HasData(
