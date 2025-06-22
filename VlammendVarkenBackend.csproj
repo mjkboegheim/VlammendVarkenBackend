@@ -22,7 +22,6 @@
     <None Remove="Models\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Helpers\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
   <ItemGroup>
