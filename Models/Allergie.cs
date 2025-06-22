@@ -10,6 +10,7 @@ namespace VlammendVarkenBackend.Models
         [Column("naam")]
         public string Naam { get; set; } = string.Empty;
 
-        public ICollection<BestellingAllergie>? Bestellingen { get; set; }
+        public ICollection<BestellingAllergie>? BestellingAllergieen { get; set; }
+        public ICollection<GerechtAllergie>? GerechtAllergieen { get; set; }
     }
 }

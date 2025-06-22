@@ -1,34 +1,75 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using VlammendVarkenBackend.Models;
 
 namespace VlammendVarkenBackend.Data
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+        public AppDbContext(DbContextOptions<AppDbContext> options)
+            : base(options)
+        {
+        }
 
-        public DbSet<Tafel> Tafel { get; set; }
-        public DbSet<TafelGroep> TafelGroep { get; set; }
-        public DbSet<TafelGroepTafel> TafelGroepTafel { get; set; }
-        public DbSet<Reservering> Reservering { get; set; }
-        public DbSet<Bestelling> Bestelling { get; set; }
-        public DbSet<Allergie> Allergie { get; set; }
-        public DbSet<BestellingAllergie> BestellingAllergie { get; set; }
-        public DbSet<GerechtCategorie> GerechtCategorie { get; set; }
-        public DbSet<Gerecht> Gerecht { get; set; }
-        public DbSet<BestellingGerecht> BestellingGerecht { get; set; }
-        public DbSet<ProductCategorie> ProductCategorie { get; set; }
-        public DbSet<Product> Product { get; set; }
-        public DbSet<Ingredient> Ingrediënt { get; set; }
+        public DbSet<Allergie> Allergieen { get; set; }
+        public DbSet<Bestelling> Bestellingen { get; set; }
+        public DbSet<BestellingAllergie> BestellingAllergieen { get; set; }
+        public DbSet<BestellingGerecht> BestellingGerechten { get; set; }
+        public DbSet<Gerecht> Gerechten { get; set; }
+        public DbSet<GerechtAllergie> GerechtAllergieen { get; set; }
+        public DbSet<GerechtCategorie> GerechtCategorieen { get; set; }
+        public DbSet<Ingredient> Ingredienten { get; set; }
+        public DbSet<Product> Producten { get; set; }
+        public DbSet<ProductCategorie> ProductCategorieen { get; set; }
+        public DbSet<Reservering> Reserveringen { get; set; }
+        public DbSet<Tafel> Tafels { get; set; }
+        public DbSet<TafelGroep> TafelGroepen { get; set; }
+        public DbSet<TafelGroepTafel> TafelGroepTafels { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<TafelGroepTafel>().HasKey(x => new { x.TafelGroepId, x.TafelId });
-            modelBuilder.Entity<BestellingAllergie>().HasKey(x => new { x.BestellingId, x.AllergieId });
-            modelBuilder.Entity<Ingredient>().HasKey(x => new { x.GerechtId, x.ProductId });
-
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<TafelGroepTafel>()
+                .HasKey(t => new { t.TafelGroepId, t.TafelId });
+
+            modelBuilder.Entity<Ingredient>()
+                .HasKey(i => new { i.GerechtId, i.ProductId });
+
+            modelBuilder.Entity<BestellingAllergie>()
+                .HasKey(ba => new { ba.BestellingId, ba.AllergieId });
+
+            modelBuilder.Entity<GerechtAllergie>()
+                .HasKey(ga => new { ga.GerechtId, ga.AllergieId });
+
+            modelBuilder.Entity<Gerecht>()
+                .HasOne(g => g.Bijgerecht)
+                .WithMany()
+                .HasForeignKey(g => g.BijgerechtId)
+                .OnDelete(DeleteBehavior.Restrict); // Om cirkelreferenties te voorkomen
+
+            modelBuilder.Entity<Gerecht>()
+                .HasOne(g => g.Groente)
+                .WithMany()
+                .HasForeignKey(g => g.GroenteId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Gerecht>()
+                .HasOne(g => g.Saus)
+                .WithMany()
+                .HasForeignKey(g => g.SausId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Reservering>()
+                .HasOne(r => r.Tafel)
+                .WithMany()
+                .HasForeignKey(r => r.TafelId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Reservering>()
+                .HasOne(r => r.TafelGroep)
+                .WithMany()
+                .HasForeignKey(r => r.TafelGroepId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

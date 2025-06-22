@@ -11,7 +11,7 @@ namespace VlammendVarkenBackend.Models
         public int ProductId { get; set; }
 
         [Column("hoeveelheid")]
-        public double Hoeveelheid { get; set; }
+        public decimal Hoeveelheid { get; set; }
 
         public Gerecht? Gerecht { get; set; }
         public Product? Product { get; set; }

@@ -6,8 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using VlammendVarkenBackend.Models;
 using VlammendVarkenBackend.Data;
 using Microsoft.EntityFrameworkCore;
+using VlammendVarkenBackend.Helpers;
 
-using VlammendVarkenBackend.Models.ViewModels;
+using VlammendVarkenBackend.ViewModels;
 
 namespace VlammendVarkenBackend.Controllers
 {
@@ -21,29 +22,32 @@ namespace VlammendVarkenBackend.Controllers
         }
 
 
+        [HttpGet]
         public IActionResult Index()
         {
-            var dagmenu = _context.Gerecht
+            var gerecht = _context.Gerechten
                 .Include(g => g.GerechtCategorie)
                 .Include(g => g.Bijgerecht)
                 .Include(g => g.Groente)
                 .Include(g => g.Saus)
-                .Where(g => g.GerechtCategorieId == 5)
-                .Select(g => new GerechtViewModel
-                {
-                    Id = g.GerechtId,
-                    Naam = g.Naam,
-                    Beschrijving = "Ons zorgvuldig samengesteld dagmenu.",
-                    Prijs = g.Prijs,
-                    Category = g.GerechtCategorie != null ? g.GerechtCategorie.Naam : string.Empty,
-                    Bijgerecht = g.Bijgerecht != null ? g.Bijgerecht.Naam : null,
-                    Groente = g.Groente != null ? g.Groente.Naam : null,
-                    Saus = g.Saus != null ? g.Saus.Naam : null
-                })
+                .Include(g => g.GerechtAllergieen)
+                .ThenInclude(ga => ga.Allergie)
+                .Include(g => g.Ingredienten)
+                .ThenInclude(i => i.Product)
+                .Where(g => g.GerechtCategorieId == 5) // Dagemenu
                 .FirstOrDefault();
 
-            return View("~/Views/Gerechten/Index.cshtml", dagmenu);
+            if (gerecht == null)
+            {
+                return NotFound(new { message = "Geen dagmenu gevonden." });
+            }
+
+            var viewModel = ViewModelMapper.MapToViewModel(gerecht);
+            viewModel.Beschrijving = "Ons zorgvuldig samengesteld dagmenu.";
+
+            return Json(viewModel);
         }
+
 
 
 

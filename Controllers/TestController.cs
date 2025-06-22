@@ -20,7 +20,7 @@ namespace VlammendVarkenBackend.Controllers
             try
             {
                 // Probeer een simpele query
-                var aantalTafels = _context.Tafel.Count();
+                var aantalTafels = _context.Tafels.Count();
                 return Ok($"Verbinding succesvol. Aantal tafels: {aantalTafels}");
             }
             catch (Exception ex)

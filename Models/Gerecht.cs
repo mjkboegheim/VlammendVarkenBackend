@@ -13,11 +13,14 @@ namespace VlammendVarkenBackend.Models
         [Column("naam")]
         public string Naam { get; set; } = string.Empty;
 
+        [Column("beschrijving")]
+        public string? Beschrijving { get; set; }
+
         [Column("bereidingstijd")]
         public int Bereidingstijd { get; set; }
 
         [Column("prijs")]
-        public double Prijs { get; set; }
+        public decimal Prijs { get; set; }
 
         [Column("bijgerecht_id")]
         public int? BijgerechtId { get; set; }
@@ -29,17 +32,10 @@ namespace VlammendVarkenBackend.Models
         public int? SausId { get; set; }
 
         public GerechtCategorie? GerechtCategorie { get; set; }
-
-        [ForeignKey("BijgerechtId")]
         public Gerecht? Bijgerecht { get; set; }
-
-        [ForeignKey("GroenteId")]
         public Product? Groente { get; set; }
-
-        [ForeignKey("SausId")]
         public Product? Saus { get; set; }
-
-        public ICollection<Ingredient>? Ingrediënten { get; set; }
-        public ICollection<BestellingGerecht>? BestellingGerechten { get; set; }
+        public ICollection<GerechtAllergie>? GerechtAllergieen { get; set; }
+        public ICollection<Ingredient>? Ingredienten { get; set; }
     }
 }

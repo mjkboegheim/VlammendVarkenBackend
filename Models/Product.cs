@@ -14,6 +14,6 @@ namespace VlammendVarkenBackend.Models
         public string Naam { get; set; } = string.Empty;
 
         public ProductCategorie? ProductCategorie { get; set; }
-        public ICollection<Ingredient>? Ingrediënten { get; set; }
+        public ICollection<Ingredient>? Ingredienten { get; set; }
     }
 }
