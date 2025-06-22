@@ -1,116 +1,166 @@
+@model List<VlammendVarkenBackend.ViewModels.GerechtViewModel>
+
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nagerechten</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voorgerechten</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 </head>
 <body class="bg-gray-50 flex items-center justify-center min-h-screen p-4 font-sans">
 
-  <div class="w-full max-w-6xl bg-white rounded-xl shadow-lg p-6 md:p-8 space-y-10">
+<div class="w-full max-w-6xl bg-white rounded-xl shadow-lg p-6 md:p-8 space-y-8">
 
-    <!-- Hoofdtitel -->
+    <header>
+        <h1 class="text-3xl font-bold text-gray-900 text-center">Voorgerechten</h1>
+    </header>
+
     <main class="space-y-12">
-      <section>
-        <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Kies een Nagerecht</h2>
+        @if (Model != null && Model.Any())
+        {
+            <section>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    @foreach (var gerecht in Model)
+                    {
+                        var allergieenJson = System.Text.Json.JsonSerializer.Serialize(gerecht.Allergieen ?? new List<string>());
+                        <div class="p-6 flex flex-col bg-gray-50 rounded-lg border border-gray-200">
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">@gerecht.Naam</h3>
+                            <div class="text-sm text-gray-600 space-y-1 mb-4">
+                                <p>@gerecht.Beschrijving</p>
+                                <ul class="text-xs text-gray-400 list-inside">
+                                    <li>Bijgerecht: @(gerecht.Bijgerecht ?? "-")</li>
+                                    <li>Groente: @(gerecht.Groente ?? "-")</li>
+                                    <li>Saus: @(gerecht.Saus ?? "-")</li>
+                                    <li>Allergieën: @(gerecht.Allergieen != null && gerecht.Allergieen.Any() ? string.Join(" ", gerecht.Allergieen) : "-")</li>
+                                </ul>
+                            </div>
+                            <p class="text-lg font-bold text-gray-800 mb-4">€@gerecht.Prijs.ToString("0.00")</p>
+                            <button class="mt-auto w-full inline-block text-center bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 hover:bg-indigo-700 hover:scale-105"
+                                    onclick='voegToe(@gerecht.Id, "@gerecht.Naam", @gerecht.Prijs.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), "@gerecht.Categorie", "@gerecht.Bijgerecht", "@gerecht.Groente", "@gerecht.Saus", @Html.Raw(allergieenJson))'>
+                                Toevoegen
+                            </button>
+                        </div>
+                    }
+                </div>
+            </section>
+        }
+        else
+        {
+            <p class="text-center text-red-600 font-semibold">Geen voorgerechten beschikbaar.</p>
+        }
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <!-- Dessertkaart 1 -->
-          <div class="p-6 flex flex-col bg-gray-50 rounded-lg border border-gray-200">
-            <h3 class="text-xl font-bold text-gray-800 mb-2">Bosvruchtensorbet</h3>
-            <div class="text-sm text-gray-600 space-y-1 mb-4">
-              <p>Licht en verfrissend sorbetijs.</p>
-              <p class="text-xs text-gray-400">Allergieën: -</p>
+        <!-- Besteloverzicht -->
+        <section id="besteloverzicht">
+            <div class="overflow-x-auto">
+                <table class="min-w-full table-auto border border-gray-200 rounded-lg overflow-hidden">
+                    <thead class="bg-gray-100 text-sm text-gray-600 uppercase text-left">
+                        <tr>
+                            <th class="px-4 py-3">Naam</th>
+                            <th class="px-4 py-3">Categorie</th>
+                            <th class="px-4 py-3">Bijgerecht</th>
+                            <th class="px-4 py-3">Groente</th>
+                            <th class="px-4 py-3">Saus</th>
+                            <th class="px-4 py-3">Allergieën</th>
+                            <th class="px-4 py-3 text-right">Actie</th>
+                            <th class="px-4 py-3 text-right">Prijs</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bestellingTabel" class="text-sm text-gray-700 divide-y divide-gray-200">
+                    </tbody>
+                    <tfoot class="bg-gray-50 font-bold">
+                        <tr class="border-t-2 border-gray-200">
+                            <td colspan="7" class="px-4 py-4 text-left">Totaal</td>
+                            <td id="totaalPrijs" class="px-4 py-4 text-right">€0.00</td>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
-            <p class="text-lg font-bold text-gray-800 mb-4">€ 7.50</p>
-            <a href="#" class="mt-auto w-full inline-block text-center bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 hover:bg-indigo-700 hover:scale-105">Toevoegen</a>
-          </div>
-
-          <!-- Dessertkaart 2 -->
-          <div class="p-6 flex flex-col bg-gray-50 rounded-lg border border-gray-200">
-            <h3 class="text-xl font-bold text-gray-800 mb-2">Chocoladetaart</h3>
-            <div class="text-sm text-gray-600 space-y-1 mb-4">
-              <p>Rijke chocoladetaart met slagroom.</p>
-              <p class="text-xs text-gray-400">Allergieën: 🥛🌾🥚</p>
-            </div>
-            <p class="text-lg font-bold text-gray-800 mb-4">€ 8.00</p>
-            <a href="#" class="mt-auto w-full inline-block text-center bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 hover:bg-indigo-700 hover:scale-105">Toevoegen</a>
-          </div>
-
-          <!-- Dessertkaart 3 -->
-          <div class="p-6 flex flex-col bg-gray-50 rounded-lg border border-gray-200">
-            <h3 class="text-xl font-bold text-gray-800 mb-2">Vanille ijs</h3>
-            <div class="text-sm text-gray-600 space-y-1 mb-4">
-              <p>Huisgemaakt vanille ijs met chocoladesaus.</p>
-              <p class="text-xs text-gray-400">Allergieën: 🥛</p>
-            </div>
-            <p class="text-lg font-bold text-gray-800 mb-4">€ 6.50</p>
-            <a href="#" class="mt-auto w-full inline-block text-center bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 hover:bg-indigo-700 hover:scale-105">Toevoegen</a>
-          </div>
-        </div>
-      </section>
-
-      <!-- Tabel -->
-      <section>
-        <div class="overflow-x-auto">
-          <table class="min-w-full table-auto border border-gray-200 rounded-lg overflow-hidden">
-            <thead class="bg-gray-100 text-sm text-gray-600 uppercase text-left">
-              <tr>
-                <th class="px-4 py-3">Naam</th>
-                <th class="px-4 py-3">Bijgerecht</th>
-                <th class="px-4 py-3">Groente</th>
-                <th class="px-4 py-3">Saus</th>
-                <th class="px-4 py-3 text-right">Actie</th>
-                <th class="px-4 py-3 text-right">Prijs</th>
-              </tr>
-            </thead>
-            <tbody class="text-sm text-gray-700 divide-y divide-gray-200">
-              <tr>
-                <td class="px-4 py-3 font-semibold">-</td>
-                <td class="px-4 py-3">-</td>
-                <td class="px-4 py-3">-</td>
-                <td class="px-4 py-3">-</td>
-                <td class="px-4 py-3 text-right">
-                  <button class="text-red-500 hover:text-red-700" aria-label="Verwijderen">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22" />
-                    </svg>
-                  </button>
-                </td>
-                <td class="px-4 py-3 text-right font-semibold">€-</td>
-              </tr>
-            </tbody>
-            <tfoot class="bg-gray-50 font-bold">
-              <tr class="border-t-2 border-gray-200">
-                <td colspan="4" class="px-4 py-4 text-left">Totaal</td>
-                <td></td>
-                <td class="px-4 py-4 text-right">€-</td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-      </section>
+        </section>
     </main>
 
     <!-- Footer -->
     <footer class="flex flex-col md:flex-row gap-4 pt-4 border-t border-gray-200">
-      <button class="w-full flex items-center justify-center font-bold py-3 px-4 rounded-lg transition-colors duration-300 bg-gray-200 hover:bg-gray-300 text-gray-800">
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-        </svg>
-        Terug naar vorige stap
-      </button>
-      <button class="w-full flex items-center justify-center font-bold py-3 px-4 rounded-lg transition-colors duration-300 bg-gray-800 hover:bg-gray-900 text-white">
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-        </svg>
-        Terug naar hoofdmenu
-      </button>
+        <button onclick="history.back()" class="w-full flex items-center justify-center font-bold py-3 px-4 rounded-lg transition-colors duration-300 bg-gray-200 hover:bg-gray-300 text-gray-800">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Terug naar vorige stap
+        </button>
+        <a href="/" class="w-full flex items-center justify-center font-bold py-3 px-4 rounded-lg transition-colors duration-300 bg-gray-800 hover:bg-gray-900 text-white">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            Terug naar hoofdmenu
+        </a>
     </footer>
-  </div>
+</div>
 
+<script>
+    let bestelLijst = [];
+
+    function tekenBestelTabel() {
+        const tbody = document.getElementById("bestellingTabel");
+        tbody.innerHTML = "";
+        let totaal = 0;
+
+        bestelLijst.forEach((gerecht, index) => {
+            totaal += parseFloat(gerecht.prijs);
+
+            const rij = `
+                <tr>
+                    <td class="px-4 py-3 font-semibold">${gerecht.naam}</td>
+                    <td class="px-4 py-3">${gerecht.categorie || '-'}</td>
+                    <td class="px-4 py-3">${gerecht.bijgerecht || '-'}</td>
+                    <td class="px-4 py-3">${gerecht.groente || '-'}</td>
+                    <td class="px-4 py-3">${gerecht.saus || '-'}</td>
+                    <td class="px-4 py-3">${(gerecht.allergieen || []).join(" ") || '-'}</td>
+                    <td class="px-4 py-3 text-right">
+                        <button onclick="verwijderGerecht(${index})" class="text-red-500 hover:text-red-700">
+                            <span class="material-icons text-base">delete</span>
+                        </button>
+                    </td>
+                    <td class="px-4 py-3 text-right font-semibold">€${parseFloat(gerecht.prijs).toFixed(2)}</td>
+                </tr>`;
+            tbody.innerHTML += rij;
+        });
+
+        document.getElementById("totaalPrijs").textContent = `€${totaal.toFixed(2)}`;
+    }
+
+    function voegToe(id, naam, prijs, categorie, bijgerecht, groente, saus, allergieen) {
+        let gerecht = {
+            id,
+            naam: naam.trim(),
+            prijs,
+            categorie: categorie?.trim() || '-',
+            bijgerecht: bijgerecht || '-',
+            groente: groente || '-',
+            saus: saus || '-',
+            allergieen: allergieen || []
+        };
+
+        bestelLijst.push(gerecht);
+        localStorage.setItem("winkelmandje", JSON.stringify(bestelLijst));
+        tekenBestelTabel();
+        document.getElementById("besteloverzicht").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function verwijderGerecht(index) {
+        bestelLijst.splice(index, 1);
+        localStorage.setItem("winkelmandje", JSON.stringify(bestelLijst));
+        tekenBestelTabel();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const opgeslagen = localStorage.getItem("winkelmandje");
+        if (opgeslagen) {
+            bestelLijst = JSON.parse(opgeslagen);
+            tekenBestelTabel();
+        }
+    });
+</script>
 </body>
 </html>

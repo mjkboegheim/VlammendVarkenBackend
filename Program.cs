@@ -8,11 +8,11 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        
+
         builder.Services.AddControllersWithViews();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
-        
+
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseSqlite("Data Source=Data/VlammendVarken.db"));
 
@@ -23,13 +23,15 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-        
-        app.UseStaticFiles(); 
+
+        app.UseStaticFiles();
         app.UseHttpsRedirection();
         app.UseRouting();
         app.UseAuthorization();
-        app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-        
+        app.UseCors(policy =>
+            policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+        // GERECHTEN
         app.MapControllerRoute(
             name: "voorgerechten.index",
             pattern: "gerechten/voorgerechten",
@@ -65,6 +67,7 @@ public class Program
             pattern: "gerechten/nagerechten",
             defaults: new { controller = "Gerecht", action = "Nagerecht_Index" });
 
+        // BESTELLING
         app.MapControllerRoute(
             name: "bestelling.overzicht.gast.index",
             pattern: "bestelling/overzicht",
@@ -85,11 +88,13 @@ public class Program
             pattern: "bestelling/details",
             defaults: new { controller = "Bestelling", action = "Details_Index" });
 
+        // ALLERGIE
         app.MapControllerRoute(
             name: "allergie.index",
             pattern: "allergie",
             defaults: new { controller = "Allergie", action = "Index" });
 
+        // DEFAULT route: http://localhost:5225/
         app.MapControllerRoute(
             name: "home",
             pattern: "{controller=Gerecht}/{action=Index}");
@@ -99,4 +104,3 @@ public class Program
         app.Run();
     }
 }
-

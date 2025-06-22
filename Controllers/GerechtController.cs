@@ -68,5 +68,38 @@ namespace VlammendVarkenBackend.Controllers
                 _ => "❓"
             };
         }
+        
+        public async Task<IActionResult> Voorgerecht_Index()
+        {
+            var voorgerechten = await _context.Gerechten
+                .Include(g => g.GerechtCategorie)
+                .Include(g => g.Bijgerecht)
+                .Include(g => g.Groente)
+                .Include(g => g.Saus)
+                .Include(g => g.GerechtAllergieen)
+                .ThenInclude(ga => ga.Allergie)
+                .Where(g => g.GerechtCategorie != null && g.GerechtCategorie.Naam == "Voorgerechten")
+                .ToListAsync();
+
+            var viewModel = voorgerechten.Select(g => new GerechtViewModel
+            {
+                Id = g.GerechtId,
+                Naam = g.Naam,
+                Beschrijving = g.Beschrijving,
+                Prijs = g.Prijs,
+                Categorie = g.GerechtCategorie?.Naam ?? "Onbekend",
+                Bijgerecht = g.Bijgerecht?.Naam,
+                Groente = g.Groente?.Naam,
+                Saus = g.Saus?.Naam,
+                Allergieen = g.GerechtAllergieen
+                    .Where(ga => ga.Allergie != null)
+                    .Select(ga => MapAllergieNaamNaarEmoji(ga.Allergie!.Naam))
+                    .ToList()
+            }).ToList();
+
+            return View("~/Views/Gerechten/Voorgerechten/Index.cshtml", viewModel);
+        }
+
+
     }
 }
