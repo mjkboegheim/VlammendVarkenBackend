@@ -152,6 +152,23 @@ namespace VlammendVarkenBackend.Controllers
 
             return View("~/Views/Gerechten/Hoofdgerechten/Vegetarisch/Index.cshtml", viewModels);
         }
+        
+        public async Task<IActionResult> Nagerecht_Index()
+        {
+            var nagerechten = await _context.Gerechten
+                .Include(g => g.GerechtCategorie)
+                .Include(g => g.Bijgerecht)
+                .Include(g => g.Groente)
+                .Include(g => g.Saus)
+                .Include(g => g.GerechtAllergieen)
+                .ThenInclude(ga => ga.Allergie)
+                .Where(g => g.GerechtCategorie != null && g.GerechtCategorie.Naam == "Nagerechten")
+                .ToListAsync();
+
+            var viewModel = nagerechten.Select(MapGerechtToViewModel).ToList();
+            return View("~/Views/Gerechten/Nagerechten/Index.cshtml", viewModel);
+        }
+
 
         // === Helpers ===
 
