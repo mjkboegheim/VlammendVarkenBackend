@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/admin/Desktop/VlammendVarken/VlammendVarkenBackend.csproj": {}
+    "/Users/deepsilver/Desktop/VlammendVarkenBackend/VlammendVarkenBackend.csproj": {}
   },
   "projects": {
-    "/Users/admin/Desktop/VlammendVarken/VlammendVarkenBackend.csproj": {
+    "/Users/deepsilver/Desktop/VlammendVarkenBackend/VlammendVarkenBackend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/admin/Desktop/VlammendVarken/VlammendVarkenBackend.csproj",
+        "projectUniqueName": "/Users/deepsilver/Desktop/VlammendVarkenBackend/VlammendVarkenBackend.csproj",
         "projectName": "VlammendVarkenBackend",
-        "projectPath": "/Users/admin/Desktop/VlammendVarken/VlammendVarkenBackend.csproj",
-        "packagesPath": "/Users/admin/.nuget/packages/",
-        "outputPath": "/Users/admin/Desktop/VlammendVarken/obj/",
+        "projectPath": "/Users/deepsilver/Desktop/VlammendVarkenBackend/VlammendVarkenBackend.csproj",
+        "packagesPath": "/Users/deepsilver/.nuget/packages/",
+        "outputPath": "/Users/deepsilver/Desktop/VlammendVarkenBackend/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/admin/.nuget/NuGet/NuGet.Config"
+          "/Users/deepsilver/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -37,7 +37,8 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -73,6 +74,20 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.13, 8.0.13]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.osx-arm64",
+              "version": "[8.0.13, 8.0.13]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.13, 8.0.13]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -81,7 +96,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.408/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/Users/deepsilver/.dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
