@@ -1,11 +1,11 @@
 {
   "Files": [
     {
-      "Id": "/Users/admin/Desktop/VlammendVarken/wwwroot/bestellingen.html",
+      "Id": "/Users/deepsilver/Desktop/VlammendVarkenBackend/wwwroot/bestellingen.html",
       "PackagePath": "staticwebassets/bestellingen.html"
     },
     {
-      "Id": "/Users/admin/Desktop/VlammendVarken/wwwroot/bestellingenv2.html",
+      "Id": "/Users/deepsilver/Desktop/VlammendVarkenBackend/wwwroot/bestellingenv2.html",
       "PackagePath": "staticwebassets/bestellingenv2.html"
     },
     {

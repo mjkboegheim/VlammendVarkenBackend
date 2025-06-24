@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "ILEHp5GsCN8n5SLyVRx/lcjtlrv95pkq/e4UwSZukrQ=",
+  "Hash": "bWjSFQox0WGf/HAWrztt9vZVjNx/9ySkbfqw/8+x5Mo=",
   "Source": "VlammendVarkenBackend",
   "BasePath": "_content/VlammendVarkenBackend",
   "Mode": "Default",
@@ -10,17 +10,17 @@
     {
       "Name": "VlammendVarkenBackend/wwwroot",
       "Source": "VlammendVarkenBackend",
-      "ContentRoot": "/Users/admin/Desktop/VlammendVarken/wwwroot/",
+      "ContentRoot": "/Users/deepsilver/Desktop/VlammendVarkenBackend/wwwroot/",
       "BasePath": "_content/VlammendVarkenBackend",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "/Users/admin/Desktop/VlammendVarken/wwwroot/bestellingen.html",
+      "Identity": "/Users/deepsilver/Desktop/VlammendVarkenBackend/wwwroot/bestellingen.html",
       "SourceId": "VlammendVarkenBackend",
       "SourceType": "Discovered",
-      "ContentRoot": "/Users/admin/Desktop/VlammendVarken/wwwroot/",
+      "ContentRoot": "/Users/deepsilver/Desktop/VlammendVarkenBackend/wwwroot/",
       "BasePath": "_content/VlammendVarkenBackend",
       "RelativePath": "bestellingen.html",
       "AssetKind": "All",
@@ -36,10 +36,10 @@
       "OriginalItemSpec": "wwwroot/bestellingen.html"
     },
     {
-      "Identity": "/Users/admin/Desktop/VlammendVarken/wwwroot/bestellingenv2.html",
+      "Identity": "/Users/deepsilver/Desktop/VlammendVarkenBackend/wwwroot/bestellingenv2.html",
       "SourceId": "VlammendVarkenBackend",
       "SourceType": "Discovered",
-      "ContentRoot": "/Users/admin/Desktop/VlammendVarken/wwwroot/",
+      "ContentRoot": "/Users/deepsilver/Desktop/VlammendVarkenBackend/wwwroot/",
       "BasePath": "_content/VlammendVarkenBackend",
       "RelativePath": "bestellingenv2.html",
       "AssetKind": "All",
