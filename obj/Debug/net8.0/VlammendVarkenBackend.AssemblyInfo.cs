@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VlammendVarkenBackend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+193a483012afa2f285473b4800f0d512bc257153")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+33b11781867dfa8ae33bf21ce31c9bfe029ba329")]
 [assembly: System.Reflection.AssemblyProductAttribute("VlammendVarkenBackend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VlammendVarkenBackend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,20 +1,17 @@
-@using VlammendVarkenBackend.Models.ViewModels
-@model List<BestellingOverzichtViewModel>
-
-@{
-    Layout = null; // Of pas aan naar jouw layout
-}
+@model List<VlammendVarkenBackend.Models.ViewModels.BestellingOverzichtViewModel>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 <!DOCTYPE html>
 <html lang="nl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Overzicht Lopende Bestellingen</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 </head>
+
 <body class="bg-gray-50 flex items-center justify-center min-h-screen p-4 font-sans">
   <div class="w-full max-w-6xl bg-white rounded-xl shadow-lg p-6 md:p-8 space-y-8">
     <main class="overflow-x-auto border border-gray-200 rounded-lg">
@@ -24,26 +21,29 @@
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tafel(s)</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tijd Geplaatst</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aantal Gasten</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-yellow-800 uppercase tracking-wider">Attentie</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Attentie</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bereidingstijd</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timer</th>
             <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actie</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200 text-sm text-gray-700">
-          @foreach (var bestelling in Model)
+          @foreach (var item in Model)
           {
-            <tr>
+            var eindtijd = item.Besteldatum.AddMinutes(item.BereidingstijdMinuten);
+            var eindtijdIso = eindtijd.ToString("o");
+            <tr data-bestellingid="@item.BestellingId" data-endtime="@eindtijdIso">
               <td class="px-6 py-4 whitespace-nowrap font-semibold text-gray-800">
-                @string.Join(", ", bestelling.Tafelnummers)
+                @string.Join(", ", item.Tafelnummers)
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-gray-600">
-                @bestelling.Besteldatum.ToString("HH:mm")
+                @item.Besteldatum.ToString("HH:mm")
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-gray-600">
-                @bestelling.AantalGasten gasten
+                @item.AantalGasten gasten
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
-                @if (bestelling.HeeftAttentie)
+                @if (item.HeeftAttentie)
                 {
                   <span class="inline-block px-2.5 py-1 text-xs font-semibold text-yellow-800 bg-yellow-100 rounded-full">Aanpassing</span>
                 }
@@ -53,10 +53,16 @@
                 }
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-gray-600">
-                ~@bestelling.BereidingstijdMinuten min
+                ~@item.BereidingstijdMinuten min
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-red-600 font-mono tabular-nums timer-cell">
+                --
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right">
-                <a href="#" class="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-gray-900 hover:scale-105">Details</a>
+                <a asp-controller="Bestellingen" asp-action="Personeel_Bestellingen_Details_Index" asp-route-bestellingId="@item.BestellingId"
+                   class="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-gray-900 hover:scale-105">
+                  Details
+                </a>
               </td>
             </tr>
           }
@@ -64,5 +70,62 @@
       </table>
     </main>
   </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const rows = document.querySelectorAll('tbody tr[data-endtime]');
+
+      rows.forEach(row => {
+        const bestellingId = row.getAttribute('data-bestellingid');
+        const endTimeStr = row.getAttribute('data-endtime');
+        const timerCell = row.querySelector('.timer-cell');
+
+        // localStorage key uniek per bestelling
+        const storageKey = 'bestellingTimer_' + bestellingId;
+
+        // Haal opgeslagen seconden op
+        let savedSeconds = localStorage.getItem(storageKey);
+        let secondsLeft;
+
+        if (savedSeconds !== null) {
+          secondsLeft = parseInt(savedSeconds, 10);
+        } else {
+          // Bereken resterende seconden vanaf endTime - now
+          const endTime = new Date(endTimeStr);
+          const now = new Date();
+          secondsLeft = Math.max(Math.floor((endTime - now) / 1000), 0);
+        }
+
+        function updateTimer() {
+          if (secondsLeft > 0) {
+            secondsLeft--;
+            localStorage.setItem(storageKey, secondsLeft.toString());
+
+            const minutes = Math.floor(secondsLeft / 60);
+            const seconds = secondsLeft % 60;
+            timerCell.textContent =
+              String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+
+            // Verwijder geel highlight als timer loopt
+            row.classList.remove('bg-yellow-200');
+          } else {
+            timerCell.textContent = '00:00';
+            row.classList.add('bg-yellow-200');
+            localStorage.removeItem(storageKey);
+            clearInterval(interval);
+          }
+        }
+
+        // Init display
+        updateTimer();
+
+        // Start interval per rij
+        let interval = setInterval(updateTimer, 1000);
+
+        // Bewaar interval in DOM element (voor debug, optioneel)
+        row._interval = interval;
+      });
+    });
+  </script>
 </body>
 </html>

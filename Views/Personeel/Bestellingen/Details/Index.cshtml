@@ -1,98 +1,132 @@
+@model VlammendVarkenBackend.Models.ViewModels.PersoneelBestellingDetailsViewModel
+
+<!DOCTYPE html>
+<html lang="nl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Details Lopende Bestellingen</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 </head>
-
 <body class="bg-gray-50 flex items-center justify-center min-h-screen p-4 font-sans">
-<div class="w-full max-w-6xl bg-white rounded-xl shadow-lg p-6 md:p-8 space-y-8">
-  <main class="overflow-x-auto border border-gray-200 rounded-lg">
-    <table class="min-w-full bg-white">
-      <thead class="bg-gray-50">
-      <tr>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tafel(s)</th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tijd</th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Soort</th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gerecht</th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bijgerecht</th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Groente</th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Saus</th>
-        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actie</th>
-      </tr>
-      </thead>
-      <tbody class="divide-y divide-gray-200">
-      <tr>
-        <td class="px-6 py-4 whitespace-nowrap align-top font-semibold text-gray-800" rowspan="4">10, 11 (Gezin)</td>
-        <td class="px-6 py-4 whitespace-nowrap align-top text-gray-600" rowspan="4">17:50</td>
-        <td class="px-6 py-4 whitespace-nowrap"><span class="font-bold text-gray-700">V</span></td>
-        <td class="px-6 py-4 whitespace-nowrap">Tomatensoep</td>
-        <td class="px-6 py-4 text-gray-500 whitespace-nowrap">-</td>
-        <td class="px-6 py-4 text-gray-500 whitespace-nowrap">-</td>
-        <td class="px-6 py-4 text-gray-500 whitespace-nowrap">-</td>
-        <td class="px-6 py-4 whitespace-nowrap text-center align-middle" rowspan="4">
-          <div class="flex flex-col items-center justify-center h-full">
-            <p class="font-semibold">Aftellen: <span class="text-red-600 tabular-nums">04:59</span></p>
-            <button class="mt-2 bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-indigo-700 hover:scale-105">Ophogen +15 min</button>
-          </div>
-        </td>
-      </tr>
-      <tr class="bg-amber-50">
-        <td class="px-6 py-4 whitespace-nowrap"><span class="font-bold text-gray-700">H</span></td>
-        <td class="px-6 py-4 whitespace-nowrap">Ossenhaas</td>
-        <td class="px-6 py-4 whitespace-nowrap">Gepofte aardappel</td>
-        <td class="px-6 py-4 whitespace-nowrap">Rauwkost wortel</td>
-        <td class="px-6 py-4 whitespace-nowrap">Mayonaise</td>
-      </tr>
-      <tr>
-        <td class="px-6 py-4 whitespace-nowrap"><span class="font-bold text-gray-700">H</span></td>
-        <td class="px-6 py-4 whitespace-nowrap">Steak</td>
-        <td class="px-6 py-4 whitespace-nowrap">Gepofte aardappel</td>
-        <td class="px-6 py-4 whitespace-nowrap">Sperziebonen</td>
-        <td class="px-6 py-4 whitespace-nowrap">Barbecue saus</td>
-      </tr>
-      <tr>
-        <td class="px-6 py-4 whitespace-nowrap"><span class="font-bold text-gray-700">N</span></td>
-        <td class="px-6 py-4 whitespace-nowrap">Bosvruchtensorbet</td>
-        <td class="px-6 py-4 text-gray-500 whitespace-nowrap">-</td>
-        <td class="px-6 py-4 text-gray-500 whitespace-nowrap">-</td>
-        <td class="px-6 py-4 text-gray-500 whitespace-nowrap">-</td>
-      </tr>
+  <div class="w-full max-w-6xl bg-white rounded-xl shadow-lg p-6 md:p-8 space-y-8">
 
-      <tr class="border-t-2 border-gray-300">
-        <td class="px-6 py-4 whitespace-nowrap align-top font-semibold text-gray-800" rowspan="2">12, 13</td>
-        <td class="px-6 py-4 whitespace-nowrap align-top text-gray-600" rowspan="2">17:50</td>
-        <td class="px-6 py-4 whitespace-nowrap"><span class="font-bold text-gray-700">V</span></td>
-        <td class="px-6 py-4 whitespace-nowrap">Champignonsoep</td>
-        <td class="px-6 py-4 text-gray-500 whitespace-nowrap">-</td>
-        <td class="px-6 py-4 text-gray-500 whitespace-nowrap">-</td>
-        <td class="px-6 py-4 text-gray-500 whitespace-nowrap">-</td>
-        <td class="px-6 py-4 whitespace-nowrap text-center align-middle" rowspan="2">
-          <div class="flex flex-col items-center justify-center h-full">
-            <p class="font-semibold">Aftellen: <span class="text-green-600 tabular-nums">14:59</span></p>
-            <button class="mt-2 bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-indigo-700 hover:scale-105">Ophogen +15 min</button>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td class="px-6 py-4 whitespace-nowrap"><span class="font-bold text-gray-700">H</span></td>
-        <td class="px-6 py-4 whitespace-nowrap">Zalm</td>
-        <td class="px-6 py-4 whitespace-nowrap">Gekookte aardappel</td>
-        <td class="px-6 py-4 whitespace-nowrap">Asperges</td>
-        <td class="px-6 py-4 whitespace-nowrap">Roomsaus</td>
-      </tr>
-      </tbody>
-    </table>
-  </main>
-  <footer class="flex flex-col md:flex-row gap-4 pt-4 border-t border-gray-200">
-    <button class="w-full flex items-center justify-center font-bold py-3 px-4 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800 transition-colors duration-300">
-      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-      </svg>
-      Terug naar vorige stap
-    </button>
-  </footer>
-</div>
+    <!-- Terug knop -->
+    <a href="/personeel/bestellingen/overzicht/index"
+       class="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium px-4 py-2 rounded-lg shadow-sm transition-all duration-200">
+      <span class="material-icons text-base">arrow_back</span>
+      Terug naar overzicht
+    </a>
+
+    <main class="overflow-x-auto border border-gray-200 rounded-lg">
+      <table class="min-w-full bg-white">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tafel(s)</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tijd</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Soort</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gerecht</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bijgerecht</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Groente</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Saus</th>
+            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actie</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          @{
+            var rowCount = Model.Gerechten.Count > 0 ? Model.Gerechten.Count : 1;
+            bool eersteRij = true;
+          }
+          @foreach(var gerecht in Model.Gerechten)
+          {
+            <tr class="@(eersteRij ? "" : "bg-amber-50")">
+              @if(eersteRij)
+              {
+                <td class="px-6 py-4 whitespace-nowrap align-top font-semibold text-gray-800" rowspan="@rowCount">
+                  @(string.Join(", ", Model.Tafelnummers))
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap align-top text-gray-600" rowspan="@rowCount">
+                  @Model.Besteldatum.ToString("HH:mm")
+                </td>
+              }
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="font-bold text-gray-700">@gerecht.Soort</span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">@gerecht.GerechtNaam</td>
+              <td class="px-6 py-4 text-gray-500 whitespace-nowrap">@gerecht.BijgerechtNaam</td>
+              <td class="px-6 py-4 text-gray-500 whitespace-nowrap">@gerecht.GroenteNaam</td>
+              <td class="px-6 py-4 text-gray-500 whitespace-nowrap">@gerecht.SausNaam</td>
+
+              @if(eersteRij)
+              {
+                <td class="px-6 py-4 whitespace-nowrap text-center align-middle" rowspan="@rowCount">
+                  <div class="flex flex-col items-center justify-center h-full">
+                    <p class="font-semibold">
+                      Aftellen: <span id="aftelTijd" class="text-red-600 tabular-nums">--:--</span>
+                    </p>
+                    <button id="verhoogTimerBtn" class="mt-2 bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-indigo-700 hover:scale-105">
+                      Ophogen +15 min
+                    </button>
+                  </div>
+                </td>
+              }
+            </tr>
+            eersteRij = false;
+          }
+        </tbody>
+      </table>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const aftelTijdElem = document.getElementById('aftelTijd');
+      const verhoogBtn = document.getElementById('verhoogTimerBtn');
+
+      const storageKey = 'bestellingTimer_' + @Model.BestellingId;
+      let savedSeconds = localStorage.getItem(storageKey);
+      let secondsLeft = savedSeconds !== null
+        ? parseInt(savedSeconds, 10)
+        : @Model.BereidingstijdMinuten * 60;
+
+      let interval;
+
+      function updateTimerDisplay() {
+        let minutes = Math.floor(secondsLeft / 60);
+        let seconds = secondsLeft % 60;
+        aftelTijdElem.textContent = String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+      }
+
+      function startTimer() {
+        if (interval) clearInterval(interval);
+
+        interval = setInterval(() => {
+          if (secondsLeft > 0) {
+            secondsLeft--;
+            updateTimerDisplay();
+            localStorage.setItem(storageKey, secondsLeft.toString());
+          } else {
+            clearInterval(interval);
+            localStorage.removeItem(storageKey);
+          }
+        }, 1000);
+      }
+
+      updateTimerDisplay();
+      startTimer();
+
+      verhoogBtn.addEventListener('click', () => {
+        secondsLeft += 15 * 60;
+        updateTimerDisplay();
+        localStorage.setItem(storageKey, secondsLeft.toString());
+
+        if (!interval) {
+          startTimer();
+        }
+      });
+    });
+  </script>
 </body>
+</html>

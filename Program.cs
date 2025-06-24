@@ -104,7 +104,7 @@ public class Program
     // OK //
     app.MapControllerRoute(
       name: "personeel.bestellingen.details.index",
-      pattern: "personeel/bestellingen/details/index",
+      pattern: "personeel/bestellingen/details/{bestellingId}/index",
       defaults: new { controller = "Bestellingen", action = "Personeel_Bestellingen_Details_Index" });
     
     // -------------------------------------------------------------------------------------------------------------- //      

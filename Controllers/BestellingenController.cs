@@ -13,7 +13,7 @@ namespace VlammendVarkenBackend.Controllers
         {
             _context = context;
         }
-
+        
         public IActionResult Gast_Bestellingen_Overzicht_Index()
         {
             return View("~/Views/Gast/Bestellingen/Overzicht/Index.cshtml");
@@ -44,9 +44,57 @@ namespace VlammendVarkenBackend.Controllers
             return View("~/Views/Personeel/Bestellingen/Overzicht/Index.cshtml", bestellingen);
         }
 
-        public IActionResult Personeel_Bestellingen_Details_Index()
+        public IActionResult Personeel_Bestellingen_Details_Index(int bestellingId)
         {
-            return View("~/Views/Personeel/Bestellingen/Details/Index.cshtml");
+            var bestelling = _context.Bestellingen
+                .Include(b => b.Levertijd) // Zorg dat levertijd mee geladen wordt!
+                .Include(b => b.BestellingTafels).ThenInclude(bt => bt.Tafel)
+                .Include(b => b.BestellingGerechten).ThenInclude(bg => bg.Gerecht)
+                    .ThenInclude(g => g.GerechtSamenstellingen)
+                        .ThenInclude(gs => gs.Hoofdonderdeel)
+                .Include(b => b.BestellingGerechten).ThenInclude(bg => bg.Gerecht)
+                    .ThenInclude(g => g.GerechtSamenstellingen)
+                        .ThenInclude(gs => gs.Bijgerecht)
+                .Include(b => b.BestellingGerechten).ThenInclude(bg => bg.Gerecht)
+                    .ThenInclude(g => g.GerechtSamenstellingen)
+                        .ThenInclude(gs => gs.Groente)
+                .Include(b => b.BestellingGerechten).ThenInclude(bg => bg.Gerecht)
+                    .ThenInclude(g => g.GerechtSamenstellingen)
+                        .ThenInclude(gs => gs.Saus)
+                .FirstOrDefault(b => b.BestellingId == bestellingId);
+
+            if (bestelling == null)
+            {
+                return NotFound();
+            }
+
+            int bereidingstijd = bestelling.Levertijd?.Minuten ?? 0;
+
+            var tafelnummers = bestelling.BestellingTafels
+                .Select(bt => bt.Tafel.Nummer)
+                .ToList();
+
+            var gerechtenVm = bestelling.BestellingGerechten
+                .SelectMany(bg => bg.Gerecht.GerechtSamenstellingen.Select(gs => new BestellingGerechtViewModel
+                {
+                    Soort = bg.Gerecht.Soort,
+                    GerechtNaam = bg.Gerecht.Naam,
+                    BijgerechtNaam = gs.Bijgerecht?.Naam ?? "-",
+                    GroenteNaam = gs.Groente?.Naam ?? "-",
+                    SausNaam = gs.Saus?.Naam ?? "-"
+                }))
+                .ToList();
+
+            var viewModel = new PersoneelBestellingDetailsViewModel
+            {
+                BestellingId = bestelling.BestellingId,
+                Tafelnummers = tafelnummers,
+                Besteldatum = bestelling.Besteldatum,
+                BereidingstijdMinuten = bereidingstijd,
+                Gerechten = gerechtenVm
+            };
+
+            return View("~/Views/Personeel/Bestellingen/Details/Index.cshtml", viewModel);
         }
     }
 }
