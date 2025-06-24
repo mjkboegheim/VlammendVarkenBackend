@@ -9,7 +9,6 @@
   <title>Overzicht Lopende Bestellingen</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 </head>
 
 <body class="bg-gray-50 flex items-center justify-center min-h-screen p-4 font-sans">
@@ -55,8 +54,16 @@
               <td class="px-6 py-4 whitespace-nowrap text-gray-600">
                 ~@item.BereidingstijdMinuten min
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-red-600 font-mono tabular-nums timer-cell">
-                --
+              <td class="px-6 py-4 whitespace-nowrap text-red-600 font-mono tabular-nums">
+                <span class="timer-cell">--</span>
+                <div class="mt-1 flex gap-1">
+                  <button class="start-btn bg-green-600 text-white px-2 py-1 rounded text-xs hover:bg-green-700 transition" data-bestellingid="@item.BestellingId" style="display:none;">
+                    Start
+                  </button>
+                  <button class="stop-btn bg-yellow-600 text-white px-2 py-1 rounded text-xs hover:bg-yellow-700 transition" data-bestellingid="@item.BestellingId" style="display:none;">
+                    Stop
+                  </button>
+                </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right space-x-2">
                 <a asp-controller="Bestellingen" asp-action="Personeel_Bestellingen_Details_Index" asp-route-bestellingId="@item.BestellingId"
@@ -82,48 +89,92 @@
 
       document.querySelectorAll('tbody tr[data-bestellingid]').forEach(row => {
         const bestellingId = row.getAttribute('data-bestellingid');
+        const endTimeStr = row.getAttribute('data-endtime');
+        const timerCell = row.querySelector('.timer-cell');
+        const startBtn = row.querySelector('.start-btn');
+        const stopBtn = row.querySelector('.stop-btn');
+        const storageKey = 'bestellingTimer_' + bestellingId;
 
-        // Verberg reeds verwijderde rijen
+        let interval = null;
+        let secondsLeft = localStorage.getItem(storageKey) !== null
+          ? parseInt(localStorage.getItem(storageKey), 10)
+          : Math.max(Math.floor((new Date(endTimeStr) - new Date()) / 1000), 0);
+
+        // Verwijder uit DOM als eerder verwijderd
         if (verwijderde.includes(bestellingId)) {
           row.remove();
           return;
         }
-
-        const endTimeStr = row.getAttribute('data-endtime');
-        const timerCell = row.querySelector('.timer-cell');
-        const storageKey = 'bestellingTimer_' + bestellingId;
-        let savedSeconds = localStorage.getItem(storageKey);
-        let secondsLeft = savedSeconds !== null
-          ? parseInt(savedSeconds, 10)
-          : Math.max(Math.floor((new Date(endTimeStr) - new Date()) / 1000), 0);
 
         function updateTimer() {
           if (secondsLeft > 0) {
             secondsLeft--;
             localStorage.setItem(storageKey, secondsLeft.toString());
             const m = Math.floor(secondsLeft / 60), s = secondsLeft % 60;
-            timerCell.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+            timerCell.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
             row.classList.remove('bg-yellow-200');
           } else {
             timerCell.textContent = '00:00';
             row.classList.add('bg-yellow-200');
             localStorage.removeItem(storageKey);
             clearInterval(interval);
+            interval = null;
+            showStartStopButtons(false);
           }
         }
 
-        updateTimer();
-        const interval = setInterval(updateTimer, 1000);
+        function showStartStopButtons(timerRunning) {
+          if (timerRunning) {
+            startBtn.style.display = 'none';
+            stopBtn.style.display = 'inline-block';
+          } else {
+            startBtn.style.display = 'inline-block';
+            stopBtn.style.display = 'none';
+          }
+        }
+
+        // Start knop
+        startBtn.addEventListener('click', () => {
+          if (!interval) {
+            updateTimer();
+            interval = setInterval(updateTimer, 1000);
+            showStartStopButtons(true);
+          }
+        });
+
+        // Stop knop
+        stopBtn.addEventListener('click', () => {
+          if (interval) {
+            clearInterval(interval);
+            interval = null;
+            showStartStopButtons(false);
+          }
+        });
 
         // Verwijderknop
-        const btn = row.querySelector('.verwijder-btn');
-        btn.addEventListener('click', () => {
+        const verwijderBtn = row.querySelector('.verwijder-btn');
+        verwijderBtn.addEventListener('click', () => {
           row.remove();
           if (!verwijderde.includes(bestellingId)) {
             verwijderde.push(bestellingId);
             localStorage.setItem(removedKey, JSON.stringify(verwijderde));
           }
+          if (interval) clearInterval(interval);
         });
+
+        // Init: toon timer en juiste knop
+        if (interval) {
+          showStartStopButtons(true);
+        } else {
+          showStartStopButtons(false);
+        }
+
+        if (secondsLeft > 0) {
+          const m = Math.floor(secondsLeft / 60), s = secondsLeft % 60;
+          timerCell.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        } else {
+          timerCell.textContent = '00:00';
+        }
       });
     });
   </script>
