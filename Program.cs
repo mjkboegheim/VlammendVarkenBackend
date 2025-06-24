@@ -5,98 +5,110 @@ namespace VlammendVarkenBackend;
 
 public class Program
 {
-    public static void Main(string[] args)
+  public static void Main(string[] args)
+  {
+    var builder = WebApplication.CreateBuilder(args);
+        
+    builder.Services.AddControllersWithViews();
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
+    builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data Source=Data/VlammendVarken.db"));
+
+    var app = builder.Build();
+    if (app.Environment.IsDevelopment())
     {
-        var builder = WebApplication.CreateBuilder(args);
-        
-        builder.Services.AddControllersWithViews();
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
-        
-        builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlite("Data Source=Data/VlammendVarken.db"));
-
-        var app = builder.Build();
-
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
-        
-        app.UseStaticFiles(); 
-        app.UseHttpsRedirection();
-        app.UseRouting();
-        app.UseAuthorization();
-        app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-        
-        app.MapControllerRoute(
-            name: "voorgerechten.index",
-            pattern: "gerechten/voorgerechten",
-            defaults: new { controller = "Gerecht", action = "Voorgerecht_Index" });
-
-        app.MapControllerRoute(
-            name: "hoofdgerechten.index",
-            pattern: "gerechten/hoofdgerechten",
-            defaults: new { controller = "Gerecht", action = "Hoofdgerecht_Index" });
-
-        app.MapControllerRoute(
-            name: "hoofdgerechten.vlees.index",
-            pattern: "gerechten/hoofdgerechten/vlees",
-            defaults: new { controller = "Gerecht", action = "Vleesgerecht_Index" });
-
-        app.MapControllerRoute(
-            name: "hoofdgerechten.vis.index",
-            pattern: "gerechten/hoofdgerechten/vis",
-            defaults: new { controller = "Gerecht", action = "Visgerecht_Index" });
-
-        app.MapControllerRoute(
-            name: "hoofdgerechten.vegetarisch.index",
-            pattern: "gerechten/hoofdgerechten/vegetarisch",
-            defaults: new { controller = "Gerecht", action = "Vegetarisch_Index" });
-
-        app.MapControllerRoute(
-            name: "hoofdgerechten.edit",
-            pattern: "gerechten/hoofdgerechten/edit",
-            defaults: new { controller = "Gerecht", action = "Hoofdgerecht_Edit" });
-
-        app.MapControllerRoute(
-            name: "nagerechten.index",
-            pattern: "gerechten/nagerechten",
-            defaults: new { controller = "Gerecht", action = "Nagerecht_Index" });
-
-        app.MapControllerRoute(
-            name: "bestelling.overzicht.gast.index",
-            pattern: "bestelling/overzicht",
-            defaults: new { controller = "Bestelling", action = "Overzicht_Gast_Index" });
-
-        app.MapControllerRoute(
-            name: "bestelling.tafels.index",
-            pattern: "bestelling/tafels",
-            defaults: new { controller = "Bestelling", action = "Tafels_Index" });
-
-        app.MapControllerRoute(
-            name: "bestelling.overzicht.chefkok.index",
-            pattern: "bestelling/lopend/overzicht",
-            defaults: new { controller = "Bestelling", action = "Overzicht_Chefkok_Index" });
-
-        app.MapControllerRoute(
-            name: "bestelling.details",
-            pattern: "bestelling/details",
-            defaults: new { controller = "Bestelling", action = "Details_Index" });
-
-        app.MapControllerRoute(
-            name: "allergie.index",
-            pattern: "allergie",
-            defaults: new { controller = "Allergie", action = "Index" });
-
-        app.MapControllerRoute(
-            name: "home",
-            pattern: "{controller=Gerecht}/{action=Index}");
-
-        app.MapControllers();
-
-        app.Run();
+      app.UseSwagger();
+      app.UseSwaggerUI();
     }
+      
+    app.UseStaticFiles(); 
+    app.UseHttpsRedirection();
+    app.UseRouting();
+    app.UseAuthorization();
+    app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+    
+    // -------------------------------------------------------------------------------------------------------------- //
+    
+    // OK //
+    app.MapControllerRoute(
+      name: "gast.index",
+      pattern: "gast/index",
+      defaults: new { controller = "Home",         action = "Gast_Index" });
+    
+    // OK //
+    app.MapControllerRoute(
+      name: "gast.allergenen.index",
+      pattern: "gast/allergenen/index",
+      defaults: new { controller = "Allergenen",   action = "Gast_Allergenen_Index" });
+    
+    // OK //
+    app.MapControllerRoute(
+      name: "gast.gerechten.voorgerechten.index",
+      pattern: "gast/gerechten/voorgerechten/index",
+      defaults: new { controller = "Gerechten",    action = "Gast_Gerechten_Voorgerechten_Index" });
+    
+    // OK //
+    app.MapControllerRoute(
+      name: "gast.gerechten.hoofdgerechten.index",
+      pattern: "gast/gerechten/hoofdgerechten/index",
+      defaults: new { controller = "Gerechten",    action = "Gast_Gerechten_Hoofdgerechten_Index" });
+    
+    // OK //
+    app.MapControllerRoute(
+      name: "gast.gerechten.hoofdgerechten.vlees.index",
+      pattern: "gast/gerechten/hoofdgerechten/vlees/index",
+      defaults: new { controller = "Gerechten",    action = "Gast_Gerechten_Hoofdgerechten_Vlees_Index" });
+    
+    // OK //
+    app.MapControllerRoute(
+      name: "gast.gerechten.hoofdgerechten.vis.index",
+      pattern: "gast/gerechten/hoofdgerechten/vis/index",
+      defaults: new { controller = "Gerechten",    action = "Gast_Gerechten_Hoofdgerechten_Vis_Index" });
+    
+    // OK //
+    app.MapControllerRoute(
+      name: "gast.gerechten.hoofdgerechten.vegetarisch.index",
+      pattern: "gast/gerechten/hoofdgerechten/vegetarisch/index",
+      defaults: new { controller = "Gerechten",    action = "Gast_Gerechten_Hoofdgerechten_Vegetarisch_Index" });
+    
+    // OK //
+    app.MapControllerRoute(
+      name: "gast.gerechten.hoofdgerechten.edit",
+      pattern: "gast/gerechten/hoofdgerechten/edit",
+      defaults: new { controller = "Gerechten",    action = "Gast_Gerechten_Hoofdgerechten_Edit" });
+    
+    // OK //
+    app.MapControllerRoute(
+      name: "gast.gerechten.nagerechten.index",
+      pattern: "gast/gerechten/nagerechten/index",
+      defaults: new { controller = "Gerechten",    action = "Gast_Gerechten_Nagerechten_Index" });
+    
+    // OK //
+    app.MapControllerRoute(
+      name: "gast.bestellingen.overzicht.index",
+      pattern: "gast/bestellingen/overzicht/index",
+      defaults: new { controller = "Bestellingen", action = "Gast_Bestellingen_Overzicht_Index" });
+    
+    // OK //
+    app.MapControllerRoute(
+      name: "gast.bestellingen.tafels.index",
+      pattern: "gast/bestellingen/tafels/index",
+      defaults: new { controller = "Bestellingen", action = "Gast_Bestellingen_Tafels_Index" });
+    
+    // OK //
+    app.MapControllerRoute(
+      name: "personeel.bestellingen.overzicht.index",
+      pattern: "personeel/bestellingen/overzicht/index",
+      defaults: new { controller = "Bestellingen", action = "Personeel_Bestellingen_Overzicht_Index" });
+    
+    // OK //
+    app.MapControllerRoute(
+      name: "personeel.bestellingen.details.index",
+      pattern: "personeel/bestellingen/details/index",
+      defaults: new { controller = "Bestellingen", action = "Personeel_Bestellingen_Details_Index" });
+    
+    // -------------------------------------------------------------------------------------------------------------- //      
+    app.MapControllers();
+    app.Run();
+  }
 }
-

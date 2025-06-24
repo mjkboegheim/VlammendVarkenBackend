@@ -1,0 +1,63 @@
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Overzicht Lopende Bestellingen</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+</head>
+
+<body class="bg-gray-50 flex items-center justify-center min-h-screen p-4 font-sans">
+<div class="w-full max-w-6xl bg-white rounded-xl shadow-lg p-6 md:p-8 space-y-8">
+  <main class="overflow-x-auto border border-gray-200 rounded-lg">
+    <table class="min-w-full bg-white">
+      <thead class="bg-gray-50">
+      <tr>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tafel(s)</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tijd Geplaatst</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aantal Gasten</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Attentie</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bereidingstijd</th>
+        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actie</th>
+      </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200 text-sm text-gray-700">
+      <tr>
+        <td class="px-6 py-4 whitespace-nowrap font-semibold text-gray-800">10, 11 (Gezin)</td>
+        <td class="px-6 py-4 whitespace-nowrap text-gray-600">17:50</td>
+        <td class="px-6 py-4 whitespace-nowrap text-gray-600">3 gasten</td>
+        <td class="px-6 py-4 whitespace-nowrap">
+          <span class="inline-block px-2.5 py-1 text-xs font-semibold text-yellow-800 bg-yellow-100 rounded-full">Aanpassing</span>
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-gray-600">~45 min</td>
+        <td class="px-6 py-4 whitespace-nowrap text-right">
+          <a href="#" class="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-gray-900 hover:scale-105">Details</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="px-6 py-4 whitespace-nowrap font-semibold text-gray-800">14</td>
+        <td class="px-6 py-4 whitespace-nowrap text-gray-600">18:00</td>
+        <td class="px-6 py-4 whitespace-nowrap text-gray-600">2 gasten</td>
+        <td class="px-6 py-4 whitespace-nowrap text-gray-500">-</td>
+        <td class="px-6 py-4 whitespace-nowrap text-gray-600">~25 min</td>
+        <td class="px-6 py-4 whitespace-nowrap text-right">
+          <a href="#" class="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-gray-900 hover:scale-105">Details</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="px-6 py-4 whitespace-nowrap font-semibold text-gray-800">21</td>
+        <td class="px-6 py-4 whitespace-nowrap text-gray-600">18:02</td>
+        <td class="px-6 py-4 whitespace-nowrap text-gray-600">4 gasten</td>
+        <td class="px-6 py-4 whitespace-nowrap">
+          <span class="inline-block px-2.5 py-1 text-xs font-semibold text-yellow-800 bg-yellow-100 rounded-full">Aanpassing</span>
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-gray-600">~30 min</td>
+        <td class="px-6 py-4 whitespace-nowrap text-right">
+          <a href="#" class="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-gray-900 hover:scale-105">Details</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </main>
+</div>
+</body>

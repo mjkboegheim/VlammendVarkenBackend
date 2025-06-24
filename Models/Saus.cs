@@ -3,19 +3,18 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VlammendVarkenBackend.Models;
 
-public class Gerecht
+public class Saus
 {
-  [Column("gerechtId")]
-  public int GerechtId { get; set; }
-  
-  [Column("soort")]
-  [MaxLength(100)]
-  public string Soort { get; set; } = null!;
+  [Column("sausId")]
+  public int SausId { get; set; }
   
   [Column("naam")]
   [MaxLength(100)]
   public string Naam { get; set; } = null!;
+  
+  [Column("prijs")]
+  public decimal Prijs { get; set; }
 
+  public ICollection<SausAllergeen> SausAllergenen { get; set; } = new List<SausAllergeen>();
   public ICollection<GerechtSamenstelling> GerechtSamenstellingen { get; set; } = new List<GerechtSamenstelling>();
-  public ICollection<BestellingGerecht> BestellingGerechten { get; set; } = new List<BestellingGerecht>();
 }

@@ -1,13 +1,14 @@
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace VlammendVarkenBackend.Models
+namespace VlammendVarkenBackend.Models;
+
+public class Tafel
 {
-    [Table("Tafels")]
-    public class Tafel
-    {
-        [Key]
-        [Column("tafel_id")]
-        public int TafelId { get; set; }
-    }
+  [Column("tafelId")]
+  public int TafelId { get; set; }
+  
+  [Column("nummer")]
+  public int Nummer { get; set; }
+
+  public ICollection<BestellingTafel> BestellingTafels { get; set; } = new List<BestellingTafel>();
 }
