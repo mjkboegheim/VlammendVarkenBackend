@@ -1,0 +1,29 @@
+{
+  "Files": [
+    {
+      "Id": "/Users/admin/Desktop/VlammendVarken/wwwroot/bestellingen.html",
+      "PackagePath": "staticwebassets/bestellingen.html"
+    },
+    {
+      "Id": "/Users/admin/Desktop/VlammendVarken/wwwroot/bestellingenv2.html",
+      "PackagePath": "staticwebassets/bestellingenv2.html"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.VlammendVarkenBackend.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.build.VlammendVarkenBackend.props",
+      "PackagePath": "build\\VlammendVarkenBackend.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildMultiTargeting.VlammendVarkenBackend.props",
+      "PackagePath": "buildMultiTargeting\\VlammendVarkenBackend.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.VlammendVarkenBackend.props",
+      "PackagePath": "buildTransitive\\VlammendVarkenBackend.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
