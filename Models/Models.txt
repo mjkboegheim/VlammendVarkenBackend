@@ -1,0 +1,218 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace VlammendVarkenBackend.Models;
+
+public class Allergeen
+{
+  [Column("allergeenId")]
+  public int AllergeenId { get; init; }
+  
+  [Column("symbool")]
+  [MaxLength(100)]
+  public string Symbool { get; init; } = null!;
+  
+  [Column("beschrijving")]
+  [MaxLength(100)]
+  public string Beschrijving { get; init; } = null!;
+
+  public ICollection<HoofdonderdeelAllergeen> HoofdonderdeelAllergenen { get; init; } = new List<HoofdonderdeelAllergeen>();
+  public ICollection<BijgerechtAllergeen> BijgerechtAllergenen { get; init; } = new List<BijgerechtAllergeen>();
+  public ICollection<GroenteAllergeen> GroenteAllergenen { get; init; } = new List<GroenteAllergeen>();
+  public ICollection<SausAllergeen> SausAllergenen { get; init; } = new List<SausAllergeen>();
+}
+
+public class Bestelling
+{
+  [Column("bestellingId")]
+  public int BestellingId { get; set; }
+  
+  [Column("levertijdId")]
+  public int LevertijdId { get; set; }
+  
+  [Column("besteldatum")]
+  public DateTime Besteldatum { get; set; }
+
+  public Levertijd Levertijd { get; set; } = null!;
+
+  public ICollection<BestellingGerecht> BestellingGerechten { get; set; } = new List<BestellingGerecht>();
+  public ICollection<BestellingTafel> BestellingTafels { get; set; } = new List<BestellingTafel>();
+}
+
+public class BestellingGerecht
+{
+  [Column("bestellingId")]
+  public int BestellingId { get; set; }
+  
+  [Column("gerechtId")]
+  public int GerechtId { get; set; }
+
+  public Bestelling Bestelling { get; set; } = null!;
+  public Gerecht Gerecht { get; set; } = null!;
+}
+
+public class BestellingTafel
+{
+  [Column("bestellingId")]
+  public int BestellingId { get; set; }
+  
+  [Column("tafelId")]
+  public int TafelId { get; set; }
+
+  public Bestelling Bestelling { get; set; } = null!;
+  public Tafel Tafel { get; set; } = null!;
+}
+
+public class Bijgerecht
+{
+  [Column("bijgerechtId")]
+  public int BijgerechtId { get; set; }
+  
+  [Column("naam")]
+  [MaxLength(100)]
+  public string Naam { get; set; } = null!;
+  
+  [Column("prijs")]
+  public decimal Prijs { get; set; }
+
+  public ICollection<BijgerechtAllergeen> BijgerechtAllergenen { get; set; } = new List<BijgerechtAllergeen>();
+  public ICollection<GerechtSamenstelling> GerechtSamenstellingen { get; set; } = new List<GerechtSamenstelling>();
+}
+
+public class BijgerechtAllergeen
+{
+  [Column("bijgerechtId")]
+  public int BijgerechtId { get; set; }
+  
+  [Column("allergeenId")]
+  public int AllergeenId { get; set; }
+
+  public Bijgerecht Bijgerecht { get; set; } = null!;
+  public Allergeen Allergeen { get; set; } = null!;
+}
+
+public class Gerecht
+{
+  [Column("gerechtId")]
+  public int GerechtId { get; set; }
+  
+  [Column("soort")]
+  [MaxLength(100)]
+  public string Soort { get; set; } = null!;
+  
+  [Column("naam")]
+  [MaxLength(100)]
+  public string Naam { get; set; } = null!;
+
+  public ICollection<GerechtSamenstelling> GerechtSamenstellingen { get; set; } = new List<GerechtSamenstelling>();
+  public ICollection<BestellingGerecht> BestellingGerechten { get; set; } = new List<BestellingGerecht>();
+}
+
+public class Groente
+{
+  [Column("groenteId")]
+  public int GroenteId { get; set; }
+  
+  [Column("naam")]
+  [MaxLength(100)]
+  public string Naam { get; set; } = null!;
+  
+  [Column("prijs")]
+  public decimal Prijs { get; set; }
+
+  public ICollection<GroenteAllergeen> GroenteAllergenen { get; set; } = new List<GroenteAllergeen>();
+  public ICollection<GerechtSamenstelling> GerechtSamenstellingen { get; set; } = new List<GerechtSamenstelling>();
+}
+
+public class GroenteAllergeen
+{
+  [Column("groenteId")]
+  public int GroenteId { get; set; }
+  
+  [Column("allergeenId")]
+  public int AllergeenId { get; set; }
+
+  public Groente Groente { get; set; } = null!;
+  public Allergeen Allergeen { get; set; } = null!;
+}
+
+public class Hoofdonderdeel
+{
+  [Column("hoofdonderdeelId")]
+  public int HoofdonderdeelId { get; set; }
+  
+  [Column("naam")]
+  [MaxLength(100)]
+  public string Naam { get; set; } = null!;
+  
+  [Column("prijs")]
+  public decimal Prijs { get; set; }
+
+  public ICollection<HoofdonderdeelAllergeen> HoofdonderdeelAllergenen { get; set; } = new List<HoofdonderdeelAllergeen>();
+  public ICollection<GerechtSamenstelling> GerechtSamenstellingen { get; set; } = new List<GerechtSamenstelling>();
+}
+
+public class HoofdonderdeelAllergeen
+{
+  [Column("hoofdonderdeelId")]
+  public int HoofdonderdeelId { get; set; }
+  
+  [Column("allergeenId")]
+  public int AllergeenId { get; set; }
+
+  public Hoofdonderdeel Hoofdonderdeel { get; set; } = null!;
+  public Allergeen Allergeen { get; set; } = null!;
+}
+
+public class Levertijd
+{
+  [Column("levertijdId")]
+  public int LevertijdId { get; set; }
+  
+  [Column("minuten")]
+  public int Minuten { get; set; }
+
+  public ICollection<Bestelling> Bestellingen { get; set; } = new List<Bestelling>();
+}
+
+public class Saus
+{
+  [Column("sausId")]
+  public int SausId { get; set; }
+  
+  [Column("naam")]
+  [MaxLength(100)]
+  public string Naam { get; set; } = null!;
+  
+  [Column("prijs")]
+  public decimal Prijs { get; set; }
+
+  public ICollection<SausAllergeen> SausAllergenen { get; set; } = new List<SausAllergeen>();
+  public ICollection<GerechtSamenstelling> GerechtSamenstellingen { get; set; } = new List<GerechtSamenstelling>();
+}
+
+public class SausAllergeen
+{
+  [Column("sausId")]
+  public int SausId { get; set; }
+  
+  [Column("allergeenId")]
+  public int AllergeenId { get; set; }
+
+  public Saus Saus { get; set; } = null!;
+  public Allergeen Allergeen { get; set; } = null!;
+}
+
+public class Tafel
+{
+  [Column("tafelId")]
+  public int TafelId { get; set; }
+  
+  [Column("nummer")]
+  public int Nummer { get; set; }
+
+  public ICollection<BestellingTafel> BestellingTafels { get; set; } = new List<BestellingTafel>();
+}
+
+
+

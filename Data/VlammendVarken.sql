@@ -93,7 +93,7 @@ CREATE TABLE SausAllergenen (
   sausId INT NOT NULL,
   allergeenId INT NOT NULL,
   PRIMARY KEY (sausId, allergeenId),
-  FOREIGN KEY (sausId) REFERENCES Sausen(saudId),
+  FOREIGN KEY (sausId) REFERENCES Sausen(sausId),
   FOREIGN KEY (allergeenId) REFERENCES Allergenen(allergeenId)
 );
 

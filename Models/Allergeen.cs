@@ -21,3 +21,4 @@ public class Allergeen
   public ICollection<GroenteAllergeen> GroenteAllergenen { get; init; } = new List<GroenteAllergeen>();
   public ICollection<SausAllergeen> SausAllergenen { get; init; } = new List<SausAllergeen>();
 }
+
