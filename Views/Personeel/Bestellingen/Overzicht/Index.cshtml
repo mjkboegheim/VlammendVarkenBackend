@@ -58,11 +58,15 @@
               <td class="px-6 py-4 whitespace-nowrap text-red-600 font-mono tabular-nums timer-cell">
                 --
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-right">
+              <td class="px-6 py-4 whitespace-nowrap text-right space-x-2">
                 <a asp-controller="Bestellingen" asp-action="Personeel_Bestellingen_Details_Index" asp-route-bestellingId="@item.BestellingId"
                    class="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-gray-900 hover:scale-105">
                   Details
                 </a>
+                <button class="verwijder-btn bg-red-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-red-700 hover:scale-105"
+                        data-bestellingid="@item.BestellingId">
+                  Verwijder
+                </button>
               </td>
             </tr>
           }
@@ -73,40 +77,32 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const rows = document.querySelectorAll('tbody tr[data-endtime]');
+      const removedKey = 'verwijderdeBestellingen';
+      let verwijderde = JSON.parse(localStorage.getItem(removedKey) || '[]');
 
-      rows.forEach(row => {
+      document.querySelectorAll('tbody tr[data-bestellingid]').forEach(row => {
         const bestellingId = row.getAttribute('data-bestellingid');
+
+        // Verberg reeds verwijderde rijen
+        if (verwijderde.includes(bestellingId)) {
+          row.remove();
+          return;
+        }
+
         const endTimeStr = row.getAttribute('data-endtime');
         const timerCell = row.querySelector('.timer-cell');
-
-        // localStorage key uniek per bestelling
         const storageKey = 'bestellingTimer_' + bestellingId;
-
-        // Haal opgeslagen seconden op
         let savedSeconds = localStorage.getItem(storageKey);
-        let secondsLeft;
-
-        if (savedSeconds !== null) {
-          secondsLeft = parseInt(savedSeconds, 10);
-        } else {
-          // Bereken resterende seconden vanaf endTime - now
-          const endTime = new Date(endTimeStr);
-          const now = new Date();
-          secondsLeft = Math.max(Math.floor((endTime - now) / 1000), 0);
-        }
+        let secondsLeft = savedSeconds !== null
+          ? parseInt(savedSeconds, 10)
+          : Math.max(Math.floor((new Date(endTimeStr) - new Date()) / 1000), 0);
 
         function updateTimer() {
           if (secondsLeft > 0) {
             secondsLeft--;
             localStorage.setItem(storageKey, secondsLeft.toString());
-
-            const minutes = Math.floor(secondsLeft / 60);
-            const seconds = secondsLeft % 60;
-            timerCell.textContent =
-              String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
-
-            // Verwijder geel highlight als timer loopt
+            const m = Math.floor(secondsLeft / 60), s = secondsLeft % 60;
+            timerCell.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
             row.classList.remove('bg-yellow-200');
           } else {
             timerCell.textContent = '00:00';
@@ -116,14 +112,18 @@
           }
         }
 
-        // Init display
         updateTimer();
+        const interval = setInterval(updateTimer, 1000);
 
-        // Start interval per rij
-        let interval = setInterval(updateTimer, 1000);
-
-        // Bewaar interval in DOM element (voor debug, optioneel)
-        row._interval = interval;
+        // Verwijderknop
+        const btn = row.querySelector('.verwijder-btn');
+        btn.addEventListener('click', () => {
+          row.remove();
+          if (!verwijderde.includes(bestellingId)) {
+            verwijderde.push(bestellingId);
+            localStorage.setItem(removedKey, JSON.stringify(verwijderde));
+          }
+        });
       });
     });
   </script>
