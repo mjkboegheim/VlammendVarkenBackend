@@ -80,12 +80,11 @@ namespace VlammendVarkenBackend.Controllers
 
         return View("~/Views/Personeel/Bestellingen/Overzicht/Index.cshtml", bestellingen);
         }
-
-
+        
         public IActionResult Personeel_Bestellingen_Details_Index(int bestellingId)
         {
             var bestelling = _context.Bestellingen
-                .Include(b => b.Levertijd) // Zorg dat levertijd mee geladen wordt!
+                .Include(b => b.Levertijd) 
                 .Include(b => b.BestellingTafels).ThenInclude(bt => bt.Tafel)
                 .Include(b => b.BestellingGerechten).ThenInclude(bg => bg.Gerecht)
                     .ThenInclude(g => g.GerechtSamenstellingen)
