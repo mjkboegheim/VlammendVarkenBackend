@@ -100,6 +100,7 @@
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const rows = document.querySelectorAll('tbody tr[data-bestellingid]');
+    const deletedOrders = JSON.parse(localStorage.getItem('deletedOrders')) || []; // Haal verwijderde bestellingen op uit localStorage
 
     rows.forEach(row => {
       const bestellingId = row.getAttribute('data-bestellingid');
@@ -119,6 +120,12 @@
       let totalDuration = storedDuration !== null ? parseInt(storedDuration, 10) : defaultDuration;
       let interval = null;
       let timerCompleted = false;
+
+      // Verwijder de rij als de bestelling eerder verwijderd is
+      if (deletedOrders.includes(bestellingId)) {
+        row.remove();
+        return; // Stop met verder verwerken van deze rij
+      }
 
       function getSecondsLeft() {
         if (!startTimestamp) return totalDuration;
@@ -181,8 +188,9 @@
 
       deleteBtn.addEventListener('click', () => {
         row.remove();
-        localStorage.removeItem(storageStartKey);
-        localStorage.removeItem(storageDurationKey);
+        // Voeg de bestelling toe aan de lijst van verwijderde bestellingen in localStorage
+        deletedOrders.push(bestellingId);
+        localStorage.setItem('deletedOrders', JSON.stringify(deletedOrders));
       });
 
       const secondsLeft = getSecondsLeft();
@@ -200,29 +208,6 @@
       startBtn.addEventListener('click', startTimer);
       stopBtn.addEventListener('click', stopTimer);
     });
-  });
-
-  document.addEventListener('DOMContentLoaded', () => {
-    const tbody = document.querySelector('tbody');
-    const rows = Array.from(tbody.querySelectorAll('tr[data-bestellingid]'));
-
-    function isKlaar(row) {
-      const timerDisplay = row.querySelector('.timer-display');
-      return timerDisplay && timerDisplay.textContent.trim().toLowerCase() === 'klaar';
-    }
-
-    function sortRows() {
-      const sorted = [...rows].sort((a, b) => {
-        const aKlaar = isKlaar(a);
-        const bKlaar = isKlaar(b);
-        if (aKlaar === bKlaar) return 0;
-        return aKlaar ? -1 : 1; // Klaar eerst
-      });
-
-      sorted.forEach(row => tbody.appendChild(row));
-    }
-
-    setTimeout(sortRows, 100);
   });
 </script>
 

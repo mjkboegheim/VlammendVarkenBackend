@@ -41,7 +41,7 @@
           }
           @foreach(var gerecht in Model.Gerechten)
           {
-            <tr id="bestelling-rij" class="@(eersteRij ? "" : "bg-amber-50")">
+            <tr id="bestelling-rij">
               @if(eersteRij)
               {
                 <td class="px-6 py-4 whitespace-nowrap align-top font-semibold text-gray-800" rowspan="@rowCount">
@@ -75,9 +75,6 @@
                     <button id="verhoogTimerBtn" class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-indigo-700 transition">
                       Ophogen +15 min
                     </button>
-                    <button id="verwijderBtn" class="bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-red-700 transition mt-2" style="display:none;">
-                      Verwijder
-                    </button>
                   </div>
                 </td>
               }
@@ -95,7 +92,6 @@
     const verhoogBtn = document.getElementById('verhoogTimerBtn');
     const startBtn = document.getElementById('startTimerBtn');
     const stopBtn = document.getElementById('stopTimerBtn');
-    const verwijderBtn = document.getElementById('verwijderBtn');
 
     const gerechtRijen = document.querySelectorAll('.bestelling-rij');
 
@@ -129,6 +125,8 @@
 
       if (secondsLeft === 0) {
         aftelTijdElem.textContent = 'Klaar';
+        verhoogBtn.style.display = 'none';
+        
         gerechtRijen.forEach(rij => rij.classList.add('bg-green-200'));
         clearInterval(interval);
         interval = null;
@@ -137,23 +135,27 @@
         localStorage.removeItem(storageStartKey);
 
         showStartStopButtons(false, false);
-        verwijderBtn.style.display = 'inline-block';
       } else {
         const minutes = Math.floor(secondsLeft / 60);
         const seconds = secondsLeft % 60;
         aftelTijdElem.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         gerechtRijen.forEach(rij => rij.classList.remove('bg-green-200'));
-
-        verwijderBtn.style.display = 'none';
+        
         showStartStopButtons(true, true);
       }
     }
 
     function showStartStopButtons(running, visible = true) {
+      const secondsLeft = getSecondsLeft();
+      const isTimerStarted = startTimestamp !== null;  // Check of de timer gestart is
+
       if (!visible) {
         startBtn.style.display = 'none';
         stopBtn.style.display = 'none';
-      } else if (running) {
+      } else if (secondsLeft === 0) {
+        verhoogBtn.style.display = 'none';
+      } 
+      else if (running || isTimerStarted) {
         startBtn.style.display = 'none';
         stopBtn.style.display = 'inline-block';
       } else {
@@ -176,10 +178,8 @@
           clearInterval(interval);
           interval = null;
           showStartStopButtons(false, false);
-          verwijderBtn.style.display = 'inline-block';
         }
       }, 1000);
-
       updateTimerDisplay();
       showStartStopButtons(true);
     }
@@ -206,19 +206,12 @@
       localStorage.setItem(storageDurationKey, totalDuration);
       updateTimerDisplay();
 
-      verwijderBtn.style.display = 'none';
+      // Herstel de zichtbaarheid van de knoppen na verhoging
+      showStartStopButtons(false, true);
     });
 
     startBtn.addEventListener('click', startTimer);
     stopBtn.addEventListener('click', stopTimer);
-
-    verwijderBtn.addEventListener('click', () => {
-      if (confirm('Weet je zeker dat je deze bestelling wilt verwijderen?')) {
-        gerechtRijen.forEach(rij => rij.remove());
-        localStorage.removeItem(storageStartKey);
-        localStorage.removeItem(storageDurationKey);
-      }
-    });
 
     // Zorg ervoor dat de startknop altijd zichtbaar is als de timer nog niet is gestart
     const secondsLeft = getSecondsLeft();
@@ -228,7 +221,6 @@
       aftelTijdElem.textContent = 'Klaar';
       gerechtRijen.forEach(rij => rij.classList.add('bg-green-200'));
       showStartStopButtons(false, false);
-      verwijderBtn.style.display = 'inline-block';
       localStorage.removeItem(storageStartKey);
       localStorage.setItem(storageDurationKey, '0');
     } else {
