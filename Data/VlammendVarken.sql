@@ -1,4 +1,5 @@
-﻿CREATE TABLE Allergenen (
+﻿-- Tabellen aanmaken
+CREATE TABLE Allergenen (
   allergeenId INT PRIMARY KEY,
   symbool VARCHAR(100) NOT NULL,
   beschrijving VARCHAR(100) NOT NULL
@@ -13,25 +14,25 @@ CREATE TABLE Gerechten (
 CREATE TABLE Hoofdonderdelen (
   hoofdonderdeelId INT PRIMARY KEY,
   naam VARCHAR(100) NOT NULL,
-  prijs DECIMAL NOT NULL
+  prijs DECIMAL(10,2) NOT NULL
 );
 
 CREATE TABLE Bijgerechten (
   bijgerechtId INT PRIMARY KEY,
   naam VARCHAR(100) NOT NULL,
-  prijs DECIMAL NOT NULL
+  prijs DECIMAL(10,2) NOT NULL
 );
 
 CREATE TABLE Groenten (
   groenteId INT PRIMARY KEY,
   naam VARCHAR(100) NOT NULL,
-  prijs DECIMAL NOT NULL
+  prijs DECIMAL(10,2) NOT NULL
 );
 
 CREATE TABLE Sausen (
   sausId INT PRIMARY KEY,
   naam VARCHAR(100) NOT NULL,
-  prijs DECIMAL NOT NULL
+  prijs DECIMAL(10,2) NOT NULL
 );
 
 CREATE TABLE Tafels (
@@ -113,6 +114,19 @@ CREATE TABLE BestellingTafels (
   FOREIGN KEY (tafelId) REFERENCES Tafels(tafelId)
 );
 
+CREATE TABLE TafelGroepen (
+  tafelGroepId INT PRIMARY KEY,
+  naam VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE TafelGroepTafels (
+  tafelGroepId INT NOT NULL,
+  tafelId INT NOT NULL,
+  PRIMARY KEY (tafelGroepId, tafelId),
+  FOREIGN KEY (tafelGroepId) REFERENCES TafelGroepen(tafelGroepId),
+  FOREIGN KEY (tafelId) REFERENCES Tafels(tafelId)
+);
+
 -- Data inserts
 
 INSERT INTO Allergenen (allergeenId, symbool, beschrijving) VALUES
@@ -159,9 +173,25 @@ INSERT INTO Sausen (sausId, naam, prijs) VALUES
 (5, 'Pepersaus', 0.60);
 
 INSERT INTO Tafels (tafelId, nummer) VALUES
-(1, 10),
-(2, 11),
-(3, 12);
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5),
+(6, 10),
+(7, 11),
+(8, 12);
+
+INSERT INTO TafelGroepen (tafelGroepId, naam) VALUES
+(1, 'Hoofdzaal'),
+(2, 'Terras');
+
+INSERT INTO TafelGroepTafels (tafelGroepId, tafelId) VALUES
+(1, 1),
+(1, 2),
+(1, 3),
+(2, 4),
+(2, 5);
 
 INSERT INTO Levertijden (levertijdId, minuten) VALUES
 (1, 5),
@@ -169,7 +199,10 @@ INSERT INTO Levertijden (levertijdId, minuten) VALUES
 
 INSERT INTO Bestellingen (bestellingId, levertijdId, besteldatum) VALUES
 (1, 1, '2025-06-23 18:30:00'),
-(2, 2, '2025-06-23 18:45:00');
+(2, 2, '2025-06-23 18:45:00'),
+(3, 1, '2025-06-25 18:30:00'),
+(4, 2, '2025-06-25 19:00:00'),
+(5, 1, '2025-06-25 19:30:00');
 
 INSERT INTO GerechtSamenstellingen (gerechtId, hoofdonderdeelId, bijgerechtId, groenteId, sausId) VALUES
 (1, 2, 1, 1, 1),
@@ -200,8 +233,17 @@ INSERT INTO SausAllergenen (sausId, allergeenId) VALUES
 
 INSERT INTO BestellingGerechten (bestellingId, gerechtId) VALUES
 (1, 1),
-(2, 2);
+(2, 2),
+(3, 2),
+(3, 5),
+(3, 7),
+(4, 3),
+(4, 6),
+(5, 1);
 
 INSERT INTO BestellingTafels (bestellingId, tafelId) VALUES
 (1, 1),
-(2, 2);
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5);

@@ -23,6 +23,7 @@
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Attentie</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bereidingstijd</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timer</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Allergenen</th>
             <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actie</th>
           </tr>
         </thead>
@@ -61,7 +62,27 @@
                   <button class="stop-btn bg-yellow-600 text-white px-2 py-1 rounded text-xs hover:bg-yellow-700 transition" style="display:none;">
                     Stop
                   </button>
+                  <button class="delete-btn bg-red-600 text-white px-2 py-1 rounded text-xs hover:bg-red-700 transition" style="display:none;">
+                    Verwijder
+                  </button>
                 </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-gray-600">
+                @if (item.Allergenen != null && item.Allergenen.Any())
+                {
+                  <span title="@string.Join(", ", item.Allergenen)" class="inline-flex gap-1 flex-wrap">
+                    @foreach (var allergeen in item.Allergenen)
+                    {
+                      <span class="bg-red-100 text-red-800 px-2 py-0.5 rounded text-xs font-semibold" style="line-height:1;">
+                        @allergeen
+                      </span>
+                    }
+                  </span>
+                }
+                else
+                {
+                  <span class="text-gray-400">Geen</span>
+                }
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right">
                 <a asp-controller="Bestellingen" asp-action="Personeel_Bestellingen_Details_Index" asp-route-bestellingId="@item.BestellingId"
@@ -86,31 +107,21 @@
       const timerDisplay = row.querySelector('.timer-display');
       const startBtn = row.querySelector('.start-btn');
       const stopBtn = row.querySelector('.stop-btn');
+      const deleteBtn = row.querySelector('.delete-btn');
 
-      // LocalStorage keys per bestelling
       const storageStartKey = 'bestellingTimerStart_' + bestellingId;
       const storageDurationKey = 'bestellingTimerDuration_' + bestellingId;
 
-      // Default duur in seconden
       const defaultDuration = bereidingstijdMinuten * 60;
 
-      // Haal opgeslagen starttijd en duur op
       let startTimestamp = localStorage.getItem(storageStartKey);
       let storedDuration = localStorage.getItem(storageDurationKey);
-      let totalDuration = storedDuration !== null ? parseInt(storedDuration, 10) : null;
-
-      // Alleen defaultDuration instellen als er geen geldige storedDuration is (null of NaN)
-      if (totalDuration === null || isNaN(totalDuration)) {
-        totalDuration = defaultDuration;
-        localStorage.setItem(storageDurationKey, totalDuration);
-      }
-
+      let totalDuration = storedDuration !== null ? parseInt(storedDuration, 10) : defaultDuration;
       let interval = null;
+      let timerCompleted = false;
 
       function getSecondsLeft() {
-        if (!startTimestamp) {
-          return totalDuration;
-        }
+        if (!startTimestamp) return totalDuration;
         const now = Date.now();
         const elapsed = Math.floor((now - parseInt(startTimestamp, 10)) / 1000);
         const left = totalDuration - elapsed;
@@ -123,84 +134,97 @@
         if (secondsLeft === 0) {
           timerDisplay.textContent = "Klaar";
           row.classList.add('bg-green-200');
-          clearInterval(interval);
-          interval = null;
-
-          localStorage.setItem(storageDurationKey, '0');
-          localStorage.removeItem(storageStartKey);
-
-          showStartStopButtons(false);
+          if (interval) clearInterval(interval);
+          if (!timerCompleted) {
+            timerCompleted = true;
+            localStorage.setItem(storageDurationKey, '0');
+            localStorage.removeItem(storageStartKey);
+            showStartStopButtons(false, true); // toon delete
+          }
         } else {
           const minutes = Math.floor(secondsLeft / 60);
           const seconds = secondsLeft % 60;
           timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-          row.classList.remove('bg-yellow-200');
-          row.classList.remove('bg-green-200');
+          row.classList.remove('bg-yellow-200', 'bg-green-200');
         }
       }
 
-      function showStartStopButtons(running) {
-        if (running) {
-          startBtn.style.display = 'none';
-          stopBtn.style.display = 'inline-block';
-        } else {
-          startBtn.style.display = 'inline-block';
-          stopBtn.style.display = 'none';
-        }
+      function showStartStopButtons(running, showDelete = false) {
+        startBtn.style.display = running || showDelete ? 'none' : 'inline-block';
+        stopBtn.style.display = running ? 'inline-block' : 'none';
+        deleteBtn.style.display = showDelete ? 'inline-block' : 'none';
       }
 
       function startTimer() {
         if (interval) return;
-
         if (!startTimestamp) {
           startTimestamp = Date.now().toString();
           localStorage.setItem(storageStartKey, startTimestamp);
         }
-
-        interval = setInterval(() => {
-          updateTimerDisplay();
-        }, 1000);
-
+        interval = setInterval(updateTimerDisplay, 1000);
         updateTimerDisplay();
         showStartStopButtons(true);
       }
 
       function stopTimer() {
         if (!interval) return;
-
         clearInterval(interval);
         interval = null;
-
         const secondsLeft = getSecondsLeft();
         totalDuration = secondsLeft;
         localStorage.setItem(storageDurationKey, totalDuration);
         localStorage.removeItem(storageStartKey);
         startTimestamp = null;
-
         updateTimerDisplay();
         showStartStopButtons(false);
       }
 
-      // Init: toon timer en juiste knop (start/stop) bij laden pagina
-      if (startTimestamp) {
+      deleteBtn.addEventListener('click', () => {
+        row.remove();
+        localStorage.removeItem(storageStartKey);
+        localStorage.removeItem(storageDurationKey);
+      });
+
+      const secondsLeft = getSecondsLeft();
+      if (startTimestamp && secondsLeft > 0) {
+        showStartStopButtons(true);
         startTimer();
+      } else if (secondsLeft === 0) {
+        updateTimerDisplay();
+        showStartStopButtons(false, true); // toon delete
       } else {
         updateTimerDisplay();
         showStartStopButtons(false);
       }
 
-      // Event listeners knoppen
-      startBtn.addEventListener('click', () => {
-        startTimer();
-      });
-
-      stopBtn.addEventListener('click', () => {
-        stopTimer();
-      });
+      startBtn.addEventListener('click', startTimer);
+      stopBtn.addEventListener('click', stopTimer);
     });
   });
-</script>
 
+  document.addEventListener('DOMContentLoaded', () => {
+    const tbody = document.querySelector('tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr[data-bestellingid]'));
+
+    function isKlaar(row) {
+      const timerDisplay = row.querySelector('.timer-display');
+      return timerDisplay && timerDisplay.textContent.trim().toLowerCase() === 'klaar';
+    }
+
+    function sortRows() {
+      const sorted = [...rows].sort((a, b) => {
+        const aKlaar = isKlaar(a);
+        const bKlaar = isKlaar(b);
+        if (aKlaar === bKlaar) return 0;
+        return aKlaar ? -1 : 1; // Klaar eerst
+      });
+
+      sorted.forEach(row => tbody.appendChild(row));
+    }
+
+    setTimeout(sortRows, 100);
+  });
+</script>
 
 </body>
 </html>

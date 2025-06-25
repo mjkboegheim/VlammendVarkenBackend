@@ -25,194 +25,227 @@ public class Allergeen
 public class Bestelling
 {
   [Column("bestellingId")]
-  public int BestellingId { get; set; }
+  public int BestellingId { get; init; }
   
   [Column("levertijdId")]
-  public int LevertijdId { get; set; }
+  public int LevertijdId { get; init; }
   
   [Column("besteldatum")]
-  public DateTime Besteldatum { get; set; }
+  public DateTime Besteldatum { get; init; }
 
-  public Levertijd Levertijd { get; set; } = null!;
+  public Levertijd Levertijd { get; init; } = null!;
 
-  public ICollection<BestellingGerecht> BestellingGerechten { get; set; } = new List<BestellingGerecht>();
-  public ICollection<BestellingTafel> BestellingTafels { get; set; } = new List<BestellingTafel>();
+  public ICollection<BestellingGerecht> BestellingGerechten { get; init; } = new List<BestellingGerecht>();
+  public ICollection<BestellingTafel> BestellingTafels { get; init; } = new List<BestellingTafel>();
 }
 
 public class BestellingGerecht
 {
   [Column("bestellingId")]
-  public int BestellingId { get; set; }
+  public int BestellingId { get; init; }
   
   [Column("gerechtId")]
-  public int GerechtId { get; set; }
+  public int GerechtId { get; init; }
 
-  public Bestelling Bestelling { get; set; } = null!;
-  public Gerecht Gerecht { get; set; } = null!;
+  public Bestelling Bestelling { get; init; } = null!;
+  public Gerecht Gerecht { get; init; } = null!;
 }
 
 public class BestellingTafel
 {
   [Column("bestellingId")]
-  public int BestellingId { get; set; }
+  public int BestellingId { get; init; }
   
   [Column("tafelId")]
-  public int TafelId { get; set; }
+  public int TafelId { get; init; }
 
-  public Bestelling Bestelling { get; set; } = null!;
-  public Tafel Tafel { get; set; } = null!;
+  public Bestelling Bestelling { get; init; } = null!;
+  public Tafel Tafel { get; init; } = null!;
 }
 
 public class Bijgerecht
 {
   [Column("bijgerechtId")]
-  public int BijgerechtId { get; set; }
+  public int BijgerechtId { get; init; }
   
   [Column("naam")]
   [MaxLength(100)]
-  public string Naam { get; set; } = null!;
+  public string Naam { get; init; } = null!;
   
   [Column("prijs")]
-  public decimal Prijs { get; set; }
+  public decimal Prijs { get; init; }
 
-  public ICollection<BijgerechtAllergeen> BijgerechtAllergenen { get; set; } = new List<BijgerechtAllergeen>();
-  public ICollection<GerechtSamenstelling> GerechtSamenstellingen { get; set; } = new List<GerechtSamenstelling>();
+  public ICollection<BijgerechtAllergeen> BijgerechtAllergenen { get; init; } = new List<BijgerechtAllergeen>();
+  public ICollection<GerechtSamenstelling> GerechtSamenstellingen { get; init; } = new List<GerechtSamenstelling>();
 }
 
 public class BijgerechtAllergeen
 {
   [Column("bijgerechtId")]
-  public int BijgerechtId { get; set; }
+  public int BijgerechtId { get; init; }
   
   [Column("allergeenId")]
-  public int AllergeenId { get; set; }
+  public int AllergeenId { get; init; }
 
-  public Bijgerecht Bijgerecht { get; set; } = null!;
-  public Allergeen Allergeen { get; set; } = null!;
+  public Bijgerecht Bijgerecht { get; init; } = null!;
+  public Allergeen Allergeen { get; init; } = null!;
 }
 
 public class Gerecht
 {
   [Column("gerechtId")]
-  public int GerechtId { get; set; }
+  public int GerechtId { get; init; }
   
   [Column("soort")]
   [MaxLength(100)]
-  public string Soort { get; set; } = null!;
+  public string Soort { get; init; } = null!;
   
   [Column("naam")]
   [MaxLength(100)]
-  public string Naam { get; set; } = null!;
+  public string Naam { get; init; } = null!;
 
-  public ICollection<GerechtSamenstelling> GerechtSamenstellingen { get; set; } = new List<GerechtSamenstelling>();
-  public ICollection<BestellingGerecht> BestellingGerechten { get; set; } = new List<BestellingGerecht>();
+  public ICollection<GerechtSamenstelling> GerechtSamenstellingen { get; init; } = new List<GerechtSamenstelling>();
+  public ICollection<BestellingGerecht> BestellingGerechten { get; init; } = new List<BestellingGerecht>();
+}
+
+public class GerechtSamenstelling
+{
+  [Column("gerechtId")]
+  public int GerechtId { get; init; }
+  
+  [Column("hoofdonderdeelId")]
+  public int HoofdonderdeelId { get; init; }
+  
+  [Column("bijgerechtId")]
+  public int BijgerechtId { get; init; }
+  
+  [Column("groenteId")]
+  public int GroenteId { get; init; }
+  
+  [Column("sausId")]
+  public int SausId { get; init; }
+
+  public Gerecht Gerecht { get; init; } = null!;
+  public Hoofdonderdeel Hoofdonderdeel { get; init; } = null!;
+  public Bijgerecht Bijgerecht { get; init; } = null!;
+  public Groente Groente { get; init; } = null!;
+  public Saus Saus { get; init; } = null!;
 }
 
 public class Groente
 {
   [Column("groenteId")]
-  public int GroenteId { get; set; }
+  public int GroenteId { get; init; }
   
   [Column("naam")]
   [MaxLength(100)]
-  public string Naam { get; set; } = null!;
+  public string Naam { get; init; } = null!;
   
   [Column("prijs")]
-  public decimal Prijs { get; set; }
+  public decimal Prijs { get; init; }
 
-  public ICollection<GroenteAllergeen> GroenteAllergenen { get; set; } = new List<GroenteAllergeen>();
-  public ICollection<GerechtSamenstelling> GerechtSamenstellingen { get; set; } = new List<GerechtSamenstelling>();
+  public ICollection<GroenteAllergeen> GroenteAllergenen { get; init; } = new List<GroenteAllergeen>();
+  public ICollection<GerechtSamenstelling> GerechtSamenstellingen { get; init; } = new List<GerechtSamenstelling>();
 }
 
 public class GroenteAllergeen
 {
   [Column("groenteId")]
-  public int GroenteId { get; set; }
+  public int GroenteId { get; init; }
   
   [Column("allergeenId")]
-  public int AllergeenId { get; set; }
+  public int AllergeenId { get; init; }
 
-  public Groente Groente { get; set; } = null!;
-  public Allergeen Allergeen { get; set; } = null!;
+  public Groente Groente { get; init; } = null!;
+  public Allergeen Allergeen { get; init; } = null!;
 }
 
 public class Hoofdonderdeel
 {
   [Column("hoofdonderdeelId")]
-  public int HoofdonderdeelId { get; set; }
+  public int HoofdonderdeelId { get; init; }
   
   [Column("naam")]
   [MaxLength(100)]
-  public string Naam { get; set; } = null!;
+  public string Naam { get; init; } = null!;
   
   [Column("prijs")]
-  public decimal Prijs { get; set; }
+  public decimal Prijs { get; init; }
 
-  public ICollection<HoofdonderdeelAllergeen> HoofdonderdeelAllergenen { get; set; } = new List<HoofdonderdeelAllergeen>();
-  public ICollection<GerechtSamenstelling> GerechtSamenstellingen { get; set; } = new List<GerechtSamenstelling>();
+  public ICollection<HoofdonderdeelAllergeen> HoofdonderdeelAllergenen { get; init; } = new List<HoofdonderdeelAllergeen>();
+  public ICollection<GerechtSamenstelling> GerechtSamenstellingen { get; init; } = new List<GerechtSamenstelling>();
 }
 
 public class HoofdonderdeelAllergeen
 {
   [Column("hoofdonderdeelId")]
-  public int HoofdonderdeelId { get; set; }
+  public int HoofdonderdeelId { get; init; }
   
   [Column("allergeenId")]
-  public int AllergeenId { get; set; }
+  public int AllergeenId { get; init; }
 
-  public Hoofdonderdeel Hoofdonderdeel { get; set; } = null!;
-  public Allergeen Allergeen { get; set; } = null!;
+  public Hoofdonderdeel Hoofdonderdeel { get; init; } = null!;
+  public Allergeen Allergeen { get; init; } = null!;
 }
 
 public class Levertijd
 {
   [Column("levertijdId")]
-  public int LevertijdId { get; set; }
+  public int LevertijdId { get; init; }
   
   [Column("minuten")]
-  public int Minuten { get; set; }
+  public int Minuten { get; init; }
 
-  public ICollection<Bestelling> Bestellingen { get; set; } = new List<Bestelling>();
+  public ICollection<Bestelling> Bestellingen { get; init; } = new List<Bestelling>();
 }
 
 public class Saus
 {
   [Column("sausId")]
-  public int SausId { get; set; }
+  public int SausId { get; init; }
   
   [Column("naam")]
   [MaxLength(100)]
-  public string Naam { get; set; } = null!;
+  public string Naam { get; init; } = null!;
   
   [Column("prijs")]
-  public decimal Prijs { get; set; }
+  public decimal Prijs { get; init; }
 
-  public ICollection<SausAllergeen> SausAllergenen { get; set; } = new List<SausAllergeen>();
-  public ICollection<GerechtSamenstelling> GerechtSamenstellingen { get; set; } = new List<GerechtSamenstelling>();
+  public ICollection<SausAllergeen> SausAllergenen { get; init; } = new List<SausAllergeen>();
+  public ICollection<GerechtSamenstelling> GerechtSamenstellingen { get; init; } = new List<GerechtSamenstelling>();
 }
 
 public class SausAllergeen
 {
   [Column("sausId")]
-  public int SausId { get; set; }
+  public int SausId { get; init; }
   
   [Column("allergeenId")]
-  public int AllergeenId { get; set; }
+  public int AllergeenId { get; init; }
 
-  public Saus Saus { get; set; } = null!;
-  public Allergeen Allergeen { get; set; } = null!;
+  public Saus Saus { get; init; } = null!;
+  public Allergeen Allergeen { get; init; } = null!;
 }
 
 public class Tafel
 {
   [Column("tafelId")]
-  public int TafelId { get; set; }
+  public int TafelId { get; init; }
   
   [Column("nummer")]
-  public int Nummer { get; set; }
+  public int Nummer { get; init; }
 
-  public ICollection<BestellingTafel> BestellingTafels { get; set; } = new List<BestellingTafel>();
+  public ICollection<BestellingTafel> BestellingTafels { get; init; } = new List<BestellingTafel>();
 }
+
+
+
+
+
+
+
+
+
 
 
 

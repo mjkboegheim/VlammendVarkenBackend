@@ -19,5 +19,6 @@ namespace VlammendVarkenBackend.Models.ViewModels
                 return $"{BereidingstijdMinuten:D2}:00";
             }
         }
+        public List<string> Allergenen { get; set; } = new();
     }
 }
