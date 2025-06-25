@@ -1,12 +1,8 @@
 {
   "Files": [
     {
-      "Id": "/Users/deepsilver/Desktop/VlammendVarkenBackend/wwwroot/bestellingen.html",
-      "PackagePath": "staticwebassets/bestellingen.html"
-    },
-    {
-      "Id": "/Users/deepsilver/Desktop/VlammendVarkenBackend/wwwroot/bestellingenv2.html",
-      "PackagePath": "staticwebassets/bestellingenv2.html"
+      "Id": "/Users/deepsilver/Desktop/VlammendVarkenBackend/wwwroot/js/script.js",
+      "PackagePath": "staticwebassets/js/script.js"
     },
     {
       "Id": "obj/Debug/net8.0/staticwebassets/msbuild.VlammendVarkenBackend.Microsoft.AspNetCore.StaticWebAssets.props",

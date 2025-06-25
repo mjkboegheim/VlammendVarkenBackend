@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "bWjSFQox0WGf/HAWrztt9vZVjNx/9ySkbfqw/8+x5Mo=",
+  "Hash": "69tVRmCUmbwIMBNcvNRElesGRSVInc+UmRxlfRiIycw=",
   "Source": "VlammendVarkenBackend",
   "BasePath": "_content/VlammendVarkenBackend",
   "Mode": "Default",
@@ -17,12 +17,12 @@
   ],
   "Assets": [
     {
-      "Identity": "/Users/deepsilver/Desktop/VlammendVarkenBackend/wwwroot/bestellingen.html",
+      "Identity": "/Users/deepsilver/Desktop/VlammendVarkenBackend/wwwroot/js/script.js",
       "SourceId": "VlammendVarkenBackend",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/deepsilver/Desktop/VlammendVarkenBackend/wwwroot/",
       "BasePath": "_content/VlammendVarkenBackend",
-      "RelativePath": "bestellingen.html",
+      "RelativePath": "js/script.js",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -33,26 +33,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/bestellingen.html"
-    },
-    {
-      "Identity": "/Users/deepsilver/Desktop/VlammendVarkenBackend/wwwroot/bestellingenv2.html",
-      "SourceId": "VlammendVarkenBackend",
-      "SourceType": "Discovered",
-      "ContentRoot": "/Users/deepsilver/Desktop/VlammendVarkenBackend/wwwroot/",
-      "BasePath": "_content/VlammendVarkenBackend",
-      "RelativePath": "bestellingenv2.html",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/bestellingenv2.html"
+      "OriginalItemSpec": "wwwroot/js/script.js"
     }
   ]
 }

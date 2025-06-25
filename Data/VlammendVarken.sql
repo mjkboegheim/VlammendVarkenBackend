@@ -93,7 +93,7 @@ CREATE TABLE SausAllergenen (
   sausId INT NOT NULL,
   allergeenId INT NOT NULL,
   PRIMARY KEY (sausId, allergeenId),
-  FOREIGN KEY (sausId) REFERENCES Sausen(saudId),
+  FOREIGN KEY (sausId) REFERENCES Sausen(sausId),
   FOREIGN KEY (allergeenId) REFERENCES Allergenen(allergeenId)
 );
 
@@ -113,35 +113,50 @@ CREATE TABLE BestellingTafels (
   FOREIGN KEY (tafelId) REFERENCES Tafels(tafelId)
 );
 
+-- Data inserts
+
 INSERT INTO Allergenen (allergeenId, symbool, beschrijving) VALUES
 (1, 'GLU', 'Bevat gluten'),
 (2, 'LAC', 'Bevat lactose'),
 (3, 'NOT', 'Bevat noten');
 
 INSERT INTO Gerechten (gerechtId, soort, naam) VALUES
-(1, 'Hoofdgerecht', 'Spaghetti Bolognese'),
-(2, 'Hoofdgerecht', 'Kip Saté'),
-(3, 'Dessert', 'Chocoladecake');
+(1, 'Dagmenu', 'Dagmenu Special'),
+(2, 'Voorgerecht', 'Tomatensoep'),
+(3, 'Hoofdgerecht', 'Gegrilde Zalm'),
+(4, 'Nagerecht', 'Vanilleijs'),
+(5, 'Hoofdgerecht', 'Spaghetti Bolognese'),
+(6, 'Hoofdgerecht', 'Kip Saté'),
+(7, 'Dessert', 'Chocoladecake');
 
 INSERT INTO Hoofdonderdelen (hoofdonderdeelId, naam, prijs) VALUES
-(1, 'Spaghetti', 8.50),
-(2, 'Kipfilet', 9.00),
-(3, 'Rundvlees', 10.00);
+(1, 'Tomatensoep', 4.50),
+(2, 'Zalmfilet', 12.00),
+(3, 'Vanilleijs', 3.50),
+(4, 'Spaghetti', 8.50),
+(5, 'Kipfilet', 9.00),
+(6, 'Rundvlees', 10.00);
 
 INSERT INTO Bijgerechten (bijgerechtId, naam, prijs) VALUES
-(1, 'Frietjes', 3.00),
-(2, 'Rijst', 2.50),
-(3, 'Salade', 2.00);
+(1, 'Aardappelpuree', 3.50),
+(2, '-', 0.00),
+(3, 'Frietjes', 3.00),
+(4, 'Rijst', 2.50),
+(5, 'Salade', 2.00);
 
 INSERT INTO Groenten (groenteId, naam, prijs) VALUES
-(1, 'Broccoli', 1.50),
-(2, 'Sperziebonen', 1.20),
-(3, 'Worteltjes', 1.00);
+(1, 'Spinazie', 2.00),
+(2, '-', 0.00),
+(3, 'Broccoli', 1.50),
+(4, 'Sperziebonen', 1.20),
+(5, 'Worteltjes', 1.00);
 
 INSERT INTO Sausen (sausId, naam, prijs) VALUES
-(1, 'Tomatensaus', 0.50),
-(2, 'Pindasaus', 0.70),
-(3, 'Pepersaus', 0.60);
+(1, 'Dillesaus', 0.75),
+(2, '-', 0.00),
+(3, 'Tomatensaus', 0.50),
+(4, 'Pindasaus', 0.70),
+(5, 'Pepersaus', 0.60);
 
 INSERT INTO Tafels (tafelId, nummer) VALUES
 (1, 10),
@@ -157,21 +172,31 @@ INSERT INTO Bestellingen (bestellingId, levertijdId, besteldatum) VALUES
 (2, 2, '2025-06-23 18:45:00');
 
 INSERT INTO GerechtSamenstellingen (gerechtId, hoofdonderdeelId, bijgerechtId, groenteId, sausId) VALUES
-(1, 1, 1, 1, 1),
-(2, 2, 2, 2, 2);
+(1, 2, 1, 1, 1),
+(2, 1, 2, 2, 2),
+(3, 2, 1, 1, 1),
+(4, 3, 2, 2, 2),
+(5, 4, 3, 3, 3),
+(6, 5, 4, 4, 4);
 
 INSERT INTO HoofdonderdeelAllergenen (hoofdonderdeelId, allergeenId) VALUES
-(1, 1), -- Spaghetti bevat gluten
-(2, 2); -- Kipfilet bevat lactose
+(1, 2),
+(2, 2),
+(3, 1),
+(4, 1),
+(5, 2);
 
 INSERT INTO BijgerechtAllergenen (bijgerechtId, allergeenId) VALUES
-(1, 1); -- Frietjes bevatten gluten
+(1, 1),
+(3, 1);
 
 INSERT INTO GroenteAllergenen (groenteId, allergeenId) VALUES
-(1, 3); -- Broccoli bevat noten (fictief voorbeeld)
+(1, 3),
+(3, 3);
 
 INSERT INTO SausAllergenen (sausId, allergeenId) VALUES
-(2, 3); -- Pindasaus bevat noten
+(1, 2),
+(4, 3);
 
 INSERT INTO BestellingGerechten (bestellingId, gerechtId) VALUES
 (1, 1),
