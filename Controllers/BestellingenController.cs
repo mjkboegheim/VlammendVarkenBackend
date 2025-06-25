@@ -44,6 +44,7 @@ namespace VlammendVarkenBackend.Controllers
             return View("~/Views/Personeel/Bestellingen/Overzicht/Index.cshtml", bestellingen);
         }
 
+
         public IActionResult Personeel_Bestellingen_Details_Index(int bestellingId)
         {
             var bestelling = _context.Bestellingen

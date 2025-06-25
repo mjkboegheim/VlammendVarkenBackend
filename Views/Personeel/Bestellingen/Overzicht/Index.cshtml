@@ -5,13 +5,13 @@
 <html lang="nl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Overzicht Lopende Bestellingen</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 </head>
-
 <body class="bg-gray-50 flex items-center justify-center min-h-screen p-4 font-sans">
+
   <div class="w-full max-w-6xl bg-white rounded-xl shadow-lg p-6 md:p-8 space-y-8">
     <main class="overflow-x-auto border border-gray-200 rounded-lg">
       <table class="min-w-full bg-white">
@@ -29,9 +29,7 @@
         <tbody class="divide-y divide-gray-200 text-sm text-gray-700">
           @foreach (var item in Model)
           {
-            var eindtijd = item.Besteldatum.AddMinutes(item.BereidingstijdMinuten);
-            var eindtijdIso = eindtijd.ToString("o");
-            <tr data-bestellingid="@item.BestellingId" data-endtime="@eindtijdIso">
+            <tr data-bestellingid="@item.BestellingId" data-bereidingstijd="@item.BereidingstijdMinuten">
               <td class="px-6 py-4 whitespace-nowrap font-semibold text-gray-800">
                 @string.Join(", ", item.Tafelnummers)
               </td>
@@ -54,26 +52,22 @@
               <td class="px-6 py-4 whitespace-nowrap text-gray-600">
                 ~@item.BereidingstijdMinuten min
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-red-600 font-mono tabular-nums">
-                <span class="timer-cell">--</span>
+              <td class="px-6 py-4 whitespace-nowrap font-mono tabular-nums text-red-600">
+                <span class="timer-display">--:--</span>
                 <div class="mt-1 flex gap-1">
-                  <button class="start-btn bg-green-600 text-white px-2 py-1 rounded text-xs hover:bg-green-700 transition" data-bestellingid="@item.BestellingId" style="display:none;">
+                  <button class="start-btn bg-green-600 text-white px-2 py-1 rounded text-xs hover:bg-green-700 transition" style="display:none;">
                     Start
                   </button>
-                  <button class="stop-btn bg-yellow-600 text-white px-2 py-1 rounded text-xs hover:bg-yellow-700 transition" data-bestellingid="@item.BestellingId" style="display:none;">
+                  <button class="stop-btn bg-yellow-600 text-white px-2 py-1 rounded text-xs hover:bg-yellow-700 transition" style="display:none;">
                     Stop
                   </button>
                 </div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-right space-x-2">
+              <td class="px-6 py-4 whitespace-nowrap text-right">
                 <a asp-controller="Bestellingen" asp-action="Personeel_Bestellingen_Details_Index" asp-route-bestellingId="@item.BestellingId"
                    class="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-gray-900 hover:scale-105">
                   Details
                 </a>
-                <button class="verwijder-btn bg-red-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-red-700 hover:scale-105"
-                        data-bestellingid="@item.BestellingId">
-                  Verwijder
-                </button>
               </td>
             </tr>
           }
@@ -82,101 +76,131 @@
     </main>
   </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const removedKey = 'verwijderdeBestellingen';
-      let verwijderde = JSON.parse(localStorage.getItem(removedKey) || '[]');
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const rows = document.querySelectorAll('tbody tr[data-bestellingid]');
 
-      document.querySelectorAll('tbody tr[data-bestellingid]').forEach(row => {
-        const bestellingId = row.getAttribute('data-bestellingid');
-        const endTimeStr = row.getAttribute('data-endtime');
-        const timerCell = row.querySelector('.timer-cell');
-        const startBtn = row.querySelector('.start-btn');
-        const stopBtn = row.querySelector('.stop-btn');
-        const storageKey = 'bestellingTimer_' + bestellingId;
+    rows.forEach(row => {
+      const bestellingId = row.getAttribute('data-bestellingid');
+      const bereidingstijdMinuten = parseInt(row.getAttribute('data-bereidingstijd'), 10);
+      const timerDisplay = row.querySelector('.timer-display');
+      const startBtn = row.querySelector('.start-btn');
+      const stopBtn = row.querySelector('.stop-btn');
 
-        let interval = null;
-        let secondsLeft = localStorage.getItem(storageKey) !== null
-          ? parseInt(localStorage.getItem(storageKey), 10)
-          : Math.max(Math.floor((new Date(endTimeStr) - new Date()) / 1000), 0);
+      // LocalStorage keys per bestelling
+      const storageStartKey = 'bestellingTimerStart_' + bestellingId;
+      const storageDurationKey = 'bestellingTimerDuration_' + bestellingId;
 
-        // Verwijder uit DOM als eerder verwijderd
-        if (verwijderde.includes(bestellingId)) {
-          row.remove();
-          return;
+      // Default duur in seconden
+      const defaultDuration = bereidingstijdMinuten * 60;
+
+      // Haal opgeslagen starttijd en duur op
+      let startTimestamp = localStorage.getItem(storageStartKey);
+      let storedDuration = localStorage.getItem(storageDurationKey);
+      let totalDuration = storedDuration !== null ? parseInt(storedDuration, 10) : null;
+
+      // Alleen defaultDuration instellen als er geen geldige storedDuration is (null of NaN)
+      if (totalDuration === null || isNaN(totalDuration)) {
+        totalDuration = defaultDuration;
+        localStorage.setItem(storageDurationKey, totalDuration);
+      }
+
+      let interval = null;
+
+      function getSecondsLeft() {
+        if (!startTimestamp) {
+          return totalDuration;
         }
+        const now = Date.now();
+        const elapsed = Math.floor((now - parseInt(startTimestamp, 10)) / 1000);
+        const left = totalDuration - elapsed;
+        return left > 0 ? left : 0;
+      }
 
-        function updateTimer() {
-          if (secondsLeft > 0) {
-            secondsLeft--;
-            localStorage.setItem(storageKey, secondsLeft.toString());
-            const m = Math.floor(secondsLeft / 60), s = secondsLeft % 60;
-            timerCell.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-            row.classList.remove('bg-yellow-200');
-          } else {
-            timerCell.textContent = '00:00';
-            row.classList.add('bg-yellow-200');
-            localStorage.removeItem(storageKey);
-            clearInterval(interval);
-            interval = null;
-            showStartStopButtons(false);
-          }
-        }
+      function updateTimerDisplay() {
+        const secondsLeft = getSecondsLeft();
 
-        function showStartStopButtons(timerRunning) {
-          if (timerRunning) {
-            startBtn.style.display = 'none';
-            stopBtn.style.display = 'inline-block';
-          } else {
-            startBtn.style.display = 'inline-block';
-            stopBtn.style.display = 'none';
-          }
-        }
+        if (secondsLeft === 0) {
+          timerDisplay.textContent = "Klaar";
+          row.classList.add('bg-green-200');
+          clearInterval(interval);
+          interval = null;
 
-        // Start knop
-        startBtn.addEventListener('click', () => {
-          if (!interval) {
-            updateTimer();
-            interval = setInterval(updateTimer, 1000);
-            showStartStopButtons(true);
-          }
-        });
+          localStorage.setItem(storageDurationKey, '0');
+          localStorage.removeItem(storageStartKey);
 
-        // Stop knop
-        stopBtn.addEventListener('click', () => {
-          if (interval) {
-            clearInterval(interval);
-            interval = null;
-            showStartStopButtons(false);
-          }
-        });
-
-        // Verwijderknop
-        const verwijderBtn = row.querySelector('.verwijder-btn');
-        verwijderBtn.addEventListener('click', () => {
-          row.remove();
-          if (!verwijderde.includes(bestellingId)) {
-            verwijderde.push(bestellingId);
-            localStorage.setItem(removedKey, JSON.stringify(verwijderde));
-          }
-          if (interval) clearInterval(interval);
-        });
-
-        // Init: toon timer en juiste knop
-        if (interval) {
-          showStartStopButtons(true);
-        } else {
           showStartStopButtons(false);
+        } else {
+          const minutes = Math.floor(secondsLeft / 60);
+          const seconds = secondsLeft % 60;
+          timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+          row.classList.remove('bg-yellow-200');
+          row.classList.remove('bg-green-200');
+        }
+      }
+
+      function showStartStopButtons(running) {
+        if (running) {
+          startBtn.style.display = 'none';
+          stopBtn.style.display = 'inline-block';
+        } else {
+          startBtn.style.display = 'inline-block';
+          stopBtn.style.display = 'none';
+        }
+      }
+
+      function startTimer() {
+        if (interval) return;
+
+        if (!startTimestamp) {
+          startTimestamp = Date.now().toString();
+          localStorage.setItem(storageStartKey, startTimestamp);
         }
 
-        if (secondsLeft > 0) {
-          const m = Math.floor(secondsLeft / 60), s = secondsLeft % 60;
-          timerCell.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-        } else {
-          timerCell.textContent = '00:00';
-        }
+        interval = setInterval(() => {
+          updateTimerDisplay();
+        }, 1000);
+
+        updateTimerDisplay();
+        showStartStopButtons(true);
+      }
+
+      function stopTimer() {
+        if (!interval) return;
+
+        clearInterval(interval);
+        interval = null;
+
+        const secondsLeft = getSecondsLeft();
+        totalDuration = secondsLeft;
+        localStorage.setItem(storageDurationKey, totalDuration);
+        localStorage.removeItem(storageStartKey);
+        startTimestamp = null;
+
+        updateTimerDisplay();
+        showStartStopButtons(false);
+      }
+
+      // Init: toon timer en juiste knop (start/stop) bij laden pagina
+      if (startTimestamp) {
+        startTimer();
+      } else {
+        updateTimerDisplay();
+        showStartStopButtons(false);
+      }
+
+      // Event listeners knoppen
+      startBtn.addEventListener('click', () => {
+        startTimer();
+      });
+
+      stopBtn.addEventListener('click', () => {
+        stopTimer();
       });
     });
-  </script>
+  });
+</script>
+
+
 </body>
 </html>

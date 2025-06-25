@@ -86,101 +86,136 @@
     </main>
   </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const aftelTijdElem = document.getElementById('aftelTijd');
-      const verhoogBtn = document.getElementById('verhoogTimerBtn');
-      const startBtn = document.getElementById('startTimerBtn');
-      const stopBtn = document.getElementById('stopTimerBtn');
-      const rijElem = document.getElementById('bestelling-rij');
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const aftelTijdElem = document.getElementById('aftelTijd');
+  const verhoogBtn = document.getElementById('verhoogTimerBtn');
+  const startBtn = document.getElementById('startTimerBtn');
+  const stopBtn = document.getElementById('stopTimerBtn');
+  const rijElem = document.getElementById('bestelling-rij');
 
-      const bestellingId = '@Model.BestellingId';
-      const storageKey = 'bestellingTimer_' + bestellingId;
+  const bestellingId = '@Model.BestellingId';
+  const storageStartKey = 'bestellingTimerStart_' + bestellingId;
+  const storageDurationKey = 'bestellingTimerDuration_' + bestellingId;
 
-      let savedSeconds = localStorage.getItem(storageKey);
-      let secondsLeft = savedSeconds !== null
-        ? parseInt(savedSeconds, 10)
-        : @Model.BereidingstijdMinuten * 60;
+  const defaultDuration = @Model.BereidingstijdMinuten * 60;
 
-      let interval = null;
+  let startTimestamp = localStorage.getItem(storageStartKey);
+  let totalDuration = parseInt(localStorage.getItem(storageDurationKey), 10);
+  if ((!totalDuration && totalDuration !== 0) || isNaN(totalDuration)) {
+    totalDuration = defaultDuration;
+    localStorage.setItem(storageDurationKey, totalDuration);
+  }
 
-      function updateTimerDisplay() {
-        let minutes = Math.floor(secondsLeft / 60);
-        let seconds = secondsLeft % 60;
-        aftelTijdElem.textContent = String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
-      }
+  let interval = null;
 
-      function showStartStopButtons(timerRunning) {
-        if (timerRunning) {
-          startBtn.style.display = 'none';
-          stopBtn.style.display = 'inline-block';
-        } else {
-          startBtn.style.display = 'inline-block';
-          stopBtn.style.display = 'none';
-        }
-      }
+  function getSecondsLeft() {
+    if (!startTimestamp) {
+      return totalDuration;
+    }
+    const now = Date.now();
+    const elapsed = Math.floor((now - parseInt(startTimestamp, 10)) / 1000);
+    const left = totalDuration - elapsed;
+    return left > 0 ? left : 0;
+  }
 
-      function startTimer() {
-        if (interval) return;
+  function updateTimerDisplay() {
+    const secondsLeft = getSecondsLeft();
 
-        interval = setInterval(() => {
-          if (secondsLeft > 0) {
-            secondsLeft--;
-            updateTimerDisplay();
-            localStorage.setItem(storageKey, secondsLeft.toString());
-            rijElem.classList.remove('bg-yellow-200');
-          } else {
-            aftelTijdElem.textContent = '00:00';
-            rijElem.classList.add('bg-yellow-200');
-            clearInterval(interval);
-            interval = null;
-            localStorage.removeItem(storageKey);
-            showStartStopButtons(false);
-          }
-        }, 1000);
+    if (secondsLeft === 0) {
+      aftelTijdElem.textContent = 'Klaar';
+      rijElem.classList.add('bg-green-200');
+      clearInterval(interval);
+      interval = null;
 
-        updateTimerDisplay();
-        showStartStopButtons(true);
-      }
+      localStorage.setItem(storageDurationKey, '0');
+      localStorage.removeItem(storageStartKey);
 
-      function stopTimer() {
-        if (interval) {
-          clearInterval(interval);
-          interval = null;
-          showStartStopButtons(false);
-        }
-      }
+      showStartStopButtons(false);
+    } else {
+      const minutes = Math.floor(secondsLeft / 60);
+      const seconds = secondsLeft % 60;
+      aftelTijdElem.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      rijElem.classList.remove('bg-green-200');
+    }
+  }
 
-      // Start knop
-      startBtn.addEventListener('click', () => {
-        startTimer();
-      });
+  function showStartStopButtons(running) {
+    if (running) {
+      startBtn.style.display = 'none';
+      stopBtn.style.display = 'inline-block';
+    } else {
+      startBtn.style.display = 'inline-block';
+      stopBtn.style.display = 'none';
+    }
+  }
 
-      // Stop knop
-      stopBtn.addEventListener('click', () => {
-        stopTimer();
-      });
+  function startTimer() {
+    if (interval) return;
 
-      // Ophogen knop
-      verhoogBtn.addEventListener('click', () => {
-        secondsLeft += 15 * 60;
-        updateTimerDisplay();
-        localStorage.setItem(storageKey, secondsLeft.toString());
+    if (!startTimestamp) {
+      startTimestamp = Date.now().toString();
+      localStorage.setItem(storageStartKey, startTimestamp);
+    }
 
-        if (!interval) {
-          startTimer();
-        }
-      });
-
-      // Init: toon timer en juiste knop (start of stop)
-      if (interval) {
-        showStartStopButtons(true);
-      } else {
+    interval = setInterval(() => {
+      updateTimerDisplay();
+      if (getSecondsLeft() === 0) {
+        clearInterval(interval);
+        interval = null;
         showStartStopButtons(false);
       }
+    }, 1000);
 
+    updateTimerDisplay();
+    showStartStopButtons(true);
+  }
+
+  function stopTimer() {
+    if (!interval) return;
+
+    clearInterval(interval);
+    interval = null;
+
+    const secondsLeft = getSecondsLeft();
+    totalDuration = secondsLeft;
+    localStorage.setItem(storageDurationKey, totalDuration);
+    localStorage.removeItem(storageStartKey);
+    startTimestamp = null;
+
+    updateTimerDisplay();
+    showStartStopButtons(false);
+  }
+
+  verhoogBtn.addEventListener('click', () => {
+    const secondsLeft = getSecondsLeft();
+    totalDuration = secondsLeft + 15 * 60;
+    localStorage.setItem(storageDurationKey, totalDuration);
+
+    if (!startTimestamp) {
       updateTimerDisplay();
-    });
-  </script>
+    } else {
+      updateTimerDisplay();
+    }
+  });
+
+  startBtn.addEventListener('click', () => {
+    startTimer();
+  });
+
+  stopBtn.addEventListener('click', () => {
+    stopTimer();
+  });
+
+  if (startTimestamp) {
+    startTimer();
+  } else {
+    updateTimerDisplay();
+    showStartStopButtons(false);
+  }
+});
+</script>
+
+
 </body>
 </html>
