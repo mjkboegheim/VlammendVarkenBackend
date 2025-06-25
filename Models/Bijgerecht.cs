@@ -6,15 +6,15 @@ namespace VlammendVarkenBackend.Models;
 public class Bijgerecht
 {
   [Column("bijgerechtId")]
-  public int BijgerechtId { get; set; }
+  public int BijgerechtId { get; init; }
   
   [Column("naam")]
   [MaxLength(100)]
-  public string Naam { get; set; } = null!;
+  public string Naam { get; init; } = null!;
   
   [Column("prijs")]
-  public decimal Prijs { get; set; }
+  public decimal Prijs { get; init; }
 
-  public ICollection<BijgerechtAllergeen> BijgerechtAllergenen { get; set; } = new List<BijgerechtAllergeen>();
-  public ICollection<GerechtSamenstelling> GerechtSamenstellingen { get; set; } = new List<GerechtSamenstelling>();
+  public ICollection<BijgerechtAllergeen> BijgerechtAllergenen { get; init; } = new List<BijgerechtAllergeen>();
+  public ICollection<GerechtSamenstelling> GerechtSamenstellingen { get; init; } = new List<GerechtSamenstelling>();
 }

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "ILEHp5GsCN8n5SLyVRx/lcjtlrv95pkq/e4UwSZukrQ=",
+  "Hash": "alqjO7iSOzDE/XBnv+A1Hr+I3PgRbOIWRI/JDPx4EFo=",
   "Source": "VlammendVarkenBackend",
   "BasePath": "_content/VlammendVarkenBackend",
   "Mode": "Default",
@@ -17,12 +17,12 @@
   ],
   "Assets": [
     {
-      "Identity": "/Users/admin/Desktop/VlammendVarken/wwwroot/bestellingen.html",
+      "Identity": "/Users/admin/Desktop/VlammendVarken/wwwroot/js/script.js",
       "SourceId": "VlammendVarkenBackend",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/admin/Desktop/VlammendVarken/wwwroot/",
       "BasePath": "_content/VlammendVarkenBackend",
-      "RelativePath": "bestellingen.html",
+      "RelativePath": "js/script.js",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -33,26 +33,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/bestellingen.html"
-    },
-    {
-      "Identity": "/Users/admin/Desktop/VlammendVarken/wwwroot/bestellingenv2.html",
-      "SourceId": "VlammendVarkenBackend",
-      "SourceType": "Discovered",
-      "ContentRoot": "/Users/admin/Desktop/VlammendVarken/wwwroot/",
-      "BasePath": "_content/VlammendVarkenBackend",
-      "RelativePath": "bestellingenv2.html",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/bestellingenv2.html"
+      "OriginalItemSpec": "wwwroot/js/script.js"
     }
   ]
 }

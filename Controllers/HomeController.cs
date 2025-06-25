@@ -10,7 +10,7 @@ public class HomeController(AppDbContext context) : Controller
 {
   public async Task<IActionResult> Gast_Index()
   {
-    var gerecht = await context.Gerechten
+    var dagmenu = await context.Gerechten
       .Include(g => g.GerechtSamenstellingen)
         .ThenInclude(gs => gs.Hoofdonderdeel)
           .ThenInclude(h => h.HoofdonderdeelAllergenen)
@@ -29,33 +29,33 @@ public class HomeController(AppDbContext context) : Controller
             .ThenInclude(sa => sa.Allergeen)
       .FirstOrDefaultAsync(g => g.Soort == "Dagmenu");
 
-    if (gerecht == null)
+    if (dagmenu == null)
     {
       return View("~/Views/Gast/Index.cshtml");
     }
 
-    var samenstelling = gerecht.GerechtSamenstellingen.FirstOrDefault();
+    var dagmenuSamenstelling = dagmenu.GerechtSamenstellingen.FirstOrDefault();
 
-    if (samenstelling == null)
+    if (dagmenuSamenstelling == null)
     {
       return View("~/Views/Gast/Index.cshtml");
     }
 
-    var allergenenLijst = gerecht.GerechtSamenstellingen.SelectMany(GetAllergenenVanSamenstelling).Distinct().ToList();
+    var dagmenuAllergenenLijst = dagmenu.GerechtSamenstellingen.SelectMany(GetAllergenenVanSamenstelling).Distinct().ToList();
 
-    var gerechtViewModel = new GerechtViewModel
+    var dagmenuViewModel = new GerechtViewModel
     {
-      Soort = gerecht.Soort,
-      Naam = gerecht.Naam,
-      Hoofdonderdeel = samenstelling.Hoofdonderdeel.Naam,
-      Bijgerecht = samenstelling.Bijgerecht.Naam,
-      Groente = samenstelling.Groente.Naam,
-      Saus = samenstelling.Saus.Naam,
-      Prijs = (samenstelling.Hoofdonderdeel.Prijs) + (samenstelling.Bijgerecht.Prijs) + (samenstelling.Groente.Prijs) + (samenstelling.Saus.Prijs),
-      Allergenen = allergenenLijst.Select(a => new AllergeenViewModel { Symbool = a }).ToList()
+      Soort = dagmenu.Soort,
+      Naam = dagmenu.Naam,
+      Hoofdonderdeel = dagmenuSamenstelling.Hoofdonderdeel.Naam,
+      Bijgerecht = dagmenuSamenstelling.Bijgerecht.Naam,
+      Groente = dagmenuSamenstelling.Groente.Naam,
+      Saus = dagmenuSamenstelling.Saus.Naam,
+      Prijs = (dagmenuSamenstelling.Hoofdonderdeel.Prijs) + (dagmenuSamenstelling.Bijgerecht.Prijs) + (dagmenuSamenstelling.Groente.Prijs) + (dagmenuSamenstelling.Saus.Prijs),
+      Allergenen = dagmenuAllergenenLijst.Select(a => new AllergeenViewModel { Symbool = a }).ToList()
     };
 
-    return View("~/Views/Gast/Index.cshtml", gerechtViewModel);
+    return View("~/Views/Gast/Index.cshtml", dagmenuViewModel);
   }
 
   private static IEnumerable<string> GetAllergenenVanSamenstelling(GerechtSamenstelling s)

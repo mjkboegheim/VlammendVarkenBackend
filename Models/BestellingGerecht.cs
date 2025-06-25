@@ -5,11 +5,11 @@ namespace VlammendVarkenBackend.Models;
 public class BestellingGerecht
 {
   [Column("bestellingId")]
-  public int BestellingId { get; set; }
+  public int BestellingId { get; init; }
   
   [Column("gerechtId")]
-  public int GerechtId { get; set; }
+  public int GerechtId { get; init; }
 
-  public Bestelling Bestelling { get; set; } = null!;
-  public Gerecht Gerecht { get; set; } = null!;
+  public Bestelling Bestelling { get; init; } = null!;
+  public Gerecht Gerecht { get; init; } = null!;
 }
