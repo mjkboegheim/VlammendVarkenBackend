@@ -5,11 +5,11 @@ namespace VlammendVarkenBackend.Models;
 public class SausAllergeen
 {
   [Column("sausId")]
-  public int SausId { get; set; }
+  public int SausId { get; init; }
   
   [Column("allergeenId")]
-  public int AllergeenId { get; set; }
+  public int AllergeenId { get; init; }
 
-  public Saus Saus { get; set; } = null!;
-  public Allergeen Allergeen { get; set; } = null!;
+  public Saus Saus { get; init; } = null!;
+  public Allergeen Allergeen { get; init; } = null!;
 }

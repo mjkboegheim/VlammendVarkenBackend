@@ -21,6 +21,7 @@
   <ItemGroup>
     <None Remove="Data\" />
     <None Remove="Models\" />
+    <None Include="wwwroot\js\script.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\" />

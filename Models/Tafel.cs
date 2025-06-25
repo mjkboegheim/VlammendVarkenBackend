@@ -5,10 +5,10 @@ namespace VlammendVarkenBackend.Models;
 public class Tafel
 {
   [Column("tafelId")]
-  public int TafelId { get; set; }
+  public int TafelId { get; init; }
   
   [Column("nummer")]
-  public int Nummer { get; set; }
+  public int Nummer { get; init; }
 
-  public ICollection<BestellingTafel> BestellingTafels { get; set; } = new List<BestellingTafel>();
+  public ICollection<BestellingTafel> BestellingTafels { get; init; } = new List<BestellingTafel>();
 }

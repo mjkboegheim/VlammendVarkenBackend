@@ -6,15 +6,15 @@ namespace VlammendVarkenBackend.Models;
 public class Saus
 {
   [Column("sausId")]
-  public int SausId { get; set; }
+  public int SausId { get; init; }
   
   [Column("naam")]
   [MaxLength(100)]
-  public string Naam { get; set; } = null!;
+  public string Naam { get; init; } = null!;
   
   [Column("prijs")]
-  public decimal Prijs { get; set; }
+  public decimal Prijs { get; init; }
 
-  public ICollection<SausAllergeen> SausAllergenen { get; set; } = new List<SausAllergeen>();
-  public ICollection<GerechtSamenstelling> GerechtSamenstellingen { get; set; } = new List<GerechtSamenstelling>();
+  public ICollection<SausAllergeen> SausAllergenen { get; init; } = new List<SausAllergeen>();
+  public ICollection<GerechtSamenstelling> GerechtSamenstellingen { get; init; } = new List<GerechtSamenstelling>();
 }
