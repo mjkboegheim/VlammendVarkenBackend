@@ -1,7 +1,7 @@
 @model VlammendVarkenBackend.Models.ViewModels.GerechtViewModel
 
 @{
-  var allergenen = Model.Hoofdonderdelen.SelectMany(h => h.Allergenen)
+  var gerechtAllergenen = Model.Hoofdonderdelen.SelectMany(h => h.Allergenen)
     .Concat(Model.Bijgerechten.SelectMany(b => b.Allergenen))
     .Concat(Model.Groenten.SelectMany(g => g.Allergenen))
     .Concat(Model.Sausen.SelectMany(s => s.Allergenen))
@@ -9,13 +9,22 @@
     .Select(g => g.First())
     .ToList();
 
-  var allergenenString = string.Join(",", allergenen.Select(a => a.Symbool));
-    
+  var gerechtAllergenenString = string.Join(",", gerechtAllergenen.Select(a => a.Symbool));
+
+  var gerechtNaam = @Model.Naam;
+  var gerechtSoort = @Model.Soort;
+  
+  var gerechtBijgerechten = string.Join(", ", @Model.Bijgerechten.Select(b => b.Naam));
+  var gerechtGroenten = string.Join(", ", @Model.Groenten.Select(g => g.Naam));
+  var gerechtSausen = string.Join(", ", @Model.Sausen.Select(s => s.Naam));
+  
   var totaalBijonderdelenPrijs =
-    Model.Hoofdonderdelen.Sum(h => h.Prijs) +
-    Model.Bijgerechten.Sum(b => b.Prijs) +
-    Model.Groenten.Sum(g => g.Prijs) +
-    Model.Sausen.Sum(s => s.Prijs);
+    (
+      Model.Hoofdonderdelen.Sum(h => h.Prijs) +
+      Model.Bijgerechten.Sum(b => b.Prijs) +
+      Model.Groenten.Sum(g => g.Prijs) +
+      Model.Sausen.Sum(s => s.Prijs)
+    ).ToString("F2");
 }
 
 <head>
@@ -36,32 +45,32 @@
       <div class="bg-indigo-50 border border-indigo-200 p-6 rounded-lg shadow-sm">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
           <div>
-            <h2 id="dagmenu-title" class="text-xl font-bold text-indigo-800">@Model.Naam</h2>
+            <h2 id="dagmenu-title" class="text-xl font-bold text-indigo-800">@gerechtNaam</h2>
             <ul class="mt-2 text-sm text-indigo-700 list-disc list-inside">
-              <li><strong>Bijgerecht:</strong> @Model.Bijgerechten.FirstOrDefault()?.Naam</li>
-              <li><strong>Groente:</strong> @Model.Groenten.FirstOrDefault()?.Naam</li>
-              <li><strong>Saus:</strong> @Model.Sausen.FirstOrDefault()?.Naam</li>
+              <li><strong>Bijgerecht:</strong> @gerechtBijgerechten</li>
+              <li><strong>Groente:</strong> @gerechtGroenten</li>
+              <li><strong>Saus:</strong> @gerechtSausen</li>
             </ul>
-            <p class="mt-2 text-sm text-indigo-700"><strong>Allergieën:</strong>
-              @foreach (var allergeen in allergenen)
+            <p class="mt-2 text-sm text-indigo-700"><strong>Allergenen:</strong>
+              @foreach (var gerechtAllergeen in gerechtAllergenen)
               {
-                <span class="inline-block mr-1">@allergeen.Symbool</span>
+                <span class="inline-block mr-1">@gerechtAllergeen.Symbool</span>
               }
             </p>
           </div>
           <div class="text-right mt-4 md:mt-0 flex-shrink-0 md:ml-6">
-            <p class="text-2xl font-bold text-indigo-800 mb-2">€@totaalBijonderdelenPrijs.ToString("F2")</p>
+            <p class="text-2xl font-bold text-indigo-800 mb-2">€@totaalBijonderdelenPrijs</p>
             <div class="w-full md:w-auto space-y-2">
               <button 
-                      class="toevoegenBtn w-full flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition-transform hover:scale-105"
-                      aria-label="Voeg @Model.Naam toe aan bestelling"
-                      data-naam="@Model.Naam"
-                      data-soort="@Model.Soort"
-                      data-bijgerecht="@Model.Bijgerechten.FirstOrDefault()?.Naam"
-                      data-groente="@Model.Groenten.FirstOrDefault()?.Naam"
-                      data-saus="@Model.Sausen.FirstOrDefault()?.Naam"
-                      data-allergenen="@allergenenString"
-                      data-prijs="@totaalBijonderdelenPrijs.ToString("F2")">
+                class="toevoegenBtn w-full flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition-transform hover:scale-105"
+                aria-label="Voeg @gerechtNaam toe aan bestelling"
+                data-naam="@gerechtNaam"
+                data-soort="@gerechtSoort"
+                data-bijgerecht="@gerechtBijgerechten"
+                data-groente="@gerechtGroenten"
+                data-saus="@gerechtSausen"
+                data-allergenen="@gerechtAllergenenString"
+                data-prijs="@totaalBijonderdelenPrijs">
                 <span class="material-icons text-base mr-2" aria-hidden="true">add_shopping_cart</span>
                 Toevoegen
               </button>

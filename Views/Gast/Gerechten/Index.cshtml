@@ -1,5 +1,9 @@
 @model VlammendVarkenBackend.Models.ViewModels.GerechtLijstViewModel
 
+@{
+  var gerechten = @Model.Gerechten;
+}
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -15,46 +19,56 @@
       <section>
         <h1 class="text-2xl font-bold text-gray-800 mb-4 text-center">Gerechten Lijst</h1>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        @foreach (var gerecht in Model.Gerechten)
-        {
-          var bijgerechten = string.Join(", ", gerecht.Bijgerechten.Select(b => b.Naam));
-          var groenten = string.Join(", ", gerecht.Groenten.Select(g => g.Naam));
-          var sausen = string.Join(", ", gerecht.Sausen.Select(s => s.Naam));
-          var allergenen = string.Join(", ",
-            gerecht.Hoofdonderdelen.SelectMany(h => h.Allergenen)
-              .Concat(gerecht.Bijgerechten.SelectMany(b => b.Allergenen))
-              .Concat(gerecht.Groenten.SelectMany(g => g.Allergenen))
-              .Concat(gerecht.Sausen.SelectMany(s => s.Allergenen))
-              .Select(a => a.Symbool)
-              .Distinct()
-            );
-          var isHoofdgerecht = gerecht.Soort?.StartsWith("hoofdgerecht") == true;
+          
+          @foreach (var gerecht in gerechten)
+          {
+            var gerechtAllergenen = @gerecht.Hoofdonderdelen.SelectMany(h => h.Allergenen)
+              .Concat(@gerecht.Bijgerechten.SelectMany(b => b.Allergenen))
+              .Concat(@gerecht.Groenten.SelectMany(g => g.Allergenen))
+              .Concat(@gerecht.Sausen.SelectMany(s => s.Allergenen))
+              .GroupBy(a => a.Symbool)
+              .Select(g => g.First())
+              .ToList();
+            
+            var gerechtAllergenenString = string.Join(",", gerechtAllergenen.Select(a => a.Symbool));
+            
+            var gerechtBijgerechten = string.Join(", ", gerecht.Bijgerechten.Select(b => b.Naam));
+            var gerechtGroenten = string.Join(", ", gerecht.Groenten.Select(g => g.Naam));
+            var gerechtSausen = string.Join(", ", gerecht.Sausen.Select(s => s.Naam));
+            
+            var isHoofdgerecht = gerecht.Soort.StartsWith("hoofdgerecht");
 
-          <article class="p-6 flex flex-col bg-gray-50 rounded-lg border border-gray-200">
-            <h2 class="text-xl font-bold text-gray-800 mb-2">@gerecht.Naam</h2>
-            <div class="text-sm text-gray-600 space-y-1 mb-4">
-              <p><strong>Bijgerecht:</strong> @bijgerechten</p>
-              <p><strong>Groente:</strong> @groenten</p>
-              <p><strong>Saus:</strong> @sausen</p>
-              <p><strong>Allergenen:</strong> @allergenen</p>
-            </div>
-            <p class="text-lg font-bold text-gray-800 mb-4">€ @gerecht.Prijs.ToString("F2")</p>
+            <article class="p-6 flex flex-col bg-gray-50 rounded-lg border border-gray-200">
+              <h2 class="text-xl font-bold text-gray-800 mb-2">@gerecht.Naam</h2>
+              <div class="text-sm text-gray-600 space-y-1 mb-4">
+                <p><strong>Bijgerecht:</strong> @gerechtBijgerechten</p>
+                <p><strong>Groente:</strong> @gerechtGroenten</p>
+                <p><strong>Saus:</strong> @gerechtSausen</p>
+                <p><strong>Allergenen:</strong> 
+                  @foreach (var gerechtAllergeen in gerechtAllergenen)
+                  {
+                    <span class="inline-block mr-1">@gerechtAllergeen.Symbool</span>
+                  }
+                </p>
+              </div>
+              <p class="text-lg font-bold text-gray-800 mb-4">€ @gerecht.Prijs.ToString("F2")</p>
 
-            <button 
-              type="button"
-              class="toevoegenBtn w-full flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition-transform hover:scale-105"
-              data-naam="@gerecht.Naam"
-              data-soort="@gerecht.Soort"
-              data-bijgerecht="@bijgerechten"
-              data-groente="@groenten"
-              data-saus="@sausen"
-              data-allergenen="@allergenen"
-              data-prijs="@gerecht.Prijs.ToString("F2")"
-              aria-label="Voeg @gerecht.Naam toe aan bestelling"
-            >
-              <span class="material-icons text-base mr-2" aria-hidden="true">add_shopping_cart</span>
-              Toevoegen
-            </button>
+              <button
+                type="button"
+                class="toevoegenBtn w-full flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition-transform hover:scale-105"
+                data-naam="@gerecht.Naam"
+                data-soort="@gerecht.Soort"
+                data-bijgerecht="@gerechtBijgerechten"
+                data-groente="@gerechtGroenten"
+                data-saus="@gerechtSausen"
+                data-allergenen="@gerechtAllergenenString"
+                data-prijs="@gerecht.Prijs.ToString("F2")"
+                aria-label="Voeg @gerecht.Naam toe aan bestelling">
+                <span class="material-icons text-base mr-2" aria-hidden="true">add_shopping_cart</span>
+                Toevoegen
+              </button>
+              
+            <!-- 
 
             @if (isHoofdgerecht)
             {
@@ -63,8 +77,10 @@
                 Aanpassen
               </a>
             }
-          </article>
-        }
+            
+            -->
+            </article>
+          }
         </div>
       </section>
       <section id="besteloverzicht">
