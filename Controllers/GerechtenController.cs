@@ -8,137 +8,137 @@ namespace VlammendVarkenBackend.Controllers;
 
 public class GerechtenController(AppDbContext context) : Controller
 {
-  
-  public async Task<IActionResult> Gast_Gerechten_Voorgerechten_Index()
+  private IQueryable<Gerecht> QueryGerechtenBySoort(int? gerechtId, string gerechtSoort)
   {
-    var voorgerechten = await context.Gerechten
-      .Include(g => g.GerechtSamenstellingen)
+    var query = context.Gerechten
+      .Include(g => g.Samenstellingen)
         .ThenInclude(gs => gs.Hoofdonderdeel)
-          .ThenInclude(h => h.HoofdonderdeelAllergenen)
+          .ThenInclude(h => h.Allergenen)
             .ThenInclude(ha => ha.Allergeen)
-      .Include(g => g.GerechtSamenstellingen)
+      .Include(g => g.Samenstellingen)
         .ThenInclude(gs => gs.Bijgerecht)
-          .ThenInclude(b => b.BijgerechtAllergenen)
+          .ThenInclude(b => b.Allergenen)
             .ThenInclude(ba => ba.Allergeen)
-      .Include(g => g.GerechtSamenstellingen)
+      .Include(g => g.Samenstellingen)
         .ThenInclude(gs => gs.Groente)
-          .ThenInclude(gro => gro.GroenteAllergenen)
+          .ThenInclude(gro => gro.Allergenen)
             .ThenInclude(ga => ga.Allergeen)
-      .Include(g => g.GerechtSamenstellingen)
+      .Include(g => g.Samenstellingen)
         .ThenInclude(gs => gs.Saus)
-          .ThenInclude(s => s.SausAllergenen)
+          .ThenInclude(s => s.Allergenen)
             .ThenInclude(sa => sa.Allergeen)
-      .Where(g => g.Soort == "Voorgerecht")
-      .ToListAsync();
-
-    var voorgerechtenViewModel = new GerechtenViewModel();
-
-    foreach (var voorgerecht in voorgerechten)
-    {
-      var voorgerechtSamenstelling = voorgerecht.GerechtSamenstellingen.FirstOrDefault();
-      if (voorgerechtSamenstelling == null) continue;
-
-      var voorgerechtAllergenenLijst = voorgerecht.GerechtSamenstellingen.SelectMany(GetAllergenenVanSamenstelling).Distinct().ToList();
-
-      var voorgerechtViewModel = new GerechtViewModel
-      {
-        Soort = voorgerecht.Soort,
-        Naam = voorgerecht.Naam,
-        Hoofdonderdeel = voorgerechtSamenstelling.Hoofdonderdeel.Naam,
-        Bijgerecht = voorgerechtSamenstelling.Bijgerecht.Naam,
-        Groente = voorgerechtSamenstelling.Groente.Naam,
-        Saus = voorgerechtSamenstelling.Saus.Naam,
-        Prijs = voorgerechtSamenstelling.Hoofdonderdeel.Prijs + voorgerechtSamenstelling.Bijgerecht.Prijs + voorgerechtSamenstelling.Groente.Prijs + voorgerechtSamenstelling.Saus.Prijs,
-        Allergenen = voorgerechtAllergenenLijst.Select(a => new AllergeenViewModel { Symbool = a }).ToList()
-      };
-
-      voorgerechtenViewModel.Gerechten.Add(voorgerechtViewModel);
+      .Where(g => g.Soort == gerechtSoort);
+    
+    if (gerechtId != null) {
+      query = query.Where(g => gerechtId == g.Id);
     }
     
-    return View("~/Views/Gast/Gerechten/Voorgerechten/Index.cshtml", voorgerechtenViewModel);
-  }
-  
-  public IActionResult Gast_Gerechten_Hoofdgerechten_Index()
-  {
-    return View("~/Views/Gast/Gerechten/Hoofdgerechten/Index.cshtml");
-  }
-  
-  public IActionResult Gast_Gerechten_Hoofdgerechten_Vlees_Index()
-  {
-    return View("~/Views/Gast/Gerechten/Hoofdgerechten/Vlees/Index.cshtml");
-  }
-  
-  public IActionResult Gast_Gerechten_Hoofdgerechten_Vis_Index()
-  {
-    return View("~/Views/Gast/Gerechten/Hoofdgerechten/Vis/Index.cshtml");
-  }
-  
-  public IActionResult Gast_Gerechten_Hoofdgerechten_Vegetarisch_Index()
-  {
-    return View("~/Views/Gast/Gerechten/Hoofdgerechten/Vegetarisch/Index.cshtml");
-  }
-  
-  public IActionResult Gast_Gerechten_Hoofdgerechten_Edit()
-  {
-    return View("~/Views/Gast/Gerechten/Hoofdgerechten/Edit.cshtml");
-  }
-  
-  public async Task<IActionResult> Gast_Gerechten_Nagerechten_Index()
-  {
-    var nagerechten = await context.Gerechten
-      .Include(g => g.GerechtSamenstellingen)
-        .ThenInclude(gs => gs.Hoofdonderdeel)
-          .ThenInclude(h => h.HoofdonderdeelAllergenen)
-            .ThenInclude(ha => ha.Allergeen)
-      .Include(g => g.GerechtSamenstellingen)
-        .ThenInclude(gs => gs.Bijgerecht)
-          .ThenInclude(b => b.BijgerechtAllergenen)
-            .ThenInclude(ba => ba.Allergeen)
-      .Include(g => g.GerechtSamenstellingen)
-        .ThenInclude(gs => gs.Groente)
-          .ThenInclude(gro => gro.GroenteAllergenen)
-            .ThenInclude(ga => ga.Allergeen)
-      .Include(g => g.GerechtSamenstellingen)
-        .ThenInclude(gs => gs.Saus)
-          .ThenInclude(s => s.SausAllergenen)
-            .ThenInclude(sa => sa.Allergeen)
-      .Where(g => g.Soort == "Nagerecht")
-      .ToListAsync();
+    if (gerechtSoort == "dagmenu") {
+      query = query.Take(1);
+    }
 
-    var nagerechtenViewModel = new GerechtenViewModel();
-
-    foreach (var nagerecht in nagerechten)
+    return query;
+  }
+  
+  private static GerechtViewModel? MaakGerechtViewModel(Gerecht gerecht)
+  {
+    var gerechtSamenstelling = gerecht.Samenstellingen.FirstOrDefault();
+    
+    if (gerechtSamenstelling == null) return null;
+    
+    return new GerechtViewModel
     {
-      var nagerechtSamenstelling = nagerecht.GerechtSamenstellingen.FirstOrDefault();
-      if (nagerechtSamenstelling == null) continue;
-
-      var nagerechtAllergenenLijst = nagerecht.GerechtSamenstellingen.SelectMany(GetAllergenenVanSamenstelling).Distinct().ToList();
-
-      var nagerechtViewModel = new GerechtViewModel
+      Id = gerecht.Id,
+      Soort = gerecht.Soort,
+      Naam = gerecht.Naam,
+      Prijs = 
+        gerechtSamenstelling.Hoofdonderdeel.Prijs +
+        gerechtSamenstelling.Bijgerecht.Prijs + 
+        gerechtSamenstelling.Groente.Prijs + 
+        gerechtSamenstelling.Saus.Prijs,
+      
+      Hoofdonderdelen = new()
       {
-        Soort = nagerecht.Soort,
-        Naam = nagerecht.Naam,
-        Hoofdonderdeel = nagerechtSamenstelling.Hoofdonderdeel.Naam,
-        Bijgerecht = nagerechtSamenstelling.Bijgerecht.Naam,
-        Groente = nagerechtSamenstelling.Groente.Naam,
-        Saus = nagerechtSamenstelling.Saus.Naam,
-        Prijs = nagerechtSamenstelling.Hoofdonderdeel.Prijs + nagerechtSamenstelling.Bijgerecht.Prijs + nagerechtSamenstelling.Groente.Prijs + nagerechtSamenstelling.Saus.Prijs,
-        Allergenen = nagerechtAllergenenLijst.Select(a => new AllergeenViewModel { Symbool = a }).ToList()
-      };
+        new HoofdonderdeelViewModel
+        {
+          Naam = gerechtSamenstelling.Hoofdonderdeel.Naam,
+          Prijs = gerechtSamenstelling.Hoofdonderdeel.Prijs,
+          Allergenen = gerechtSamenstelling.Hoofdonderdeel.Allergenen.Select(ha => 
+            new AllergeenViewModel
+            {
+              Symbool = ha.Allergeen.Symbool
+            }
+          ).ToList()
+        }
+      },
+      Bijgerechten = new()
+      {
+        new BijgerechtViewModel
+        {
+          Naam = gerechtSamenstelling.Bijgerecht.Naam,
+          Prijs = gerechtSamenstelling.Bijgerecht.Prijs,
+          Allergenen = gerechtSamenstelling.Bijgerecht.Allergenen.Select(ha => 
+            new AllergeenViewModel
+            {
+              Symbool = ha.Allergeen.Symbool
+            }
+          ).ToList()
+        }
+      },
+      Groenten = new()
+      {
+        new GroenteViewModel
+        {
+          Naam = gerechtSamenstelling.Groente.Naam,
+          Prijs = gerechtSamenstelling.Groente.Prijs,
+          Allergenen = gerechtSamenstelling.Groente.Allergenen.Select(ha => 
+            new AllergeenViewModel
+            {
+              Symbool = ha.Allergeen.Symbool
+            }
+          ).ToList()
+        }
+      },
+      Sausen = new()
+      {
+        new SausViewModel
+        {
+          Naam = gerechtSamenstelling.Saus.Naam,
+          Prijs = gerechtSamenstelling.Saus.Prijs,
+          Allergenen = gerechtSamenstelling.Saus.Allergenen.Select(ha => 
+            new AllergeenViewModel
+            {
+              Symbool = ha.Allergeen.Symbool
+            }
+          ).ToList()
+        }
+      },
+    };
+  }
+  
+  public async Task<IActionResult> Gast_Gerechten_Index(int? gerechtId, string gerechtSoort)
+  {
+    var gerechten = await QueryGerechtenBySoort(gerechtId, gerechtSoort).ToListAsync();
 
-      nagerechtenViewModel.Gerechten.Add(nagerechtViewModel);
+    if (gerechtId != null)
+    {
+      var gerechtViewModel = MaakGerechtViewModel(gerechten[0]);
+      return View("~/Views/Gast/Gerechten/Hoofdgerechten/Edit.cshtml", gerechtViewModel);
     }
     
-    return View("~/Views/Gast/Gerechten/nagerechten/Index.cshtml", nagerechtenViewModel);
-  }
-  
-  private static IEnumerable<string> GetAllergenenVanSamenstelling(GerechtSamenstelling s)
-  {
-    var hoofdonderdeelAllergenen = s.Hoofdonderdeel.HoofdonderdeelAllergenen.Select(ha => ha.Allergeen.Symbool);
-    var bijgerechtAllergenen = s.Bijgerecht.BijgerechtAllergenen.Select(ba => ba.Allergeen.Symbool);
-    var groenteAllergenen = s.Groente.GroenteAllergenen.Select(ga => ga.Allergeen.Symbool);
-    var sausAllergenen = s.Saus.SausAllergenen.Select(sa => sa.Allergeen.Symbool);
+    switch (gerechtSoort)
+    {
+      case "dagmenu":
+        var gerechtViewModel = MaakGerechtViewModel(gerechten[0]);
+        return View("~/Views/Gast/Index.cshtml", gerechtViewModel);
 
-    return hoofdonderdeelAllergenen.Concat(bijgerechtAllergenen).Concat(groenteAllergenen).Concat(sausAllergenen);
+      case "hoofdgerecht":
+        return View("~/Views/Gast/Gerechten/Hoofdgerechten/Index.cshtml");
+
+      default:
+        var gerechtLijstViewModel = new GerechtLijstViewModel();
+        gerechtLijstViewModel.Gerechten.AddRange(gerechten.Select(MaakGerechtViewModel).Where(gerechtVm => gerechtVm != null)!);
+        return View("~/Views/Gast/Gerechten/Index.cshtml", gerechtLijstViewModel);
+    }
   }
 }

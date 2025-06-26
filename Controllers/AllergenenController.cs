@@ -9,9 +9,10 @@ public class AllergenenController(AppDbContext context) : Controller
 {
   public async Task<IActionResult> Gast_Allergenen_Index()
   {
-    var allergenenViewModel = await context.Allergenen
-      .Select(a => new AllergeenViewModel { Symbool = a.Symbool, Beschrijving = a.Beschrijving })
-      .ToListAsync();
+    var allergenenViewModel = 
+      await context.Allergenen
+       .Select(a => new AllergeenViewModel { Symbool = a.Symbool, Beschrijving = a.Beschrijving })
+        .ToListAsync();
 
     return View("~/Views/Gast/Allergenen/Index.cshtml", allergenenViewModel);
   }

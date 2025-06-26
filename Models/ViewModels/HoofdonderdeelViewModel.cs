@@ -1,16 +1,12 @@
-using System.ComponentModel.DataAnnotations.Schema;
+namespace VlammendVarkenBackend.Models.ViewModels;
 
-namespace VlammendVarkenBackend.Models;
-
-public class Levertijd
+public class HoofdonderdeelViewModel
 {
   // ---------------------------------------------------------------------------------------------------------------- //
-  [Column("id")]
-  public int Id { get; init; }
+  public string Naam { get; init; } = null!;
   
-  [Column("minuten")]
-  public int Minuten { get; init; }
+  public decimal Prijs { get; init; }
   // ---------------------------------------------------------------------------------------------------------------- //
-  public ICollection<Bestelling> Bestellingen { get; init; } = new List<Bestelling>();
+  public List<AllergeenViewModel> Allergenen { get; init; } = new();
   // ---------------------------------------------------------------------------------------------------------------- //
 }

@@ -1,10 +1,8 @@
 namespace VlammendVarkenBackend.Models.ViewModels;
 
-public class AllergeenViewModel
+public class GerechtLijstViewModel
 {
   // ---------------------------------------------------------------------------------------------------------------- //
-  public string Symbool { get; init; }  = null!;
-  
-  public string Beschrijving { get; init; }  = null!;
+  public List<GerechtViewModel> Gerechten { get; init; } = new();
   // ---------------------------------------------------------------------------------------------------------------- //
 }

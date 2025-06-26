@@ -4,6 +4,7 @@ namespace VlammendVarkenBackend.Models;
 
 public class GerechtSamenstelling
 {
+  // ---------------------------------------------------------------------------------------------------------------- //
   [Column("gerechtId")]
   public int GerechtId { get; init; }
   
@@ -18,10 +19,11 @@ public class GerechtSamenstelling
   
   [Column("sausId")]
   public int SausId { get; init; }
-
+  // ---------------------------------------------------------------------------------------------------------------- //
   public Gerecht Gerecht { get; init; } = null!;
   public Hoofdonderdeel Hoofdonderdeel { get; init; } = null!;
   public Bijgerecht Bijgerecht { get; init; } = null!;
   public Groente Groente { get; init; } = null!;
   public Saus Saus { get; init; } = null!;
+  // ---------------------------------------------------------------------------------------------------------------- //
 }
