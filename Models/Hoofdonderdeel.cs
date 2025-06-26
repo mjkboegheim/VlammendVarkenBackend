@@ -5,8 +5,9 @@ namespace VlammendVarkenBackend.Models;
 
 public class Hoofdonderdeel
 {
-  [Column("hoofdonderdeelId")]
-  public int HoofdonderdeelId { get; init; }
+  // ---------------------------------------------------------------------------------------------------------------- //
+  [Column("id")]
+  public int Id { get; init; }
   
   [Column("naam")]
   [MaxLength(100)]
@@ -14,7 +15,8 @@ public class Hoofdonderdeel
   
   [Column("prijs")]
   public decimal Prijs { get; init; }
-
-  public ICollection<HoofdonderdeelAllergeen> HoofdonderdeelAllergenen { get; init; } = new List<HoofdonderdeelAllergeen>();
-  public ICollection<GerechtSamenstelling> GerechtSamenstellingen { get; init; } = new List<GerechtSamenstelling>();
+  // ---------------------------------------------------------------------------------------------------------------- //
+  public ICollection<HoofdonderdeelAllergeen> Allergenen { get; init; } = new List<HoofdonderdeelAllergeen>();
+  public ICollection<GerechtSamenstelling> Samenstellingen { get; init; } = new List<GerechtSamenstelling>();
+  // ---------------------------------------------------------------------------------------------------------------- //
 }

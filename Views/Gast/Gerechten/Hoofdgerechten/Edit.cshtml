@@ -1,155 +1,134 @@
+@model VlammendVarkenBackend.Models.ViewModels.GerechtViewModel
+<!-- ONAFGEROND -->
+
+@{
+  var gerechtSoort = @Model.Soort;
+  var gerechtBijgerechten = @Model.Bijgerechten;
+  var gerechtGroenten = @Model.Groenten;
+  var gerechtSausen = @Model.Sausen;
+}
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Optimaliseer Ossenhaas Keuzemenu</title>
+  <title>Optimaliseer Keuzemenu</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 </head>
 
 <body class="bg-gray-50 flex items-center justify-center min-h-screen p-4 font-sans">
   <div class="w-full max-w-6xl bg-white rounded-xl shadow-lg p-6 md:p-8 space-y-8">
-    <h1 class="text-3xl font-bold text-gray-900 text-center">Ossenhaas</h1>
+    <h1 class="text-3xl font-bold text-gray-900 text-center">@Model.Naam</h1>
     <div class="border border-gray-200 rounded-lg overflow-hidden">
       <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-gray-200">
-        <!-- Bijgerecht -->
-        <div class="p-4">
+        
+        <div id="BijgerechtDiv" class="p-4">
           <h3 class="font-semibold text-lg mb-4 text-center text-gray-700">Bijgerecht</h3>
           <div class="space-y-2 option-group">
-            <button class="w-full flex justify-between items-center text-left p-3 rounded-lg cursor-pointer transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 bg-indigo-50 text-indigo-700 font-semibold hover:bg-indigo-100" aria-pressed="true" onclick="handleOptionClick(event)">
-              <span>
-                <span class="block">Gebakken aardappel</span>
-                <span class="text-xs text-gray-500 font-normal">Allergieën: 🥜🥛</span>
-              </span>
-            </button>
-            <button class="w-full flex justify-between items-center text-left p-3 rounded-lg cursor-pointer transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 bg-white text-gray-800 hover:bg-gray-50" aria-pressed="false" onclick="handleOptionClick(event)">
-              <span>
-                <span class="block">Gepofte aardappel</span>
-                <span class="text-xs text-gray-500 font-normal">Allergieën: 🌾</span>
-              </span>
-            </button>
-            <button class="w-full flex justify-between items-center text-left p-3 rounded-lg cursor-pointer transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 bg-white text-gray-800 hover:bg-gray-50" aria-pressed="false" onclick="handleOptionClick(event)">
-              <span>
-                <span class="block">Gekookte aardappel</span>
-                <span class="text-xs text-gray-500 font-normal">Allergieën: 🥚</span>
-              </span>
-            </button>
+            @foreach (var gerechtBijgerecht in gerechtBijgerechten)
+            {
+              <button type="button"
+                class="keuze-btn w-full flex justify-between items-center text-left p-3 rounded-lg bg-white text-gray-800 hover:bg-gray-50"
+                data-type="@gerechtSoort"
+                data-naam="@gerechtBijgerecht.Naam"
+                data-prijs="@gerechtBijgerecht.Prijs"
+                data-allergenen="@string.Join(", ", gerechtBijgerecht.Allergenen.Select(a => a.Symbool))">
+                <span>
+                  <span class="block">@gerechtBijgerecht.Naam</span>
+                  <span class="text-xs text-gray-500">Allergieën: @string.Join(", ", gerechtBijgerecht.Allergenen.Select(a => a.Symbool))</span>
+                </span>
+                <span class="text-sm font-semibold text-green-600">
+                  @gerechtBijgerecht.Prijs.ToString("C")
+                </span>
+              </button>
+            }
           </div>
         </div>
-        <!-- Groente -->
-        <div class="p-4">
-          <h3 class="font-semibold text-lg mb-4 text-center text-gray-700">Groente</h3>
+        
+        <div id="GroenteDiv" class="p-4">
+          <h3 class="font-semibold text-lg mb-4 text-center text-gray-700">Groenten</h3>
           <div class="space-y-2 option-group">
-            <button class="w-full flex justify-between items-center text-left p-3 rounded-lg cursor-pointer transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 bg-indigo-50 text-indigo-700 font-semibold hover:bg-indigo-100" aria-pressed="true" onclick="handleOptionClick(event)">
-              <span>
-                <span class="block">Rauwkost komkommer</span>
-                <span class="text-xs text-gray-500 font-normal">Allergieën: -</span>
-              </span>
-            </button>
-            <button class="w-full flex justify-between items-center text-left p-3 rounded-lg cursor-pointer transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 bg-white text-gray-800 hover:bg-gray-50" aria-pressed="false" onclick="handleOptionClick(event)">
-              <span>
-                <span class="block">Rauwkost wortel</span>
-                <span class="text-xs text-gray-500 font-normal">Allergieën: -</span>
-              </span>
-            </button>
-            <button class="w-full flex justify-between items-center text-left p-3 rounded-lg cursor-pointer transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 bg-white text-gray-800 hover:bg-gray-50" aria-pressed="false" onclick="handleOptionClick(event)">
-              <span>
-                <span class="block">Asperges</span>
-                <span class="text-xs text-gray-500 font-normal">Allergieën: 🥛</span>
-              </span>
-              <span class="text-sm font-semibold text-green-600">+ €1,00</span>
-            </button>
+            @foreach (var gerechtGroente in gerechtGroenten)
+            {
+              <button type="button"
+                class="keuze-btn w-full flex justify-between items-center text-left p-3 rounded-lg bg-white text-gray-800 hover:bg-gray-50"
+                data-type="@gerechtSoort"
+                data-naam="@gerechtGroente.Naam"
+                data-prijs="@gerechtGroente.Prijs"
+                data-allergenen="@string.Join(", ", gerechtGroente.Allergenen.Select(a => a.Symbool))">
+                <span>
+                  <span class="block">@gerechtGroente.Naam</span>
+                  <span class="text-xs text-gray-500">Allergieën: @string.Join(", ", gerechtGroente.Allergenen.Select(a => a.Symbool))</span>
+                </span>
+                <span class="text-sm font-semibold text-green-600">
+                  @gerechtGroente.Prijs.ToString("C")
+                </span>
+              </button>
+            }
           </div>
         </div>
-        <!-- Saus -->
-        <div class="p-4">
-          <h3 class="font-semibold text-lg mb-4 text-center text-gray-700">Saus</h3>
+        <div id="SausDiv" class="p-4">
+          <h3 class="font-semibold text-lg mb-4 text-center text-gray-700">Sausen</h3>
           <div class="space-y-2 option-group">
-            <button class="w-full flex justify-between items-center text-left p-3 rounded-lg cursor-pointer transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 bg-indigo-50 text-indigo-700 font-semibold hover:bg-indigo-100" aria-pressed="true" onclick="handleOptionClick(event)">
-              <span>
-                <span class="block">Champignon saus</span>
-                <span class="text-xs text-gray-500 font-normal">Allergieën: 🥛🌾</span>
-              </span>
-            </button>
-            <button class="w-full flex justify-between items-center text-left p-3 rounded-lg cursor-pointer transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 bg-white text-gray-800 hover:bg-gray-50" aria-pressed="false" onclick="handleOptionClick(event)">
-              <span>
-                <span class="block">Mayonaise</span>
-                <span class="text-xs text-gray-500 font-normal">Allergieën: 🥚</span>
-              </span>
-            </button>
-            <button class="w-full flex justify-between items-center text-left p-3 rounded-lg cursor-pointer transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 bg-white text-gray-800 hover:bg-gray-50" aria-pressed="false" onclick="handleOptionClick(event)">
-              <span>
-                <span class="block">Roomsaus</span>
-                <span class="text-xs text-gray-500 font-normal">Allergieën: 🥛</span>
-              </span>
-            </button>
+            @foreach (var gerechtSaus in gerechtSausen)
+            {
+              <button type="button"
+                class="keuze-btn w-full flex justify-between items-center text-left p-3 rounded-lg bg-white text-gray-800 hover:bg-gray-50"
+                data-type="@gerechtSoort"
+                data-naam="@gerechtSaus.Naam"
+                data-prijs="@gerechtSaus.Prijs"
+                data-allergenen="@string.Join(", ", gerechtSaus.Allergenen.Select(a => a.Symbool))">
+                <span>
+                  <span class="block">@gerechtSaus.Naam</span>
+                  <span class="text-xs text-gray-500">Allergieën: @string.Join(", ", gerechtSaus.Allergenen.Select(a => a.Symbool))</span>
+                </span>
+                <span class="text-sm font-semibold text-green-600">
+                  @gerechtSaus.Prijs.ToString("C")
+                </span>
+              </button>
+            }
           </div>
         </div>
       </div>
     </div>
-    <div class="flex justify-end pt-4">
-      <button class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
-        Toevoegen aan bestelling: €...
-      </button>
-    </div>
-    <div class="overflow-x-auto">
-      <table class="min-w-full table-auto border border-gray-200 rounded-lg overflow-hidden">
-        <thead class="bg-gray-100 text-sm text-gray-600 uppercase text-left">
+    <section id="besteloverzicht">
+      <div class="overflow-x-auto">
+        <table class="min-w-full table-auto border border-gray-200 rounded-lg overflow-hidden">
+          <thead class="bg-gray-100 text-sm text-gray-600 uppercase text-left">
           <tr>
             <th class="px-4 py-3">Naam</th>
+            <th class="px-4 py-3">Categorie</th>
             <th class="px-4 py-3">Bijgerecht</th>
             <th class="px-4 py-3">Groente</th>
             <th class="px-4 py-3">Saus</th>
+            <th class="px-4 py-3">Allergenen</th>
             <th class="px-4 py-3 text-right">Actie</th>
             <th class="px-4 py-3 text-right">Prijs</th>
           </tr>
-        </thead>
-        <tbody class="text-sm text-gray-700 divide-y divide-gray-200">
-          <tr>
-            <td class="px-4 py-3 font-semibold">-</td>
-            <td class="px-4 py-3">-</td>
-            <td class="px-4 py-3">-</td>
-            <td class="px-4 py-3">-</td>
-            <td class="px-4 py-3 text-right">
-              <button class="text-red-500 hover:text-red-700" aria-label="Verwijderen">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22" />
-                </svg>
-              </button>
-            </td>
-            <td class="px-4 py-3 text-right font-semibold">€-</td>
+          </thead>
+          <tbody id="bestelTabel" class="text-sm text-gray-700 divide-y divide-gray-200">
+          </tbody>
+          <tfoot class="bg-gray-50 font-bold">
+          <tr class="border-t-2 border-gray-200">
+            <td colspan="7" class="px-4 py-4 text-left">Totaal</td>
+            <td id="totaalPrijs" class="px-4 py-4 text-right">€ -</td>
           </tr>
-        </tbody>
-        <tfoot>
-          <tr class="bg-gray-50 font-bold">
-            <td colspan="4" class="px-4 py-4 text-left">Totaal</td>
-            <td></td>
-            <td class="px-4 py-4 text-right">€-</td>
-          </tr>
-        </tfoot>
-      </table>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+    <div class="flex justify-end mt-6">
+      <button id="toevoegenBtn" class="bg-blue-600 text-white px-6 py-3 rounded-lg">Toevoegen</button>
     </div>
-    <div class="flex flex-col md:flex-row gap-4 pt-4 border-t border-gray-200">
-      <button class="w-full flex items-center justify-center font-bold py-3 px-4 rounded-lg transition duration-300 bg-gray-200 hover:bg-gray-300 text-gray-800">
+    <nav class="flex flex-col md:flex-row gap-4 pt-4 border-t border-gray-200">
+      <a href="javascript:history.back()" class="w-full md:w-auto flex items-center justify-center font-bold py-3 px-4 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800">
         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
         </svg>
         Terug naar vorige stap
-      </button>
-      <button class="w-full flex items-center justify-center font-bold py-3 px-4 rounded-lg transition duration-300 bg-gray-800 hover:bg-gray-900 text-white">
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-        </svg>
-        Terug naar hoofdmenu
-      </button>
-    </div>
+      </a>
+    </nav>
   </div>
+  <script src="@Url.Content("~/js/script.js")" defer></script>
 </body>
-
-<script>
-  function handleOptionClick(event) {
-    const clickedButton = event.currentTarget;
-    const group = clickedButton.closest('.option-group');
-    group.querySelectorAll('button').forEach(btn => btn.setAttribute('aria-pressed', 'false'));
-    clickedButton.setAttribute('aria-pressed', 'true');
-  }
-</script>

@@ -41,5 +41,8 @@
     <_ContentIncludedByDefault Remove="Views\Bestelling\Overzicht\Chefkok\Index.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Bestelling\Overzicht\Gast\Index.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Bestelling\Tafels\Index.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Gast\Gerechten\Hoofdgerechten\Vis\Index.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Gast\Gerechten\Hoofdgerechten\Vlees\Index.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Gast\Gerechten\Nagerechten\Index.cshtml" />
   </ItemGroup>
 </Project>

@@ -3,8 +3,6 @@
 /workspace.xml
 # Rider ignored files
 /contentModel.xml
-/.idea.VlammendVarkenBackend.iml
-/projectSettingsUpdater.xml
 /modules.xml
 # Editor-based HTTP Client requests
 /httpRequests/

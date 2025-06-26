@@ -5,8 +5,9 @@ namespace VlammendVarkenBackend.Models;
 
 public class Groente
 {
-  [Column("groenteId")]
-  public int GroenteId { get; init; }
+  // ---------------------------------------------------------------------------------------------------------------- //
+  [Column("id")]
+  public int Id { get; init; }
   
   [Column("naam")]
   [MaxLength(100)]
@@ -14,7 +15,8 @@ public class Groente
   
   [Column("prijs")]
   public decimal Prijs { get; init; }
-
-  public ICollection<GroenteAllergeen> GroenteAllergenen { get; init; } = new List<GroenteAllergeen>();
-  public ICollection<GerechtSamenstelling> GerechtSamenstellingen { get; init; } = new List<GerechtSamenstelling>();
+  // ---------------------------------------------------------------------------------------------------------------- //
+  public ICollection<GroenteAllergeen> Allergenen { get; init; } = new List<GroenteAllergeen>();
+  public ICollection<GerechtSamenstelling> Samenstellingen { get; init; } = new List<GerechtSamenstelling>();
+  // ---------------------------------------------------------------------------------------------------------------- //
 }

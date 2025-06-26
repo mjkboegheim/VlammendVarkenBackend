@@ -1,55 +1,54 @@
-﻿-- Tabellen aanmaken
-CREATE TABLE Allergenen (
-  allergeenId INT PRIMARY KEY,
+﻿CREATE TABLE Allergenen (
+  id INT PRIMARY KEY,
   symbool VARCHAR(100) NOT NULL,
   beschrijving VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE Gerechten (
-  gerechtId INT PRIMARY KEY,
+  id INT PRIMARY KEY,
   soort VARCHAR(100) NOT NULL,
   naam VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE Hoofdonderdelen (
-  hoofdonderdeelId INT PRIMARY KEY,
+  id INT PRIMARY KEY,
   naam VARCHAR(100) NOT NULL,
-  prijs DECIMAL(10,2) NOT NULL
+  prijs DECIMAL NOT NULL
 );
 
 CREATE TABLE Bijgerechten (
-  bijgerechtId INT PRIMARY KEY,
+  id INT PRIMARY KEY,
   naam VARCHAR(100) NOT NULL,
-  prijs DECIMAL(10,2) NOT NULL
+  prijs DECIMAL NOT NULL
 );
 
 CREATE TABLE Groenten (
-  groenteId INT PRIMARY KEY,
+  id INT PRIMARY KEY,
   naam VARCHAR(100) NOT NULL,
-  prijs DECIMAL(10,2) NOT NULL
+  prijs DECIMAL NOT NULL
 );
 
 CREATE TABLE Sausen (
-  sausId INT PRIMARY KEY,
+  id INT PRIMARY KEY,
   naam VARCHAR(100) NOT NULL,
-  prijs DECIMAL(10,2) NOT NULL
+  prijs DECIMAL NOT NULL
 );
 
 CREATE TABLE Tafels (
-  tafelId INT PRIMARY KEY,
+  id INT PRIMARY KEY,
   nummer INT NOT NULL
 );
 
 CREATE TABLE Levertijden (
-  levertijdId INT PRIMARY KEY,
+  id INT PRIMARY KEY,
   minuten INT NOT NULL
 );
 
 CREATE TABLE Bestellingen (
-  bestellingId INT PRIMARY KEY,
+  id INT PRIMARY KEY,
   levertijdId INT NOT NULL,
   besteldatum DATETIME NOT NULL,
-  FOREIGN KEY (levertijdId) REFERENCES Levertijden(levertijdId)
+  FOREIGN KEY (levertijdId) REFERENCES Levertijden(id)
 );
 
 CREATE TABLE GerechtSamenstellingen (
@@ -59,191 +58,106 @@ CREATE TABLE GerechtSamenstellingen (
   groenteId INT NOT NULL,
   sausId INT NOT NULL,
   PRIMARY KEY (gerechtId, hoofdonderdeelId, bijgerechtId, groenteId, sausId),
-  FOREIGN KEY (gerechtId) REFERENCES Gerechten(gerechtId),
-  FOREIGN KEY (hoofdonderdeelId) REFERENCES Hoofdonderdelen(hoofdonderdeelId),
-  FOREIGN KEY (bijgerechtId) REFERENCES Bijgerechten(bijgerechtId),
-  FOREIGN KEY (groenteId) REFERENCES Groenten(groenteId),
-  FOREIGN KEY (sausId) REFERENCES Sausen(sausId)
+  FOREIGN KEY (gerechtId) REFERENCES Gerechten(id),
+  FOREIGN KEY (hoofdonderdeelId) REFERENCES Hoofdonderdelen(id),
+  FOREIGN KEY (bijgerechtId) REFERENCES Bijgerechten(id),
+  FOREIGN KEY (groenteId) REFERENCES Groenten(id),
+  FOREIGN KEY (sausId) REFERENCES Sausen(id)
 );
 
 CREATE TABLE HoofdonderdeelAllergenen (
   hoofdonderdeelId INT NOT NULL,
   allergeenId INT NOT NULL,
   PRIMARY KEY (hoofdonderdeelId, allergeenId),
-  FOREIGN KEY (hoofdonderdeelId) REFERENCES Hoofdonderdelen(hoofdonderdeelId),
-  FOREIGN KEY (allergeenId) REFERENCES Allergenen(allergeenId)
+  FOREIGN KEY (hoofdonderdeelId) REFERENCES Hoofdonderdelen(id),
+  FOREIGN KEY (allergeenId) REFERENCES Allergenen(id)
 );
 
 CREATE TABLE BijgerechtAllergenen (
   bijgerechtId INT NOT NULL,
   allergeenId INT NOT NULL,
   PRIMARY KEY (bijgerechtId, allergeenId),
-  FOREIGN KEY (bijgerechtId) REFERENCES Bijgerechten(bijgerechtId),
-  FOREIGN KEY (allergeenId) REFERENCES Allergenen(allergeenId)
+  FOREIGN KEY (bijgerechtId) REFERENCES Bijgerechten(id),
+  FOREIGN KEY (allergeenId) REFERENCES Allergenen(id)
 );
 
 CREATE TABLE GroenteAllergenen (
   groenteId INT NOT NULL,
   allergeenId INT NOT NULL,
   PRIMARY KEY (groenteId, allergeenId),
-  FOREIGN KEY (groenteId) REFERENCES Groenten(groenteId),
-  FOREIGN KEY (allergeenId) REFERENCES Allergenen(allergeenId)
+  FOREIGN KEY (groenteId) REFERENCES Groenten(id),
+  FOREIGN KEY (allergeenId) REFERENCES Allergenen(id)
 );
 
 CREATE TABLE SausAllergenen (
   sausId INT NOT NULL,
   allergeenId INT NOT NULL,
   PRIMARY KEY (sausId, allergeenId),
-  FOREIGN KEY (sausId) REFERENCES Sausen(sausId),
-  FOREIGN KEY (allergeenId) REFERENCES Allergenen(allergeenId)
+  FOREIGN KEY (sausId) REFERENCES Sausen(id),
+  FOREIGN KEY (allergeenId) REFERENCES Allergenen(id)
 );
 
 CREATE TABLE BestellingGerechten (
   bestellingId INT NOT NULL,
   gerechtId INT NOT NULL,
   PRIMARY KEY (bestellingId, gerechtId),
-  FOREIGN KEY (bestellingId) REFERENCES Bestellingen(bestellingId),
-  FOREIGN KEY (gerechtId) REFERENCES Gerechten(gerechtId)
+  FOREIGN KEY (bestellingId) REFERENCES Bestellingen(id),
+  FOREIGN KEY (gerechtId) REFERENCES Gerechten(id)
 );
 
 CREATE TABLE BestellingTafels (
   bestellingId INT NOT NULL,
   tafelId INT NOT NULL,
   PRIMARY KEY (bestellingId, tafelId),
-  FOREIGN KEY (bestellingId) REFERENCES Bestellingen(bestellingId),
-  FOREIGN KEY (tafelId) REFERENCES Tafels(tafelId)
+  FOREIGN KEY (bestellingId) REFERENCES Bestellingen(id),
+  FOREIGN KEY (tafelId) REFERENCES Tafels(id)
 );
 
-CREATE TABLE TafelGroepen (
-  tafelGroepId INT PRIMARY KEY,
-  naam VARCHAR(100) NOT NULL
-);
+INSERT INTO Allergenen (id, symbool, beschrijving) VALUES
+(1, 'GLU', 'Bevat gluten'), (2, 'LAC', 'Bevat lactose'), (3, 'NOT', 'Bevat noten');
 
-CREATE TABLE TafelGroepTafels (
-  tafelGroepId INT NOT NULL,
-  tafelId INT NOT NULL,
-  PRIMARY KEY (tafelGroepId, tafelId),
-  FOREIGN KEY (tafelGroepId) REFERENCES TafelGroepen(tafelGroepId),
-  FOREIGN KEY (tafelId) REFERENCES Tafels(tafelId)
-);
+INSERT INTO Gerechten (id, soort, naam) VALUES
+(1, 'dagmenu', 'Dagmenu Special'), (2, 'voorgerecht', 'Tomatensoep'), (3, 'hoofdgerecht-vlees', 'Gegrilde Biefstuk'),
+(4, 'hoofdgerecht-vis', 'Gegrilde Zalm'), (5, 'hoofdgerecht-vegetarisch', 'Gevulde Paprika'), (6, 'nagerecht', 'Chocolade Mousse');
 
--- Data inserts
+INSERT INTO Hoofdonderdelen (id, naam, prijs) VALUES
+(1, 'Biefstuk', 14.00), (2, 'Zalmfilet', 12.00), (3, 'Tomatensoep', 4.50), (4, 'Gevulde Paprika', 9.50), (5, 'Chocolade Mousse', 5.00);
 
-INSERT INTO Allergenen (allergeenId, symbool, beschrijving) VALUES
-(1, 'GLU', 'Bevat gluten'),
-(2, 'LAC', 'Bevat lactose'),
-(3, 'NOT', 'Bevat noten');
+INSERT INTO Bijgerechten (id, naam, prijs) VALUES
+(1, 'Aardappelpuree', 3.50), (2, 'Rijst', 3.00), (3, '-', 0.00);
 
-INSERT INTO Gerechten (gerechtId, soort, naam) VALUES
-(1, 'Dagmenu', 'Dagmenu Special'),
-(2, 'Voorgerecht', 'Tomatensoep'),
-(3, 'Hoofdgerecht', 'Gegrilde Zalm'),
-(4, 'Nagerecht', 'Vanilleijs'),
-(5, 'Hoofdgerecht', 'Spaghetti Bolognese'),
-(6, 'Hoofdgerecht', 'Kip Saté'),
-(7, 'Dessert', 'Chocoladecake');
+INSERT INTO Groenten (id, naam, prijs) VALUES
+(1, 'Spinazie', 2.00), (2, 'Gegrilde Groenten', 2.50), (3, '-', 0.00);
 
-INSERT INTO Hoofdonderdelen (hoofdonderdeelId, naam, prijs) VALUES
-(1, 'Tomatensoep', 4.50),
-(2, 'Zalmfilet', 12.00),
-(3, 'Vanilleijs', 3.50),
-(4, 'Spaghetti', 8.50),
-(5, 'Kipfilet', 9.00),
-(6, 'Rundvlees', 10.00);
+INSERT INTO Sausen (id, naam, prijs) VALUES
+(1, 'Pepersaus', 1.00), (2, 'Dillesaus', 0.75), (3, '-', 0.00);
 
-INSERT INTO Bijgerechten (bijgerechtId, naam, prijs) VALUES
-(1, 'Aardappelpuree', 3.50),
-(2, '-', 0.00),
-(3, 'Frietjes', 3.00),
-(4, 'Rijst', 2.50),
-(5, 'Salade', 2.00);
+INSERT INTO Tafels (id, nummer) VALUES
+(1, 10), (2, 11), (3, 12);
 
-INSERT INTO Groenten (groenteId, naam, prijs) VALUES
-(1, 'Spinazie', 2.00),
-(2, '-', 0.00),
-(3, 'Broccoli', 1.50),
-(4, 'Sperziebonen', 1.20),
-(5, 'Worteltjes', 1.00);
+INSERT INTO Levertijden (id, minuten) VALUES
+(1, 5), (2, 15);
 
-INSERT INTO Sausen (sausId, naam, prijs) VALUES
-(1, 'Dillesaus', 0.75),
-(2, '-', 0.00),
-(3, 'Tomatensaus', 0.50),
-(4, 'Pindasaus', 0.70),
-(5, 'Pepersaus', 0.60);
-
-INSERT INTO Tafels (tafelId, nummer) VALUES
-(1, 1),
-(2, 2),
-(3, 3),
-(4, 4),
-(5, 5),
-(6, 10),
-(7, 11),
-(8, 12);
-
-INSERT INTO TafelGroepen (tafelGroepId, naam) VALUES
-(1, 'Hoofdzaal'),
-(2, 'Terras');
-
-INSERT INTO TafelGroepTafels (tafelGroepId, tafelId) VALUES
-(1, 1),
-(1, 2),
-(1, 3),
-(2, 4),
-(2, 5);
-
-INSERT INTO Levertijden (levertijdId, minuten) VALUES
-(1, 5),
-(2, 15);
-
-INSERT INTO Bestellingen (bestellingId, levertijdId, besteldatum) VALUES
-(1, 1, '2025-06-23 18:30:00'),
-(2, 2, '2025-06-23 18:45:00'),
-(3, 1, '2025-06-25 18:30:00'),
-(4, 2, '2025-06-25 19:00:00'),
-(5, 1, '2025-06-25 19:30:00');
+INSERT INTO Bestellingen (id, levertijdId, besteldatum) VALUES
+(1, 1, '2025-06-23 18:30:00'), (2, 2, '2025-06-23 18:45:00');
 
 INSERT INTO GerechtSamenstellingen (gerechtId, hoofdonderdeelId, bijgerechtId, groenteId, sausId) VALUES
-(1, 2, 1, 1, 1),
-(2, 1, 2, 2, 2),
-(3, 2, 1, 1, 1),
-(4, 3, 2, 2, 2),
-(5, 4, 3, 3, 3),
-(6, 5, 4, 4, 4);
+(1, 2, 2, 2, 2), (2, 3, 3, 3, 3), (3, 1, 1, 1, 1), (4, 2, 2, 2, 2), (5, 4, 1, 1, 3), (6, 5, 3, 3, 3);
 
 INSERT INTO HoofdonderdeelAllergenen (hoofdonderdeelId, allergeenId) VALUES
-(1, 2),
-(2, 2),
-(3, 1),
-(4, 1),
-(5, 2);
+(1, 3), (2, 2), (3, 1), (4, 1), (5, 2);
 
 INSERT INTO BijgerechtAllergenen (bijgerechtId, allergeenId) VALUES
-(1, 1),
-(3, 1);
+(1, 1);
 
 INSERT INTO GroenteAllergenen (groenteId, allergeenId) VALUES
-(1, 3),
-(3, 3);
+(1, 3);
 
 INSERT INTO SausAllergenen (sausId, allergeenId) VALUES
-(1, 2),
-(4, 3);
+(2, 2);
 
 INSERT INTO BestellingGerechten (bestellingId, gerechtId) VALUES
-(1, 1),
-(2, 2),
-(3, 2),
-(3, 5),
-(3, 7),
-(4, 3),
-(4, 6),
-(5, 1);
+(1, 1), (2, 2);
 
 INSERT INTO BestellingTafels (bestellingId, tafelId) VALUES
-(1, 1),
-(2, 2),
-(3, 3),
-(4, 4),
-(5, 5);
+(1, 1), (2, 2);

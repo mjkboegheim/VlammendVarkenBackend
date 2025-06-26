@@ -1,0 +1,123 @@
+@model VlammendVarkenBackend.Models.ViewModels.GerechtLijstViewModel
+
+@{
+  var gerechten = @Model.Gerechten;
+}
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gerechten Lijst</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+</head>
+
+<body class="bg-gray-50 flex items-center justify-center min-h-screen p-4 font-sans">
+  <div class="w-full max-w-6xl bg-white rounded-xl shadow-lg p-6 md:p-8 space-y-10">
+    <main class="space-y-12">
+      <section>
+        <h1 class="text-2xl font-bold text-gray-800 mb-4 text-center">Gerechten Lijst</h1>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          @foreach (var gerecht in gerechten)
+          {
+            var gerechtAllergenen = @gerecht.Hoofdonderdelen.SelectMany(h => h.Allergenen)
+              .Concat(@gerecht.Bijgerechten.SelectMany(b => b.Allergenen))
+              .Concat(@gerecht.Groenten.SelectMany(g => g.Allergenen))
+              .Concat(@gerecht.Sausen.SelectMany(s => s.Allergenen))
+              .GroupBy(a => a.Symbool)
+              .Select(g => g.First())
+              .ToList();
+            
+            var gerechtAllergenenString = string.Join(",", gerechtAllergenen.Select(a => a.Symbool));
+            
+            var gerechtBijgerechten = string.Join(", ", gerecht.Bijgerechten.Select(b => b.Naam));
+            var gerechtGroenten = string.Join(", ", gerecht.Groenten.Select(g => g.Naam));
+            var gerechtSausen = string.Join(", ", gerecht.Sausen.Select(s => s.Naam));
+            
+            var isHoofdgerecht = gerecht.Soort.StartsWith("hoofdgerecht");
+
+            <article class="p-6 flex flex-col bg-gray-50 rounded-lg border border-gray-200">
+              <h2 class="text-xl font-bold text-gray-800 mb-2">@gerecht.Naam</h2>
+              <div class="text-sm text-gray-600 space-y-1 mb-4">
+                <p><strong>Bijgerecht:</strong> @gerechtBijgerechten</p>
+                <p><strong>Groente:</strong> @gerechtGroenten</p>
+                <p><strong>Saus:</strong> @gerechtSausen</p>
+                <p><strong>Allergenen:</strong> 
+                  @foreach (var gerechtAllergeen in gerechtAllergenen)
+                  {
+                    <span class="inline-block mr-1">@gerechtAllergeen.Symbool</span>
+                  }
+                </p>
+              </div>
+              <p class="text-lg font-bold text-gray-800 mb-4">€ @gerecht.Prijs.ToString("F2")</p>
+
+              <button
+                type="button"
+                class="toevoegenBtn w-full flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition-transform hover:scale-105"
+                data-naam="@gerecht.Naam"
+                data-soort="@gerecht.Soort"
+                data-bijgerecht="@gerechtBijgerechten"
+                data-groente="@gerechtGroenten"
+                data-saus="@gerechtSausen"
+                data-allergenen="@gerechtAllergenenString"
+                data-prijs="@gerecht.Prijs.ToString("F2")"
+                aria-label="Voeg @gerecht.Naam toe aan bestelling">
+                <span class="material-icons text-base mr-2" aria-hidden="true">add_shopping_cart</span>
+                Toevoegen
+              </button>
+              
+            <!-- 
+
+            @if (isHoofdgerecht)
+            {
+              <a href="/gast/gerechten/@gerecht.Soort/@gerecht.Id/edit" class="mt-2 w-full flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition-transform hover:scale-105">
+                <span class="material-icons text-base mr-2" aria-hidden="true">edit</span>
+                Aanpassen
+              </a>
+            }
+            
+            -->
+            </article>
+          }
+        </div>
+      </section>
+      <section id="besteloverzicht">
+        <div class="overflow-x-auto">
+          <table class="min-w-full table-auto border border-gray-200 rounded-lg overflow-hidden">
+            <thead class="bg-gray-100 text-sm text-gray-600 uppercase text-left">
+              <tr>
+                <th class="px-4 py-3">Naam</th>
+                <th class="px-4 py-3">Categorie</th>
+                <th class="px-4 py-3">Bijgerecht</th>
+                <th class="px-4 py-3">Groente</th>
+                <th class="px-4 py-3">Saus</th>
+                <th class="px-4 py-3">Allergenen</th>
+                <th class="px-4 py-3 text-right">Actie</th>
+                <th class="px-4 py-3 text-right">Prijs</th>
+              </tr>
+            </thead>
+            <tbody id="bestelTabel" class="text-sm text-gray-700 divide-y divide-gray-200">
+            </tbody>
+            <tfoot class="bg-gray-50 font-bold">
+              <tr class="border-t-2 border-gray-200">
+                <td colspan="7" class="px-4 py-4 text-left">Totaal</td>
+                <td id="totaalPrijs" class="px-4 py-4 text-right">€ -</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </section>
+    </main>
+    <nav class="flex flex-col md:flex-row gap-4 pt-4 border-t border-gray-200">
+      <a href="javascript:history.back()" class="w-full md:w-auto flex items-center justify-center font-bold py-3 px-4 rounded-lg transition duration-300 bg-gray-200 hover:bg-gray-300 text-gray-800">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Terug naar vorige stap
+      </a>
+    </nav>
+  </div>
+  <script src="@Url.Content("~/js/script.js")" defer></script>
+</body>
