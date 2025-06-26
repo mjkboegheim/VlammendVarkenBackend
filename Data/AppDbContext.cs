@@ -15,8 +15,6 @@ namespace VlammendVarkenBackend.Data
         public DbSet<Groente> Groenten { get; set; }
         public DbSet<Saus> Sausen { get; set; }
         public DbSet<Tafel> Tafels { get; set; }
-        public DbSet<Tafelgroep> Tafelgroepen { get; set; }
-        public DbSet<TafelGroepTafel> TafelGroepTafels { get; set; }
         public DbSet<Levertijd> Levertijden { get; set; }
         public DbSet<Bestelling> Bestellingen { get; set; }
 
@@ -54,19 +52,6 @@ namespace VlammendVarkenBackend.Data
 
             modelBuilder.Entity<BestellingTafel>()
                 .HasKey(bt => new { bt.BestellingId, bt.TafelId });
-
-            modelBuilder.Entity<TafelGroepTafel>()
-                .HasKey(tgt => new { tgt.TafelGroepId, tgt.TafelId });
-
-            modelBuilder.Entity<TafelGroepTafel>()
-                .HasOne(tgt => tgt.Tafelgroep)
-                .WithMany(tg => tg.TafelGroepTafels)
-                .HasForeignKey(tgt => tgt.TafelGroepId);
-
-            modelBuilder.Entity<TafelGroepTafel>()
-                .HasOne(tgt => tgt.Tafel)
-                .WithMany(t => t.TafelGroepTafels)
-                .HasForeignKey(tgt => tgt.TafelId);
         }
     }
 }
