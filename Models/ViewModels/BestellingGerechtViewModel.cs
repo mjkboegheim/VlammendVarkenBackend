@@ -1,10 +1,12 @@
-namespace VlammendVarkenBackend.Models.ViewModels;
-
-public class BestellingGerechtViewModel
+namespace VlammendVarkenBackend.Models.ViewModels
 {
-    public string Soort { get; set; } = null!;
-    public string GerechtNaam { get; set; } = null!;
-    public string BijgerechtNaam { get; set; } = null!;
-    public string GroenteNaam { get; set; } = null!;
-    public string SausNaam { get; set; } = null!;
+    public class BestellingGerechtViewModel
+    {
+        public string? GerechtNaam { get; set; }  // Nullable
+        public string? Soort { get; set; }        // Nullable
+        public string? BijgerechtNaam { get; set; } // Nullable
+        public string? GroenteNaam { get; set; }    // Nullable
+        public string? SausNaam { get; set; }      // Nullable
+        public decimal Prijs { get; set; }        // Prijs kan niet nullable zijn
+    }
 }

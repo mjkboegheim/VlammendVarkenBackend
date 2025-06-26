@@ -41,6 +41,24 @@
     <header>
       <h1 class="text-3xl font-bold text-gray-900 text-center">Digitaal Menu</h1>
     </header>
+    <nav aria-label="Hoofd navigatie" class="max-w-md mx-auto bg-white border border-gray-200 rounded-xl shadow-sm p-4 space-y-2">
+      @{
+        var navItems = new[] {
+          new { Url = "/gast/allergenen/index", Icon = "medical_information", Text = "Allergenen Informatie" },
+          new { Url = "/gast/gerechten/voorgerecht/index", Icon = "restaurant_menu", Text = "Voorgerechten" },
+          new { Url = "/gast/gerechten/hoofdgerecht/index", Icon = "dinner_dining", Text = "Hoofdgerechten" },
+          new { Url = "/gast/gerechten/nagerecht/index", Icon = "icecream", Text = "Nagerechten" },
+          new { Url = "/gast/bestellingen/overzicht/index", Icon = "shopping_cart", Text = "Besteloverzicht" }
+        };
+      }
+      @foreach (var item in navItems)
+      {
+        <a href="@item.Url" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors hover:bg-indigo-50 group">
+          <span class="material-icons text-indigo-600 group-hover:scale-110 transition-transform" aria-hidden="true">@item.Icon</span>
+          <span class="text-gray-800 font-medium group-hover:text-indigo-800">@item.Text</span>
+        </a>
+      }
+    </nav>
     <section aria-labelledby="dagmenu-title">
       <div class="bg-indigo-50 border border-indigo-200 p-6 rounded-lg shadow-sm">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
@@ -79,24 +97,6 @@
         </div>
       </div>
     </section>
-    <nav aria-label="Hoofd navigatie" class="max-w-md mx-auto bg-white border border-gray-200 rounded-xl shadow-sm p-4 space-y-2">
-      @{
-        var navItems = new[] {
-          new { Url = "/gast/allergenen/index", Icon = "medical_information", Text = "Allergenen Informatie" },
-          new { Url = "/gast/gerechten/voorgerecht/index", Icon = "restaurant_menu", Text = "Voorgerechten" },
-          new { Url = "/gast/gerechten/hoofdgerecht/index", Icon = "dinner_dining", Text = "Hoofdgerechten" },
-          new { Url = "/gast/gerechten/nagerecht/index", Icon = "icecream", Text = "Nagerechten" },
-          new { Url = "/besteloverzicht", Icon = "shopping_cart", Text = "Besteloverzicht" }
-        };
-      }
-      @foreach (var item in navItems)
-      {
-        <a href="@item.Url" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors hover:bg-indigo-50 group">
-          <span class="material-icons text-indigo-600 group-hover:scale-110 transition-transform" aria-hidden="true">@item.Icon</span>
-          <span class="text-gray-800 font-medium group-hover:text-indigo-800">@item.Text</span>
-        </a>
-      }
-    </nav>
     <section id="besteloverzicht" aria-label="Besteloverzicht">
       <div class="overflow-x-auto">
         <table class="min-w-full table-auto border border-gray-200 rounded-lg overflow-hidden">
