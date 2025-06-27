@@ -33,9 +33,9 @@ public class GerechtenController(AppDbContext context) : Controller
       query = query.Where(g => gerechtId == g.Id);
     }
     
-    if (gerechtSoort == "dagmenu") {
-      query = query.Take(1);
-    }
+    // if (gerechtSoort == "dagmenu") {
+    //   query = query.Take(1);
+    // }
 
     return query;
   }
