@@ -63,18 +63,22 @@
 
 <script>
   let bestelling = JSON.parse(localStorage.getItem("winkelmandje")) || [];
+  console.log("Bestelling geladen uit localStorage:", bestelling);
 
   document.addEventListener("DOMContentLoaded", () => {
+    console.log("DOM volledig geladen");
     tekenBestelTabel();
   });
 
   function tekenBestelTabel() {
     const tbody = document.getElementById("bestelTabel");
     tbody.innerHTML = "";
+    console.log("Tabel geleegd");
 
     let totaal = 0;
 
     bestelling.forEach((gerecht, index) => {
+      console.log(`Gerecht ${index + 1}:`, gerecht);
       totaal += parseFloat(gerecht.prijs);
 
       tbody.innerHTML += `
@@ -92,11 +96,14 @@
       `;
     });
 
+    console.log("Totaalbedrag:", totaal.toFixed(2));
     document.getElementById("totaalPrijs").textContent = `€${totaal.toFixed(2)}`;
   }
 
   function verwijder(index) {
+    console.log(`Verwijderen van gerecht op index ${index}:`, bestelling[index]);
     bestelling.splice(index, 1);
+    console.log("Nieuwe bestelling na verwijderen:", bestelling);
     localStorage.setItem("winkelmandje", JSON.stringify(bestelling));
     tekenBestelTabel();
   }
