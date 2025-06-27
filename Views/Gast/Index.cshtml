@@ -98,5 +98,27 @@
       </div>
     </section>
   </main>
-  <script src="@Url.Content("~/js/script.js")" defer></script>
+<script>
+  let bestelling = JSON.parse(localStorage.getItem("winkelmandje")) || [];
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".toevoegenBtn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const gerecht = {
+          naam: btn.dataset.naam,
+          soort: btn.dataset.soort || "",
+          bijgerecht: btn.dataset.bijgerecht || "",
+          groente: btn.dataset.groente || "",
+          saus: btn.dataset.saus || "",
+          allergenen: btn.dataset.allergenen || "",
+          prijs: parseFloat(btn.dataset.prijs || "0").toFixed(2),
+        };
+
+        bestelling.push(gerecht);
+        localStorage.setItem("winkelmandje", JSON.stringify(bestelling));
+      });
+    });
+  });
+  
+</script>
 </body>
